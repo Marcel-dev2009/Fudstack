@@ -1,0 +1,59 @@
+import type { Config } from 'tailwindcss'
+
+export default {
+  content: [
+    "./app/**/*.{js,ts,jsx,tsx}",
+    "./components/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
+      },
+      
+      // 1. COLORS (Accepts hex, rgb, rgba, hsl)
+      colors: {
+        brand: {
+          primary: '#3b82f6',
+          secondary: '#10b981',
+          vibrant: '#ff007f', // Custom naming
+        },
+        dark: '#121212',
+      },
+
+      // 2. SPACING (Applies globally to padding, margin, gap, top, left, etc.)
+      spacing: {
+        'xs-tight': '0.25rem',  // 4px
+        'md-cozy': '1.5rem',    // 24px
+        '128': '32rem',         // 512px
+      },
+
+      // 3. FONT SIZES (Accepts a string, or an array with [fontSize, lineHeight])
+      fontSize: {
+        'micro': '0.65rem',
+        'hero': ['4.5rem', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+      },
+
+      // 4. FONT WEIGHTS (Maps directly to CSS font-weight numbers or strings)
+      fontWeight: {
+        hairline: '100',
+        'ultra-bold': '900',
+      },
+
+      // 5. OPACITY (Values between 0 and 1, or percentages as strings)
+      opacity: {
+        'ghost': '0.08',       // 8% visible
+        'semi-clear': '0.45',  // 45% visible
+      },
+
+      // 6. WIDTHS (Applies strictly to width classes. Spacing values automatically work for width, but add here for width-only specials)
+      width: {
+        'chunky-card': '450px',
+        'readable-prose': '65ch',
+      }
+
+    },
+  },
+  plugins: [],
+} satisfies Config
