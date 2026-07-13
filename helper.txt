@@ -87,3 +87,47 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
   }
 }
+
+
+
+
+"use client";
+
+
+
+
+
+export default function FAQ() {
+
+
+  return (
+    <section className="relative overflow-hidden bg-black py-28">
+      {/* Background Blur */}
+      <div className="absolute left-1/2 top-20 h-96 w-96 -translate-x-1/2 rounded-full bg-orange-500/10 blur-[150px]" />
+
+      <div className="relative mx-auto max-w-6xl px-6">
+        <motion.div
+         
+          className="mb-20 text-center"
+        >
+          <p className="mb-4 uppercase tracking-[0.45em] text-orange-400 text-sm">
+            Frequently Asked Questions
+          </p>
+
+          <h2 className="mx-auto max-w-3xl text-4xl font-semibold tracking-tight text-white md:text-6xl">
+            Everything You Need To Know
+          </h2>
+
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-8 tracking-wide text-neutral-400">
+            Find answers to the most common questions about our restaurant
+            management platform.
+          </p>
+        </motion.div>
+
+        <div className="space-y-5">
+        
+        </div>
+      </div>
+    </section>
+  );
+}

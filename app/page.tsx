@@ -1,7 +1,10 @@
+import Parent from "./components/client/parent";
 export default function Home() {
   return (
     <>
-    <div>Hello World</div> 
+   <section>
+   <Parent/>
+    </section> 
     </>
   );
 }
