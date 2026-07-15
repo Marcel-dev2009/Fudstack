@@ -131,3 +131,25 @@ export default function FAQ() {
     </section>
   );
 }
+
+//gsap timeline if you want to control it outside the useGsap hook
+export default function ControlledTimeline() {
+  const container = useRef<HTMLDivElement>(null);
+  const tl = useRef<gsap.core.Timeline | null>(null); // Store timeline reference
+
+  useGSAP(() => {
+    // Assign timeline to the ref so it can be accessed globally in this component
+    tl.current = gsap.timeline({ paused: true })
+      .to(".box", { x: 100, rotation: 180 });
+  }, { scope: container });
+
+  return (
+    <div ref={container}>
+      <div className="box w-16 h-16 bg-green-500"></div>
+      
+      {/* Control the timeline on click */}
+      <button onClick={() => tl.current?.play()}>Play</button>
+      <button onClick={() => tl.current?.reverse()}>Reverse</button>
+    </div>
+  );
+}

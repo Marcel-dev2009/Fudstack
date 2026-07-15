@@ -1,16 +1,18 @@
 import { IconType } from "react-icons"
 import { RiInfinityLine } from "react-icons/ri";
 import { TiMessage, TiShoppingCart } from "react-icons/ti";
-import { MdOutlineLocationOn , MdOutlineInventory  } from "react-icons/md";
+import { MdOutlineLocationOn , MdOutlineInventory, MdBolt  } from "react-icons/md";
 import { GrAnalytics } from "react-icons/gr";
 
-import { IoPerson } from "react-icons/io5";
+import { IoPerson, IoShapes, IoShieldCheckmark } from "react-icons/io5";
 import { Home } from "lucide-react";
 import { FcAbout } from "react-icons/fc";
-import { FaPhoneAlt } from "react-icons/fa";
-import { CiHome } from "react-icons/ci";
+import { FaHeadset, FaPhoneAlt } from "react-icons/fa";
+import { CiHome, CiLock } from "react-icons/ci";
+import { SlCalender } from "react-icons/sl";
 interface gridProps{
-  icon?:IconType
+  icon:IconType
+  fill? : string,
   title:string,
   description:string,
   indepth?:string
@@ -82,18 +84,26 @@ export const DropItems = [
   ]
   export const gridItems:gridProps[] = [
     {
+      icon:CiLock,
+      fill:" #FAA0A0",
      title :  "Confidentiality",
      description:"Your data shared with us are safe and secured"
     },
     {
+      icon :IoShieldCheckmark,
+      fill:"#228B22",
       title:"Reliability",
       "description":"You can always rely on our team for efficent managment of your task",
     },
     {
+      icon:MdBolt,
+      fill:"#FFFF8F",
       title:"Speed",
       description:"Our solutions are lightweight which makes processes fast and accurate"
     },
     {
+      icon:FaHeadset,
+      fill:"#008AA4",
       title:"Availability",
       description:"Our strong team of developers are always at an armslength to give you proper support"
     }

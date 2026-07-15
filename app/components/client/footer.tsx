@@ -1,8 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 import { footerItems } from "@/app/data/data"
 import { serviceGrid } from "@/app/data/data"
 import Link from "next/link"
 import logo from "../../../public/icon.png"
 import Image from "next/image"
+import qr from '../../../public/frame.png'
 function Footer() {
    const data = footerItems 
    const service = serviceGrid      
@@ -61,7 +63,9 @@ function Footer() {
           <h2 className="tracking-tighter text-sm font-semibold" >Scan to connect with us on whatsapp</h2>
        </div>
        <div className="bg-white/5 backdrop-blur-sm shadow-md w-full max-w-50 h-auto min-h-[25dvh] border border-dotted rounded-sm border-black mx-auto m-2">
-          <h2 className="text-center  tracking-tighter text-sm font-semibold ">QR code here</h2>
+       <a href="https://wa.me/2349122040914?text=Good%20day%20Marcel."> 
+       <Image src={qr} alt="scan qr-code" aria-label="Scan qr code to contact us"/>
+       </a>
        </div>
        <div className="flex  gap-2 justify-center">
           <h3 className="text-xs  tracking-tighter font-semibold text-gray-500">Privacy Policy</h3> 
