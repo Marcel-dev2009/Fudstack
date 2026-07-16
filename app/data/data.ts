@@ -108,29 +108,45 @@ export const DropItems = [
       description:"Our strong team of developers are always at an armslength to give you proper support"
     }
   ]
-  export const priceData = [
+  interface PriceProps{
+   trend:string,
+   fill:string,
+   title:string,
+   price:number,
+   duration:string,
+   description:string,
+   features:string[],
+   className:string
+  }
+  export const priceData:PriceProps[] = [
       {
-    plan :"starter",
+    trend :"starter",
+     fill:"bg-purple-400 p-2 rounded-full",
      title : "M0-STARTER",
      price:5000,
-     duration:"Per month", 
+     duration:"month", 
+     className:"hover:border-brand-burn/50  hover:scale-108 transition-all duration:0.2 ease-in-out",
      description:"perfect for small restaurants",
      features:["Basic automation","Inventory Management","Ordering"]
       },
       {
-      plan : "growth",
+      trend : "most popular",
+     fill:"bg-purple-400/50 p-2 rounded-full",
       title:"M1-GROWTH",
       price: 20000,
-      duration:"Per Month",
-          description:"designed for growing businesses",
+      className:"border-brand-burn/50 bg-brand-apricot/50 hover:scale-105 transition-all duration:0.2 ease-in-out shadow-md",
+      duration:"month",
+          description:"designed for growing restaurants",
       features:["Chat Systems","Sales Analytics","Team Support","Food delivery Tracking"]
       },
       {
-        plan:"enterprise",
-       title:"M2-ENTERPRISE",
-       price: 50000,
-           description:"for large scale restaurants",
-       duration:"Per Month",
+      trend:"enterprise",
+  fill:"bg-purple-400 p-2 rounded-full",
+      title:"M2-ENTERPRISE",
+      price: 50000,
+      description:"for large scale restaurants",
+       duration:"month",
+       className:" hover:border-brand-burn/50  hover:scale-108 transition-all duration:0.2 ease-in-out",
        features:["Dedicated Admin Manager" , " Full Team Tools" , "Unlimited monthly reporting","Dedicated developer support","Advanced Security"]
       }
     ]

@@ -2,16 +2,27 @@
 import { Button } from "@/components/ui/button"
 import RootHeader from "../ui/general-header"
 import { useRef } from "react"
+import { handleEnter, handleLeave } from "@/lib/utils"
 import ContentRatio from "./aspect-ratio"
+import { SplitText } from "gsap/all"
 import { useGSAP } from "@gsap/react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-  gsap.registerPlugin(ScrollTrigger);
+  gsap.registerPlugin(ScrollTrigger , SplitText);
 function HeroSection() {
  const section = useRef<HTMLDivElement | null>(null) 
  const textRef  = useRef<HTMLParagraphElement | null>(null)
  const infoRef  = useRef<HTMLParagraphElement | null>(null)
+ const btnRef  = useRef<HTMLButtonElement | null>(null)
   useGSAP(() => {
+    const split = SplitText.create(".text" , {type:"words , chars"});
+    gsap.from(split.chars,{
+     duration:0.8 ,
+     y:100,
+     autoAlpha:0,
+     stagger:0.05,
+     ease:"power2.inOut",
+    })
   gsap.from(textRef.current,{
     opacity : 0,
     y:-20,
@@ -47,7 +58,7 @@ function HeroSection() {
   start:"center bottom",
   scrub:true,
   // pin:true,
-  end:"+=400px" // end after scrolling 500px beyond start
+  end:"+=400px" 
   },
 
  });
@@ -57,6 +68,7 @@ function HeroSection() {
   duration:1.2
  });
 },{scope:section})
+
   return (
    <>
    <main
@@ -69,7 +81,7 @@ function HeroSection() {
       <div
     
       >
-      <p ref={textRef} className="text-xl z-10 max-w-175 md:text-2xl lg:text-4xl w-full text-center tracking-tighter m-2 leading-relaxed font-bold text">  Manage your businesses <span className="text-brand-burn">smarter</span></p>
+      <p  className="text-xl align-baseline text z-10 max-w-175 md:text-2xl lg:text-4xl w-full text-center tracking-tighter m-2 leading-relaxed font-bold text">  Manage your businesses <span className="text-brand-burn">smarter</span></p>
       <p ref={infoRef} className=" text-sm md:text-xl lg:text-3xl font-semibold text-secondary-onyx text-center tracking-tighter">Everything your restaurant needs in one platform</p>
       </div>
       {/* CTA */}
@@ -78,7 +90,11 @@ function HeroSection() {
       </div>
       <div className="flex">
        <Button variant="link">Learn More</Button>
-       <Button className="rounded-sm bg-brand-burn">Get Started</Button>
+       <Button
+       ref={btnRef}
+       onMouseEnter={() => handleEnter(btnRef)}
+       onMouseLeave={() => handleLeave(btnRef)} 
+       className="rounded-sm bg-brand-burn">Get Started</Button>
       </div>
       <ContentRatio/>
     </div>

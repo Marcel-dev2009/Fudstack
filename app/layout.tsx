@@ -30,7 +30,9 @@ export default function RootLayout({
       lang="en"
       className={`${inter.className}`}
     >
-      <body className={`${inter.variable}min-h-full flex flex-col`}>{children}</body>
+      <body className={`${inter.variable}min-h-full flex flex-col`}>
+
+        {children}</body>
     </html>
   );
 }

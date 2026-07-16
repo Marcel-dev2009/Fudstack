@@ -1,34 +1,51 @@
 "use client"
+import gsap from "gsap";
 import { Button } from "@/components/ui/button"
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown} from "lucide-react";
 import { faqs } from "@/app/data/data";
+import { SplitText } from "gsap/all";
+import { ScrollTrigger } from "gsap/all";
+import { useGSAP } from "@gsap/react";
+gsap.registerPlugin(ScrollTrigger , SplitText)
 function Faq() {
+const divRef = useRef<HTMLDivElement | null>(null)
+ useGSAP(() => {
+ const split = SplitText.create(".text" , {type:"words , chars"});
+  gsap.from(split.words, {
+   scrollTrigger:{
+    trigger:".text",
+    start:"top 80%",
+    toggleActions:"play none none none"
+   } ,
+   duration:.8,
+   autoAlpha:0,
+   y:100,
+   ease:"power2.inOut",
+   stagger:0.05,
+  })
+ },{scope:divRef})
  const [active, setActive] = useState<number | null>(0);
   return (
-   <section
+   <div
+   ref={divRef}
      className="bg-secondary-licorice text-white
     w-auto
     h-auto min-h-[80dvh]"
    >
     <div className="grid grid-cols-1 md:grid-cols-2">
          <div className="flex flex-col gap-5 md:gap-20">
-       <motion.div
-
-        initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: .7 }}
+       <div
        >
-             <p className="text-md md:text-xl tracking-tighter font-semibold p-4 md:p-8  md:text-md text-center">Here are general questions asked by customers</p> 
-       </motion.div>
+             <p className="text-md text  md:text-xl tracking-tighter font-semibold p-4 md:p-8  md:text-md text-center">Here are general questions asked by customers</p> 
+       </div>
 
-          <div className=" flex flex-col mx-auto">
+          <div className=" flex flex-col mx-auto p-4">
              <p className="text-sm w-auto max-w-98 tracking-tight">
           our friendly team is always here to help you with quick, clear, and reliable answers whenever needed.
           </p>   
-         <Button className="rounded-sm tracking-tighter text-xs w-fit mt-4">Contact Sales</Button>         
+         <Button className="rounded-sm tracking-tighter  text-xs w-fit mt-4">Contact Sales</Button>         
           </div>
          </div>
          <div>
@@ -101,7 +118,7 @@ function Faq() {
           })}
          </div>
     </div>
-   </section>
+   </div>
   )
 }
 export default Faq

@@ -17,7 +17,7 @@ function Footer() {
     bg-primary-eggshell text-black/70
     h-auto min-h-[50dvh]"
  >
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-col md:flex-row">
       <div className="flex flex-col">
     <div className="flex">
             <div className="m-10">
@@ -52,8 +52,7 @@ function Footer() {
           </div>
        </div>
     </div>
-       <div className="flex">
-          
+       <div className="flex mx-auto">
           <Image src={logo} alt="FudStack Logo" aria-label="FudStack Logo" width={30} height={30}/>
           <h2 className="text-md tracking-tighter font-bold">FudStack</h2>
        </div>

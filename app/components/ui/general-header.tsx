@@ -4,11 +4,13 @@ import logo from "../../../public/icon.png"
 import Link from "next/link";
 import DropDown from "../header-dropdown";
 import {DropItems} from "@/app/data/data"
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { handleEnter , handleLeave } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion , AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 function RootHeader() {
+ const btnRef = useRef<HTMLButtonElement | null>(null); 
   const [itemOpen , setItemOpen] = useState<boolean>(false)
   return (
     <>
@@ -86,7 +88,11 @@ function RootHeader() {
      <div  className="flex justify-end items-center gap-2">   
       
         <Image src={logo} alt="Placeholder for profile image from database" width={15} height={15}/>
-           <Button className="text-xs whitespace-nowrap tracking-tighter">Get Started</Button>
+           <Button
+           ref={btnRef}
+           onMouseEnter={() => handleEnter(btnRef)}
+           onMouseLeave={() => handleLeave(btnRef)}
+           className="text-xs py-0 tracking-tighter">Docs</Button>
      </div>
     </div>
     </>
