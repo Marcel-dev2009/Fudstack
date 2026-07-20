@@ -3,6 +3,7 @@ import { footerItems } from "@/app/data/data"
 import { serviceGrid } from "@/app/data/data"
 import Link from "next/link"
 import logo from "../../../public/icon.png"
+import { brand } from "@/brand"
 import Image from "next/image"
 import qr from '../../../public/frame.png'
 function Footer() {
@@ -53,8 +54,8 @@ function Footer() {
        </div>
     </div>
        <div className="flex mx-auto">
-          <Image src={logo} alt="FudStack Logo" aria-label="FudStack Logo" width={30} height={30}/>
-          <h2 className="text-md tracking-tighter font-bold">FudStack</h2>
+          <Image src={logo} alt={brand.ariaLogo} aria-label={brand.ariaLogo} width={30} height={30}/>
+          <h2 className="text-md tracking-tighter font-bold">{brand.name}</h2>
        </div>
       </div> {/* First Division */}
       <div className="flex flex-col m-10">

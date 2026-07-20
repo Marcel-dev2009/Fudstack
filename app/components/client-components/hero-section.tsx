@@ -7,7 +7,6 @@ import { handleEnter, handleLeave } from "@/lib/utils"
 import ContentRatio from "./aspect-ratio"
 import { SplitText } from "gsap/all"
 import { useGSAP } from "@gsap/react"
-import Link from "next/link"
 import { ArrowUp , ArrowDown } from "lucide-react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
@@ -142,7 +141,7 @@ const handleEnterType = () => {
       {open && (
         <>
         <section
-        className=" z-10 fixed inset-0 bg-black/50 flex justify-center items-center">
+        className="z-10 fixed inset-0 bg-black/50 flex justify-center items-center">
             <div className="relative w-full max-w-120">
                       <motion.div 
         onScroll={handleScroll}

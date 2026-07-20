@@ -1,8 +1,9 @@
 import { Metadata } from "next";
 import Parent from "./components/client-components/parent";
+import { brand } from "@/brand";
 export const metadata: Metadata = {
-  title: "FudStack - The Chef's key to seamless workflow",
-  description: "An AI powered multi-tenant e-commerce app making workflows in restaurants fast , reliable and seamless",
+  title: brand.name,
+  description: brand.description,
 };
 export default function Home() {
   return (

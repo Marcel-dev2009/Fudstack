@@ -172,3 +172,271 @@ export default function ControlledTimeline() {
     )}
   </Modal>
 )}
+
+
+
+
+"use client"
+import logo from "@/public/icon.png" // To be worked on..
+import Image from "next/image"
+import { brand } from "@/brand"
+import facbookLogo from "@/public/facebook.svg"
+import goggleLogo from "@/public/google.svg"
+function SignUpAgent() {
+  return (
+    <>
+    <main>
+     <div>
+      <Image src={logo} alt="FudStack Logo" aria-label="FudStack logo" width={24} height={24} className="m-4"/>
+     </div>
+    <section
+    className="
+    fixed inset-0
+    flex justify-center items-center
+    "
+    >
+       <div
+     className="bg-primary-bone h-auto max-h-[90dvh] w-auto max-w-178 shadow-lg tracking-tighter"
+     >
+     {/*  <div>
+      <Image src={logo} alt={brand.ariaLogo} aria-label={brand.ariaLogo} width={24} height={24} className="m-4"/>
+     </div> */}
+      <section
+      className="flex"  /* Main container */
+      >
+       <div className="w-auto max-w-128">
+        
+         <div className="m-5 flex flex-col gap-0.5">
+          <h2 className=" leading-none tracking-tighter text-md md:text-xl">Get Started Now</h2>
+          <p className="tracking-tighter leading-none text-xs">Enter your credentials to access your account</p>
+         </div>
+
+
+       <div className="">
+          <div className="flex gap-4 ml-6">
+          <button className="flex gap-2 items-start outline-1 p-2 rounded-sm">
+           <Image src={goggleLogo} alt="Goggle logo" aria-label="Goggle logo" width={15} height={15}/>
+           <p className="text-[10px] tracking-tighter leading-relaxed"> Sign up with Google</p>
+          </button>
+          <button className="flex items-start outline-1 p-2 rounded-sm ">
+            <Image src={facbookLogo} alt="Facebook logo" aria-label="Facebook logo" width={15} height={15}/>
+           <p className="text-[10px] tracking-tighter leading-relaxed">Sign up with Facebook</p>
+          </button>
+         </div> {/* Button Container end */}
+       </div>
+       <div className="flex mt-6 justify-center items-center gap-4">
+       <div className=" opacity-[0.5] bg-gray-400 w-28 h-[0.5] max-w-28"/>
+       <span>or</span>
+        <div className="opacity-[0.5] bg-gray-400 w-28 h-[0.5] "/>
+       </div>
+         <div className="m-5">
+          <div className="flex flex-col mb-2">
+            <label htmlFor="name" className="text-xs tracking-tighter">Restaurant Name</label>
+            <input className="outline-1 width-auto max-w-98 rounded-sm focus:outline-1 mt-1 focus:ring-1 placeholder:text-xs ring-gray-400 px-4 py-1.5" type="text"  name="name" id="name" placeholder="The daily fold" required/>
+          </div> {/* Name */}
+          <div className="flex flex-col mb-2">
+            <label htmlFor="email" className="text-xs tracking-tighter ">Email</label>
+            <input className="outline-1 width-auto max-w-98 placeholder:text-xs rounded-sm focus:outline-1 focus:ring-1 ring-gray-400 mt-1 px-4 py-1.5" type="email" name="email" id="email" placeholder="sales/fold@gmail.com" required/>
+          </div> {/* Email */}
+          <div className="flex flex-col">
+            <label htmlFor="name" className="text-xs tracking-tighter ">Password</label>
+            <input className="width-auto max-w-98 rounded-sm outline-1 mt-1 placeholder:text-xs focus:outline-1 focus:ring-1 ring-gray-400 px-4 py-1.5" type="password" name="password" id="password" placeholder="*********" minLength={8} maxLength={15}/>
+          </div> {/* Password */}
+         
+          <div className="flex flex-col">
+                 <label htmlFor="role"
+             className="text-xs tracking-tighter"
+          >Role</label>
+        <select name="role" id="role">
+     
+          <option value="agent">
+            agent
+          </option>
+        </select>
+          </div> {/* role */}
+           <div className="m-2 flex gap-0.5">
+          <input type="checkbox"/>
+          <span className="text-xs tracking-tighter">I agree to the <span className="underline">Terms & Privacy</span></span>
+          </div>
+         </div> {/* AuthUI container */}
+         <div>
+          <button type="submit">
+            <p>SignUp</p>
+          </button>
+         </div> {/* Button */}
+         <div className="m-5 flex gap-4">
+        <p>Have an account?</p> <button className="underline">Sign in</button>
+         </div>
+       </div>
+
+
+       <div>
+        World
+       </div>
+      </section>
+     </div>
+    </section>
+    </main>
+    </>
+  )
+}
+export default SignUpAgent
+
+
+
+
+  <div className="relative mt-14">
+
+      <div className="rounded-[28px] bg-white shadow-2xl p-6 text-neutral-900">
+
+        {/* Header */}
+
+        <div className="flex items-center justify-between">
+
+          <div>
+            <h3 className="font-semibold text-lg">
+              Restaurant Dashboard
+            </h3>
+
+            <p className="text-sm text-neutral-400">
+              Today&apos;s Overview
+            </p>
+          </div>
+
+          <div className="px-4 py-2 rounded-full bg-brand-burn/10 text-brand-burn text-sm font-medium">
+            Live
+          </div>
+
+        </div>
+
+        {/* Cards */}
+
+        <div className="grid grid-cols-2 gap-4 mt-8">
+
+          <div className="rounded-2xl bg-orange-50 p-5">
+            <p className="text-sm text-neutral-500">
+              Revenue
+            </p>
+
+            <h4 className="text-3xl font-bold mt-2">
+              ₦245k
+            </h4>
+
+            <p className="text-green-600 text-sm mt-2">
+              +12.8%
+            </p>
+          </div>
+
+          <div className="rounded-2xl bg-neutral-100 p-5">
+            <p className="text-sm text-neutral-500">
+              Orders
+            </p>
+
+            <h4 className="text-3xl font-bold mt-2">
+              128
+            </h4>
+
+            <p className="text-brand-burn text-sm mt-2">
+              Active Today
+            </p>
+          </div>
+
+        </div>
+
+        {/* Sales Chart */}
+
+        <div className="mt-8">
+
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="font-semibold">
+              Weekly Sales
+            </h4>
+
+            <span className="text-sm text-neutral-400">
+              Last 7 Days
+            </span>
+          </div>
+
+          <svg
+            viewBox="0 0 300 100"
+            className="w-full h-28"
+          >
+            <polyline
+              fill="none"
+              stroke="#F97316"
+              strokeWidth="5"
+              points="
+              0,70
+              40,55
+              80,60
+              120,35
+              160,45
+              200,22
+              240,38
+              300,18"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+
+        </div>
+
+        {/* Inventory */}
+
+        <div className="mt-8 space-y-5">
+
+          <h4 className="font-semibold">
+            Inventory
+          </h4>
+
+          {[
+            ["Ingredients", "85%"],
+            ["Beverages", "60%"],
+            ["Packaging", "42%"],
+          ].map(([title, value]) => (
+            <div key={title}>
+
+              <div className="flex justify-between text-sm mb-2">
+                <span>{title}</span>
+                <span>{value}</span>
+              </div>
+
+              <div className="h-2 rounded-full bg-neutral-200 overflow-hidden">
+
+                <div
+                  className="h-full bg-brand-burn rounded-full"
+                  style={{
+                    width: value,
+                  }}
+                />
+
+              </div>
+
+            </div>
+          ))}
+
+        </div>
+
+        {/* Reservations */}
+
+        <div className="mt-8 rounded-2xl bg-neutral-50 p-5 flex justify-between items-center">
+
+          <div>
+            <p className="text-sm text-neutral-500">
+              Reservations
+            </p>
+
+            <h4 className="text-2xl font-bold mt-1">
+              24 Today
+            </h4>
+          </div>
+
+          <div className="w-14 h-14 rounded-full bg-brand-burn flex items-center justify-center text-white font-bold">
+            24
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>

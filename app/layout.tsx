@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { brand } from "@/brand";
 import { Inter } from "next/font/google";
 import "./globals.css";
 const inter = Inter({
@@ -8,8 +9,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "FudStack - The Chef's key to seamless workflow",
-  description: "An AI powered multi-tenant e-commerce app making workflows in restaurants fast , reliable and seamless",
+  title: brand.name,
+  description: brand.description,
   icons: {
     icon: [{ url: "/icon.png", type: "image/png", sizes: "512x512" }],
     apple: [
