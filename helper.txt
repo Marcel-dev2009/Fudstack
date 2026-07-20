@@ -285,7 +285,16 @@ export default SignUpAgent
 
 
 
-  <div className="relative mt-14">
+  
+
+
+  // svg
+
+
+
+//Dashboard
+
+ <div className="relative mt-14 h-auto max-h-[20px]">
 
       <div className="rounded-[28px] bg-white shadow-2xl p-6 text-neutral-900">
 
@@ -357,28 +366,7 @@ export default SignUpAgent
             </span>
           </div>
 
-          <svg
-            viewBox="0 0 300 100"
-            className="w-full h-28"
-          >
-            <polyline
-              fill="none"
-              stroke="#F97316"
-              strokeWidth="5"
-              points="
-              0,70
-              40,55
-              80,60
-              120,35
-              160,45
-              200,22
-              240,38
-              300,18"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-
+         
         </div>
 
         {/* Inventory */}
@@ -439,4 +427,4 @@ export default SignUpAgent
 
       </div>
 
-    </div>
+    </div>  {/* Dashboardend */}

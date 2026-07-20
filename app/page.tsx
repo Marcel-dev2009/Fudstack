@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Parent from "./components/client-components/parent";
+import Parent from "./components/general/parent";
 import { brand } from "@/brand";
 export const metadata: Metadata = {
   title: brand.name,
