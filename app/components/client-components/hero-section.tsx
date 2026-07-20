@@ -12,10 +12,10 @@ import { ArrowUp , ArrowDown } from "lucide-react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useRouter } from "next/navigation"
-import SelectClient from "../modals/customer-select"
+import SelectClient from "../modals-components/customer-select"
 import { motion } from "framer-motion"
-import ClientTerms from "../modals/client-terms-agreement"
-import AgentTerms from "../modals/agent-terms-agreement"
+import ClientTerms from "../modals-components/client-terms-agreement"
+import AgentTerms from "../modals-components/agent-terms-agreement"
   gsap.registerPlugin(ScrollTrigger , SplitText);
 function HeroSection() {
   const router = useRouter()
@@ -143,14 +143,14 @@ const handleEnterType = () => {
         <>
         <section
         className=" z-10 fixed inset-0 bg-black/50 flex justify-center items-center">
-            <div className="relative">
+            <div className="relative w-full max-w-120">
                       <motion.div 
         onScroll={handleScroll}
         ref={modalRef}
         initial={{scale:0 , opacity:0}}
         animate={{scale:1 , opacity:1}}
         transition={{duration:0.4 , ease:"easeInOut"}}
-        className="shadow-md rounded-sm bg-primary-bone w-full max-w-120 m-2 h-auto max-h-[90dvh] overflow-y-auto scrollbar-thin"> {/* Might need to adjust spacing */}
+        className="shadow-md rounded-sm bg-primary-bone  m-2 h-auto max-h-[90dvh] overflow-y-auto scrollbar-thin"> {/* Might need to adjust spacing */}
         {step === "select" && (
            <SelectClient setOpen={setOpen} handleEnterType={handleEnterType} setCustomerType={setCustomerType}/>
         )}

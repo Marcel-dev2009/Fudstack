@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Parent from "./components/client/parent";
+import Parent from "./components/client-components/parent";
 export const metadata: Metadata = {
   title: "FudStack - The Chef's key to seamless workflow",
   description: "An AI powered multi-tenant e-commerce app making workflows in restaurants fast , reliable and seamless",

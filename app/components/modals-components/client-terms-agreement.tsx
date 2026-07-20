@@ -1,7 +1,25 @@
+"use client"
 import type { ModalProps } from "@/app/types/type";
+import { useEffect, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 function ClientTerms({setOpen , setCustomerType}:ModalProps) {
-  if(!setOpen || !setCustomerType) return;
+const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+   const observer = new IntersectionObserver((entries) => {
+    const entry = entries[0]
+    if(entry.isIntersecting){
+     setShowRouteButton(true)
+    }
+   });
+   observer.observe(bottomRef.current!)
+   return () => {
+    observer.disconnect();
+   }
+  },[])
+  const router = useRouter();
   return (
     <>
     <section>
@@ -80,10 +98,41 @@ function ClientTerms({setOpen , setCustomerType}:ModalProps) {
       id="agreeTerms"
       name="agreeTerms"
       required
-      className="p-2 "
+      className="p-2"
     />
    <span className="ml-1">I have read and agree to the Terms and Conditions.</span>
   </label>
+
+  <div className="h-1" ref={bottomRef}/>
+   {showRouteButton && (
+    <div className="w-full">
+      <motion.button 
+      initial={{opacity:0}}
+      whileInView={{opacity:1}}
+      whileTap={{scale:1}}
+      transition={{duration:.2 , ease:"easeInOut", type:"tween"}}
+      className="
+       block text-sm 
+       tracking-tighter 
+       font-semibold
+        bg-brand-burn
+         text-primary-bone
+         w-3/5
+         rounded-sm
+         shadow-md
+         mx-auto
+         px-5
+         py-2
+         mb-2
+         "
+         onClick={() => {
+          router.push("/client/auth")
+         }}
+         >
+     continue
+    </motion.button>
+    </div>
+   )}
 </div>
       </div>
     </section>

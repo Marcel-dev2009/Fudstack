@@ -1,18 +1,31 @@
 "use client"
-import Link from "next/link"
-import { ArrowDown, ArrowUp } from "lucide-react"
-import { SetStateAction, useEffect , useState} from "react"
-import {motion} from "framer-motion"
+import { SetStateAction, useEffect, useRef , useState} from "react"
 import { MdClose } from "react-icons/md"
-import { useRef } from "react"
+import {motion} from "framer-motion"
+import { useRouter } from "next/navigation"
 interface Props{
  setOpen:React.Dispatch<SetStateAction<boolean>>,
  setCustomerType:React.Dispatch<SetStateAction< "select" | "client" | "agent">>,
 }
-
 function AgentTerms({setOpen , setCustomerType}:Props) {
   const text = `("Agreement")`
-  
+  const [showRouteButton , setShowRouteButton] = useState<boolean>(false)
+  const [hasReadTerms , setHasReadTerms] = useState(false);
+  const bottomRef = useRef<HTMLDivElement | null>(null)
+    useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0]
+      if(entry.isIntersecting){
+         setHasReadTerms(true)
+        setShowRouteButton(true)
+      }
+    })
+    observer.observe(bottomRef.current!)
+    return () => {
+      observer.disconnect();
+    }
+    },[])
+    const router = useRouter();
   return (
    <>
    <section  className="relative">
@@ -31,7 +44,6 @@ function AgentTerms({setOpen , setCustomerType}:Props) {
 
       <div>
         <div className="">
-        
   <span className="w-auto max-w-98 m-2 text-xs text-wrap">
 <pre  className="m-2 text-sm  tracking-tighter">
   RESTAURANT PARTNER TERMS & AGREEMENT <br />
@@ -228,7 +240,7 @@ FudStack shall not be liable for:
 <span className="w-auto max-w-98 m-2 text-xs text-wrap">
   <pre className="font-bold ml-2 ">
 14. MODIFICATIONS: {""}</pre> <br />
-<pre className="font-semibold ml-2">
+<pre className="font-semibold ml-2 text-wrap max-w-98">
 FudStack may update these Terms from time to time.
 </pre> <br />
 <pre className="ml-2 w-auto max-w-98  text-xs text-wrap">
@@ -236,14 +248,9 @@ FudStack may update these Terms from time to time.
 Restaurants will be notified of significant changes where appropriate.
 </pre> <br />
 <pre className="font-bold w-auto max-w-98 ml-2 text-xs text-wrap">
-
-
 Continued use of the platform constitutes acceptance of the updated Agreement.
 </pre>
 </span>
-
-
-
 <span className="w-auto max-w-98 m-2 text-xs text-wrap">
   <pre className="font-bold ml-2 ">
 15. GOVERNING LAW: {""}</pre> <br />
@@ -265,11 +272,42 @@ By selecting &quot;I Agree&quot;, the restaurant confirms that it has read, unde
       type="checkbox"
       id="restaurantAgreeTerms"
       name="restaurantAgreeTerms"
+      disabled={!hasReadTerms}
       required
       className="p-2 "
     />
    <span className="ml-1">I have read and agree to the Terms and Conditions.</span>
   </label>
+   <div className="h-1" ref={bottomRef}/>
+   {showRouteButton && (
+    <div className="w-full">
+      <motion.button 
+      initial={{opacity:0}}
+      whileInView={{opacity:1}}
+      whileTap={{scale:1}}
+      transition={{duration:.2 , ease:"easeInOut", type:"tween"}}
+      className="
+       block text-sm 
+       tracking-tighter 
+       font-semibold
+        bg-brand-burn
+         text-primary-bone
+         w-3/5
+         rounded-sm
+         shadow-md
+         mx-auto
+         px-5
+         py-2
+         mb-2
+         "
+         onClick={() => {
+          router.push("/agent/auth")
+         }}
+         >
+     continue
+    </motion.button>
+    </div>
+   )}
       </div>
       </div>
    </section>
