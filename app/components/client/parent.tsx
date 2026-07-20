@@ -1,6 +1,5 @@
 "use client"
 import HeroSection from "./hero-section";
-// import RootHeader from "./components/ui/general-header";
 import About from "./about"
 import Services from "./services";
 import Pricing from "./pricing";

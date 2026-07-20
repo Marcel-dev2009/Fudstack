@@ -153,3 +153,22 @@ export default function ControlledTimeline() {
     </div>
   );
 }
+
+\
+{open && (
+  <Modal>
+    {step === "select" && (
+      <SelectClient
+        setStep={setStep}
+      />
+    )}
+
+    {step === "clientTerms" && (
+      <ClientTerms />
+    )}
+
+    {step === "agentTerms" && (
+      <AgentTerms />
+    )}
+  </Modal>
+)}

@@ -1,18 +1,33 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import RootHeader from "../ui/general-header"
-import { useRef } from "react"
+import "../../globals.css"
+import { useRef, useState } from "react"
 import { handleEnter, handleLeave } from "@/lib/utils"
 import ContentRatio from "./aspect-ratio"
 import { SplitText } from "gsap/all"
 import { useGSAP } from "@gsap/react"
+import Link from "next/link"
+import { ArrowUp , ArrowDown } from "lucide-react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { useRouter } from "next/navigation"
+import SelectClient from "../modals/customer-select"
+import { motion } from "framer-motion"
+import ClientTerms from "../modals/client-terms-agreement"
+import AgentTerms from "../modals/agent-terms-agreement"
   gsap.registerPlugin(ScrollTrigger , SplitText);
 function HeroSection() {
+  const router = useRouter()
  const section = useRef<HTMLDivElement | null>(null) 
+ const [open , setOpen] = useState<boolean>(false);
  const textRef  = useRef<HTMLParagraphElement | null>(null)
+ const [customerType , setCustomerType] = useState<"client" | "agent" | "select">("select")
  const infoRef  = useRef<HTMLParagraphElement | null>(null)
+ const [step , setStep] = useState<"select" | "clientTerms" | "agentTerms" >("select")
+ const modalRef = useRef<HTMLDivElement | null>(null)
+  const [showScrollTop , setShowScrollTop] = useState(false);
+  const [showScrollBottom , setShowScrollBottom] = useState(false); 
  const btnRef  = useRef<HTMLButtonElement | null>(null)
   useGSAP(() => {
     const split = SplitText.create(".text" , {type:"words , chars"});
@@ -49,35 +64,60 @@ function HeroSection() {
     duration:.9,
     ease:"power1.in"
   })
- const tl = gsap.timeline({
-  defaults:{
-  ease:"power1.inOut"
-  },
-  scrollTrigger:{
-  trigger:section.current,
-  start:"center bottom",
-  scrub:true,
-  // pin:true,
-  end:"+=400px" 
-  },
-
- });
- tl.to(section.current , {
-  // backgroundColor:"#36454F",
-  scale:0.7,
-  duration:1.2
- });
 },{scope:section})
+const handleEnterType = () => {
+  if (customerType === "client"){
+    setStep("clientTerms")
+  }
+  if(customerType === "agent"){
+    setStep("agentTerms")
+  }
+}
+  const modal = modalRef.current;
+   const handleScroll = () => {
+    //Calculate when we scroll 300 from the top we set Buttom to true
+    //Calculate when we reach bottom then setTop to true;
+      const scrolledFromTop = modal?.scrollTop as number;
+      const height = modal?.clientHeight as number 
+      const TotalHeight = modal?.scrollHeight as number; 
+    if(scrolledFromTop > 10){
+      setShowScrollBottom(true);
+    } else{
+            setShowScrollBottom(false);
+    };
 
+      if(scrolledFromTop + height >= TotalHeight - 10){
+      setShowScrollTop(true)
+      setShowScrollBottom(false);
+
+    }else{
+      setShowScrollTop(false)
+    } 
+   }
+   const scrollTop = () => {
+    modal?.scrollTo({
+      top:0,
+      behavior:"smooth"
+    })
+
+   }
+   const scrollBottom = () => {
+    modal?.scrollTo({
+      top:modal.scrollHeight,
+      behavior:"smooth"
+    })
+   }
   return (
    <>
    <main
-
+  className={`${open ? "overflow-y-hidden scrollbar-none" : "overflow-y-auto" }`}
    >
     <RootHeader/>
     <div
      ref={section}
-    className="flex hero  p-5 md:p-10 flex-col justify-center items-center gap-8 md:mt-30 flex-1">
+    className={`
+    
+    flex hero p-5 md:p-10 flex-col justify-center items-center gap-8 md:mt-30 flex-1 `}>
       <div
     
       >
@@ -89,14 +129,68 @@ function HeroSection() {
         <p className="text-center text-xs md:text-sm font-light text-black/70 max-w-175 tracking-tighter"> Inventory,orders,bookings,deliveries and customer management - all from one platform</p>
       </div>
       <div className="flex">
-       <Button variant="link">Learn More</Button>
+       <Button variant="link" onClick={() => router.push("/docs")}>Learn More</Button>
        <Button
        ref={btnRef}
+       onClick={() => setOpen(true)}
        onMouseEnter={() => handleEnter(btnRef)}
        onMouseLeave={() => handleLeave(btnRef)} 
        className="rounded-sm bg-brand-burn">Get Started</Button>
       </div>
       <ContentRatio/>
+{/*       modals */}
+      {open && (
+        <>
+        <section
+        className=" z-10 fixed inset-0 bg-black/50 flex justify-center items-center">
+            <div className="relative">
+                      <motion.div 
+        onScroll={handleScroll}
+        ref={modalRef}
+        initial={{scale:0 , opacity:0}}
+        animate={{scale:1 , opacity:1}}
+        transition={{duration:0.4 , ease:"easeInOut"}}
+        className="shadow-md rounded-sm bg-primary-bone w-full max-w-120 m-2 h-auto max-h-[90dvh] overflow-y-auto scrollbar-thin"> {/* Might need to adjust spacing */}
+        {step === "select" && (
+           <SelectClient setOpen={setOpen} handleEnterType={handleEnterType} setCustomerType={setCustomerType}/>
+        )}
+         {step === "clientTerms" && (
+          <ClientTerms setOpen={setOpen} setCustomerType={setCustomerType}/>
+         )}
+         {step === "agentTerms" && (
+          <AgentTerms setOpen={setOpen} setCustomerType={setCustomerType}/>
+         )}
+
+        </motion.div>
+                 
+                 
+          {showScrollTop && (
+        <motion.div
+      initial={{opacity:0}}
+      whileInView={{opacity:1}}
+      transition={{duration:.6 , ease:"easeInOut"}}
+      className="p-2 rounded-full z-10 absolute right-5 bottom-6">
+      <button onClick={scrollTop} className="w-full  bg-brand-burn p-2 rounded-full animate-bounce">
+        <ArrowUp className="w-5 h-5"/>
+      </button>
+     </motion.div>
+      )}
+
+     {showScrollBottom && (
+      <motion.div
+      initial={{opacity:0}}
+      whileInView={{opacity:1}}
+      transition={{duration:.6 , ease:"easeInOut"}}
+      className="p-2 rounded-full z-10 absolute right-5 bottom-6">
+      <button onClick={scrollBottom} className="w-full bg-brand-burn p-2 rounded-full animate-bounce">
+        <ArrowDown className="w-5 h-5"/>
+      </button>
+     </motion.div>
+     )}
+            </div>
+        </section>
+        </>
+      )}
     </div>
    </main>
    </>

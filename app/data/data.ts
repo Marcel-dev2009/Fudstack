@@ -1,15 +1,13 @@
 import { IconType } from "react-icons"
 import { RiInfinityLine } from "react-icons/ri";
-import { TiMessage, TiShoppingCart } from "react-icons/ti";
+import {TiShoppingCart } from "react-icons/ti";
 import { MdOutlineLocationOn , MdOutlineInventory, MdBolt  } from "react-icons/md";
 import { GrAnalytics } from "react-icons/gr";
 
-import { IoPerson, IoShapes, IoShieldCheckmark } from "react-icons/io5";
-import { Home } from "lucide-react";
-import { FcAbout } from "react-icons/fc";
-import { FaHeadset, FaPhoneAlt } from "react-icons/fa";
-import { CiHome, CiLock } from "react-icons/ci";
-import { SlCalender } from "react-icons/sl";
+import { IoPerson, IoShieldCheckmark } from "react-icons/io5";
+import { FaHeadset} from "react-icons/fa";
+import { CiLock } from "react-icons/ci";
+
 interface gridProps{
   icon:IconType
   fill? : string,
@@ -17,12 +15,6 @@ interface gridProps{
   description:string,
   indepth?:string
 }
-/* interface PriceProps{
- title:string,
- duration:string,
- features:string[],
- price:number
-} */
  export const serviceGrid = [
   {
     icon : RiInfinityLine,
@@ -58,27 +50,27 @@ interface gridProps{
 export const DropItems = [
     {
       title : "Seamless client Interaction",
-      link : "#",
+      link : "/docs",
     },
     {
       title : "Food delivery tracking",
-      link : "#",
+      link : "/docs",
     },
     {
       title : "Inventory Management",
-      link : "#",
+      link : "/docs",
     },
     {
       title : "Ordering System",
-      link : "#",
+      link : "/docs",
     },
     {
       title : "Sales Analytics",
-      link : "#",
+      link : "/docs",
     },
     {
       title : "Customer Management",
-      link : "#",
+      link : "/docs",
     },
 
   ]

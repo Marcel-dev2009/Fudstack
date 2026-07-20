@@ -9,7 +9,9 @@ import { handleEnter , handleLeave } from "@/lib/utils";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { motion , AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 function RootHeader() {
+  const router = useRouter();
  const btnRef = useRef<HTMLButtonElement | null>(null); 
   const [itemOpen , setItemOpen] = useState<boolean>(false)
   return (
@@ -69,17 +71,17 @@ function RootHeader() {
         </div>
         <div>
            <ul className="font-light text-sm">
-            <Link href="#">About</Link>
+            <Link href="/docs">About</Link>
            </ul>
            </div>
       <div>
         <ul className="font-light text-sm">
-          <Link href="#">FAQ</Link>
+          <Link href="/docs">FAQ</Link>
         </ul>
       </div>
         <div>
            <ul className="font-light text-sm">
-            <Link href="#">Contact Us</Link>
+            <Link href="/docs">Contact Us</Link>
             </ul>
         </div>
        
@@ -89,6 +91,7 @@ function RootHeader() {
       
         <Image src={logo} alt="Placeholder for profile image from database" width={15} height={15}/>
            <Button
+           onClick={() => router.push("/docs")}
            ref={btnRef}
            onMouseEnter={() => handleEnter(btnRef)}
            onMouseLeave={() => handleLeave(btnRef)}

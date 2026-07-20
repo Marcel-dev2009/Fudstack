@@ -6,26 +6,26 @@ import { Button } from "@/components/ui/button"
 import aboutPhoto from "../../../public/about.png"
 import Image from "next/image"
 import {MoveRight} from "lucide-react"
-import { handleEnter , handleLeave } from "@/lib/utils"
 import { SplitText } from "gsap/all"
 import AboutGrid from "../ui/about-grid"
 import { useRef } from "react"
 import { motion } from "framer-motion"
+import { useRouter } from "next/navigation"
 gsap.registerPlugin(ScrollTrigger , SplitText);
 function About() {
+  const router = useRouter();
    const section = useRef<HTMLDivElement| null>(null);  
    const gridRef = useRef<HTMLDivElement | null>(null);
-   const btnRef = useRef<HTMLButtonElement | null>(null);
     useGSAP(() => {
      const split = SplitText.create(".text",{type:"words , chars"})
      gsap.from(split.words,{
       scrollTrigger:{
         scrub:true,
        trigger:".text",
-       start:"top 80%",
+       start:"top 100%",
        toggleActions:"play none none none"
       },
-      duration:.8,
+      duration:1.2,
       y:100,
       autoAlpha:0,
       stagger:0.05,
@@ -70,9 +70,7 @@ function About() {
              </motion.p>
              <div className="w-full flex justify-center">
               <Button
-              ref={btnRef}
-              onMouseEnter={() => handleEnter(btnRef)} 
-              onMouseLeave={() => handleLeave(btnRef)} 
+                onClick={() => router.push("/docs")}
               className="m-2 w-1/3 "><span className="tracking-tight text-xs">Read More</span> <MoveRight data-icon="inline-end"/> </Button>      
               </div> 
           </div>
