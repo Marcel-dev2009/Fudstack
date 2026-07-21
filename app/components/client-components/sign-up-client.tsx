@@ -115,7 +115,7 @@ function SignUpClient() {
             <p className="text-center text-xs text-neutral-500">
               Already have an account?{" "}
               <span onClick={() => {
-                router.replace("/login")
+                router.replace("/client/auth/sign-in")
               }} className="text-brand-burn font-semibold cursor-pointer">
                 Sign In
               </span>
@@ -159,7 +159,9 @@ function SignUpClient() {
     </h2>
 
     <p className="mt-5 text-orange-100 max-w-md text-xs">
-      Search restaurants, reservations, customer support experiences,
+      Search restaurants, reservations, customer support experiences&apos;s
+      
+      ,
       ordering , tracking orders from one
       beautifully designed workspace.
     </p>
@@ -176,18 +178,3 @@ function SignUpClient() {
   )
 }
 export default SignUpClient
-
-
-/* 
-
-"use client";
-
-
-
-export default function SignUpAgent() {
- 
-  return (
-    
-  );
-}
-*/

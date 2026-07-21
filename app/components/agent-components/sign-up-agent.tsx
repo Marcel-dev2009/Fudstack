@@ -6,8 +6,6 @@ import {
   Store,
   User,
   Mail,
-  Phone,
-  MapPin,
   Lock,
 } from "lucide-react";
 import dashboard from "@/public/authMock.png"
@@ -39,21 +37,7 @@ export default function SignUpAgent() {
 
             {/* Restaurant */}
 
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                Restaurant Name
-              </label>
-
-              <div className="flex items-center border rounded-sm px-4 py-2 border-neutral-200 focus-within:border-brand-burn transition">
-                <Store className="w-3 h-3 text-neutral-400" />
-                <input
-                  type="text"
-                  placeholder="Taste Haven"
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs"
-                />
-              </div>
-            </div>
-
+        
             {/* Owner */}
 
             <div className="p-2">
@@ -137,7 +121,7 @@ export default function SignUpAgent() {
             <p className="text-center text-xs text-neutral-500">
               Already have an account?{" "}
               <span onClick={() => {
-                router.replace("/login")
+                router.replace("/agent/auth/sign-in")
               }} className="text-brand-burn font-semibold cursor-pointer">
                 Sign In
               </span>

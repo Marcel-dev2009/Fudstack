@@ -301,7 +301,7 @@ By selecting &quot;I Agree&quot;, the restaurant confirms that it has read, unde
          mb-2
          "
          onClick={() => {
-          router.push("/agent/auth")
+          router.push("/agent/auth/sign-up")
          }}
          >
      continue

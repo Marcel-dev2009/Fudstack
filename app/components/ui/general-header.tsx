@@ -90,12 +90,9 @@ function RootHeader() {
      <div  className="flex justify-end items-center gap-2">   
       
         <Image src={logo} alt="Placeholder for profile image from database" width={15} height={15}/>
-           <Button
-           onClick={() => router.push("/docs")}
-           ref={btnRef}
-           onMouseEnter={() => handleEnter(btnRef)}
-           onMouseLeave={() => handleLeave(btnRef)}
-           className="text-xs py-0 tracking-tighter">Docs</Button>
+           <span
+           onClick={() => router.replace("/docs")}
+           className=" bg-brand-apricot text-xs py-1 px-2 rounded-sm  cursor-pointer tracking-tighter " title="View the docs">Docs</span>
      </div>
     </div>
     </>

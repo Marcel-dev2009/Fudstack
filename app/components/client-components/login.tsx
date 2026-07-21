@@ -21,11 +21,11 @@ function LoginClient() {
           </div>
 
           <h1 className="text-md lg:text-lg tracking-tight text-neutral-900">
-            Login to your account
+            Login to your Client account
           </h1>
 
           <p className="text-neutral-500 mt-3 text-xs leading-relaxed max-w-md">
-            Enter your credentials to get access to all our app&apos;s features and enjoy seamless workflow whether you are a restaurant owner or a regular customer
+            Enter your credentials to get access to all our app&apos;s features and enjoy seamless restaurant experience as a customer
           </p>
 
           <form className=""> {/* Submit here */}  {/* mt-10 space-y-5 */}
@@ -34,7 +34,7 @@ function LoginClient() {
 
             <div className="p-2">
               <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                Owner Name
+                 Name
               </label>
 
               <div className="flex px-4 py-2 items-center border rounded-sm border-neutral-200 focus-within:border-brand-burn transition">
@@ -78,7 +78,7 @@ function LoginClient() {
             <p className="text-center text-xs text-neutral-500">
               Don&apos;t have an account?{" "}
               <span onClick={() => {
-                router.replace("/agent/auth")
+                router.replace("/client/auth/sign-up")
               }} className="text-brand-burn font-semibold cursor-pointer">
                 Sign Up
               </span>
@@ -136,7 +136,7 @@ function LoginClient() {
 
           <div>
             <h3 className="font-semibold text-sm tracking-tighter">
-              Restaurant Dashboard
+              Client Dashboard
             </h3>
 
             <p className="text-xs tracking-tighter text-neutral-400">
@@ -179,25 +179,21 @@ function LoginClient() {
 
           <div className="rounded-2xl bg-orange-50 p-5">
             <p className="text-sm text-neutral-500">
-              Revenue
-            </p>
-
-            <h4 className="text-xl font-bold mt-2">
-              ₦245k
-            </h4>
-
-            <p className="text-green-600 text-xs mt-2">
-              +12.8%
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-neutral-100 p-5">
-            <p className="text-sm text-neutral-500">
               Orders
             </p>
 
             <h4 className="text-xl font-bold mt-2">
-              128
+              2
+            </h4>
+          </div>
+
+          <div className="rounded-2xl bg-neutral-100 p-5">
+            <p className="text-sm text-neutral-500">
+              Total
+            </p>
+
+            <h4 className="text-xl font-bold mt-2">
+              68k
             </h4>
 
             <p className="text-brand-burn text-xs mt-2">

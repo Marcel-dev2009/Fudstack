@@ -1,4 +1,4 @@
-import LoginClient from "../components/general/login"
+import LoginClient from "../components/agent-components/login"
 function LoginPage() {
   return (
     <div>

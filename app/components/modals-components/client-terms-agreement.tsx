@@ -126,7 +126,7 @@ const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
          mb-2
          "
          onClick={() => {
-          router.push("/client/auth")
+          router.push("/client/auth/sign-up")
          }}
          >
      continue
