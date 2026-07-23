@@ -10,72 +10,74 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
-model User{
-  id          String   @id
-  @default(cuid())
-  name            String
-  email         String @unique 
-  role          String
+
+model User {
+  id String @id @default(cuid())
+
+  name          String
+  email         String         @unique
+  role          Role
   emailVerified Boolean
   image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   sessions      Session[]
   accounts      Account[]
-  organization Organization[]
+  organization  Organization[]
 
   @@map("user")
 }
+
 enum Role {
   AGENT
   CLIENT
 }
-model Restaurant{
- restaurantId String @id
-   @default(cuid())
- name String @unique
- logoUrl String
- phone String
- openingHours String
-organizationId String
- organization Organization @relation(fields:[organizationId] , references: [id])
+
+model Restaurant {
+  id String @id @default(cuid())
+
+  name           String       @unique
+  logoUrl        String?
+  phone          String
+  openingHours   String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
   @@map("restaurant")
 }
 
 model Location {
- id String @id
-   @default(cuid())
- state String
- zipCode String
- address String
- city String
- organizationId String
-organization Organization @relation(fields:[organizationId] , references:[id])
+  id             String       @id @default(cuid())
+  state          String
+  zipCode        String
+  address        String
+  city           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+
   @@map("location")
 }
 
 model Organization {
- id  String @id
-   @default(cuid())
- name String @unique
- logoUrl String
- ownerId String @unique
- owner User @relation(fields: [ownerId] , references: [id])
- restaurants Restaurants[]
- location Location[]
-  @@unique([name])
+  id String @id @default(cuid())
+
+  name        String       @unique
+  logoUrl     String?
+  ownerId     String
+  owner       User         @relation(fields: [ownerId], references: [id])
+  restaurants Restaurant[]
+  locations   Location[]
+
   @@map("organization")
 }
 
-
 model Session {
-  id        String   @id
+  id        String   @id @default(cuid())
   expiresAt DateTime
   token     String
-  createdAt DateTime
-  updatedAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
@@ -86,7 +88,7 @@ model Session {
 }
 
 model Account {
-  id                    String    @id
+  id                    String    @id @default(cuid())
   accountId             String
   providerId            String
   userId                String
@@ -98,19 +100,19 @@ model Account {
   refreshTokenExpiresAt DateTime?
   scope                 String?
   password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 
   @@map("account")
 }
 
 model Verification {
-  id         String    @id
+  id         String    @id @default(cuid())
   identifier String
   value      String
   expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 
   @@map("verification")
 }
