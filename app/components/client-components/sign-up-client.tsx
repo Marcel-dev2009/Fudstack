@@ -1,5 +1,7 @@
 "use client"
 import { brand } from "@/brand";
+import { toast } from "sonner";
+import { useState } from "react";
 import Image from "next/image"
 import {
   User2,
@@ -9,10 +11,52 @@ import {
 } from "lucide-react";
 import {useRouter} from "next/navigation"
 import dashboard from "@/public/clientdash.png"
+import { signUp } from "@/lib/actions/signupClient";
+import { updateUserRoleForClient } from "@/lib/backendOperation";
+import {motion} from "framer-motion";
 function SignUpClient() {
+  const [name , setName] = useState("")
+  const [email , setEmail] = useState("")
+  const [password , setPassword] = useState("")
+  const [Isloading , setIsLoading] = useState(false)
+  const [agreed , setAgreed] = useState(false);
+  const handleSubmit = async (e:React.SubmitEvent) => {
+   e.preventDefault(); 
+   
+   if(!name || !email || !password){
+    toast.warning("Fill out the required fields")
+   }
+   try{
+  setIsLoading(true)
+   if(agreed === false) {
+       toast.warning("Agree to the terms to continue");
+       return;
+      };
+  const result = await signUp(email , password , name)
+  if(!result.user){
+    toast.error("failed to create account");
+    return;
+  }
+     toast.success("client account created");
+     updateUserRoleForClient(result.user.id);
+     router.replace("client/dashboard");
+   }catch(err){
+   toast.error(`
+    Authentication error: ${
+    err instanceof Error ? err.message : "Unkown message"  
+    }
+    `)
+   }finally{
+    setIsLoading(false)
+   }
+  }
    const router = useRouter()
   return (
-    <main className="fixed inset-0 flex justify-center items-center bg-neutral-100 p-6 lg:p-10">
+    <motion.main 
+    initial={{opacity:0 , y:20 , scale:0.5}}
+    animate={{opacity:1 , y:0 , scale:1}}
+    transition={{duration:.8 , ease:"easeInOut", type:"spring"}}
+      className="fixed inset-0 flex justify-center items-center bg-neutral-100 p-6 lg:p-10">
       <div className="w-full h-auto max-h-[90dvh]: max-w-175 bg-white rounded-sm shadow-2xl overflow-hidden border border-neutral-200 grid lg:grid-cols-2">
 
         {/* LEFT */}
@@ -32,7 +76,7 @@ function SignUpClient() {
             from one beautiful dashboard.
           </p>
 
-          <form className=""> {/* Submit here */}  {/* mt-10 space-y-5 */}
+          <form onSubmit={handleSubmit}>
 
             <div className="p-2">
               <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
@@ -43,8 +87,11 @@ function SignUpClient() {
                 <User className="w-3 h-3 text-neutral-400" />
                 <input
                   type="text"
+                  value={name}
+                  autoComplete="your name"
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="John Doe"
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs"
+                  className="flex-1 ml-3 outline-none  text-xs text-secondary-coal bg-transparent placeholder:text-xs"
                 />
               </div>
             </div>
@@ -60,8 +107,11 @@ function SignUpClient() {
                 <Mail className="w-5 h-5 text-neutral-400" />
                 <input
                   type="email"
+                  autoComplete="your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="jdoe@email.com"
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs"
+                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs  text-xs text-secondary-coal"
                 />
               </div>
             </div>
@@ -79,8 +129,11 @@ function SignUpClient() {
                 <Lock className="w-5 h-5 text-neutral-400" />
                 <input
                   type="password"
-                  placeholder="••••••••"
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs"
+                  value={password}
+                  autoComplete="your password"
+                  placeholder="Must be 8 characters and above"
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs text-xs text-secondary-coal"
                 />
               </div>
             </div>
@@ -91,6 +144,7 @@ function SignUpClient() {
               <input
                 type="checkbox"
                 className="mt-1 accent-orange-500"
+                onChange={(e) => setAgreed(e.target.checked)}
               />
 
               <p className="text-xs text-neutral-500">
@@ -106,10 +160,34 @@ function SignUpClient() {
             </div>
 
             <button
-              type="button"
-              className="w-full mt-2 mb-2 max-w-98 rounded-sm p-2 bg-brand-burn text-white text-xs tracking-tighter hover:brightness-110 transition"
+              type="submit"
+              disabled={agreed === false}
+              className="w-full mt-2 mb-2 max-w-98 rounded-sm p-2 bg-brand-burn text-white text-xs tracking-tighter hover:brightness-110 transition-all duration-75"
             >
-              Create Client Account
+            {Isloading ? (
+              <div className="flex justify-center items-center">
+              <svg
+                    className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+              </div>
+             ) :   "Create Client Account"}
             </button>
 
             <p className="text-center text-xs text-neutral-500">
@@ -174,7 +252,7 @@ function SignUpClient() {
 
 </section>
       </div>
-    </main>
+    </motion.main>
   )
 }
 export default SignUpClient

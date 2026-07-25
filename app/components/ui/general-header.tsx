@@ -28,7 +28,7 @@ function RootHeader() {
        aria-haspopup="menu"
        aria-expanded={itemOpen}
     className="flex">
-          <p className=" tracking-tighter text-sm font-light">Services</p>  
+          <p className=" tracking-tighter text-xs font-medium">Services</p>  
           <span className="mt-1">
             {itemOpen ? (<ChevronUp size={15}/>):(<ChevronDown size={15}/>)}
           </span>
@@ -45,7 +45,7 @@ function RootHeader() {
           absolute  transform
           tracking-tighter 
           -translate-x-20
-          text-sm
+          text-xs text-secondary-coal
           bg-primary-ivory
           w-fit
           p-8
@@ -70,17 +70,17 @@ function RootHeader() {
        </AnimatePresence>
         </div>
         <div>
-           <ul className="font-light text-sm">
+           <ul className="font-medium text-xs ">
             <Link href="/docs">About</Link>
            </ul>
            </div>
       <div>
-        <ul className="font-light text-sm">
+        <ul className="font-medium text-xs">
           <Link href="/docs">FAQ</Link>
         </ul>
       </div>
         <div>
-           <ul className="font-light text-sm">
+           <ul className="font-medium text-xs">
             <Link href="/docs">Contact Us</Link>
             </ul>
         </div>

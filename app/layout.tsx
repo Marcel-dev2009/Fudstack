@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { brand } from "@/brand";
 import { Inter } from "next/font/google";
+import {Toaster }from "sonner"
 import "./globals.css";
 const inter = Inter({
   subsets:["latin"],
@@ -32,8 +33,11 @@ export default function RootLayout({
       className={`${inter.className} scroll-smooth`}
     >
       <body className={`${inter.variable}min-h-full flex flex-col`}>
-
-        {children}</body>
+ 
+        {children}
+         <Toaster position="top-right" richColors/>
+        </body>
+       
     </html>
   );
 }
