@@ -212,243 +212,220 @@ function SignUpAgent() {
          </div>
 
 
-       <div className="">
-          <div className="flex gap-4 ml-6">
-          <button className="flex gap-2 items-start outline-1 p-2 rounded-sm">
-           <Image src={goggleLogo} alt="Goggle logo" aria-label="Goggle logo" width={15} height={15}/>
-           <p className="text-[10px] tracking-tighter leading-relaxed"> Sign up with Google</p>
-          </button>
-          <button className="flex items-start outline-1 p-2 rounded-sm ">
-            <Image src={facbookLogo} alt="Facebook logo" aria-label="Facebook logo" width={15} height={15}/>
-           <p className="text-[10px] tracking-tighter leading-relaxed">Sign up with Facebook</p>
-          </button>
-         </div> {/* Button Container end */}
-       </div>
-       <div className="flex mt-6 justify-center items-center gap-4">
-       <div className=" opacity-[0.5] bg-gray-400 w-28 h-[0.5] max-w-28"/>
-       <span>or</span>
-        <div className="opacity-[0.5] bg-gray-400 w-28 h-[0.5] "/>
-       </div>
-         <div className="m-5">
-          <div className="flex flex-col mb-2">
-            <label htmlFor="name" className="text-xs tracking-tighter">Restaurant Name</label>
-            <input className="outline-1 width-auto max-w-98 rounded-sm focus:outline-1 mt-1 focus:ring-1 placeholder:text-xs ring-gray-400 px-4 py-1.5" type="text"  name="name" id="name" placeholder="The daily fold" required/>
-          </div> {/* Name */}
-          <div className="flex flex-col mb-2">
-            <label htmlFor="email" className="text-xs tracking-tighter ">Email</label>
-            <input className="outline-1 width-auto max-w-98 placeholder:text-xs rounded-sm focus:outline-1 focus:ring-1 ring-gray-400 mt-1 px-4 py-1.5" type="email" name="email" id="email" placeholder="sales/fold@gmail.com" required/>
-          </div> {/* Email */}
-          <div className="flex flex-col">
-            <label htmlFor="name" className="text-xs tracking-tighter ">Password</label>
-            <input className="width-auto max-w-98 rounded-sm outline-1 mt-1 placeholder:text-xs focus:outline-1 focus:ring-1 ring-gray-400 px-4 py-1.5" type="password" name="password" id="password" placeholder="*********" minLength={8} maxLength={15}/>
-          </div> {/* Password */}
-         
-          <div className="flex flex-col">
-                 <label htmlFor="role"
-             className="text-xs tracking-tighter"
-          >Role</label>
-        <select name="role" id="role">
-     
-          <option value="agent">
-            agent
-          </option>
-        </select>
-          </div> {/* role */}
-           <div className="m-2 flex gap-0.5">
-          <input type="checkbox"/>
-          <span className="text-xs tracking-tighter">I agree to the <span className="underline">Terms & Privacy</span></span>
-          </div>
-         </div> {/* AuthUI container */}
-         <div>
-          <button type="submit">
-            <p>SignUp</p>
-          </button>
-         </div> {/* Button */}
-         <div className="m-5 flex gap-4">
-        <p>Have an account?</p> <button className="underline">Sign in</button>
-         </div>
-       </div>
 
+/* eslint-disable @next/next/no-img-element */
+"use client";
 
-       <div>
-        World
-       </div>
-      </section>
-     </div>
-    </section>
-    </main>
-    </>
-  )
+import React, { SetStateAction, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { HiOutlineGlobeAlt, HiOutlineMap, HiOutlineOfficeBuilding, HiOutlineClock } from "react-icons/hi";
+import { WorldGlobe } from "./WorldGlobe"; // Dynamic Aceternity Globe implementation wrapper
+
+interface Props {
+  setStep: React.Dispatch<SetStateAction<number>>;
 }
-export default SignUpAgent
 
+interface LocationFormState {
+  country: string;
+  state: string;
+  city: string;
+  address: string;
+  businessHours: string;
+}
 
+function LocationConfig({ setStep }: Props) {
+  const [formData, setFormData] = useState<LocationFormState>({
+    country: "",
+    state: "",
+    city: "",
+    address: "",
+    businessHours: "",
+  });
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
 
-  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep((prev) => prev + 1);
+  };
 
-
-  // svg
-
-
-
-//Dashboard
-
- <div className="relative mt-14 h-auto max-h-[20px]">
-
-      <div className="rounded-[28px] bg-white shadow-2xl p-6 text-neutral-900">
-
-        {/* Header */}
-
-        <div className="flex items-center justify-between">
-
+  return (
+    <motion.section
+      initial={{ opacity: 0, height: 120, filter: "blur(4px)" }}
+      animate={{ opacity: 1, height: "auto", filter: "blur(0px)" }}
+      transition={{ duration: 0.45, ease: "easeInOut" }}
+      exit={{ opacity: 0, height: 120, filter: "blur(4px)" }}
+      className="w-full flex justify-center items-center p-4"
+    >
+      <div className="grid grid-cols-1 lg:grid-cols-12 max-w-4xl w-full bg-white rounded-2xl shadow-md border border-neutral-100 overflow-hidden min-h-[540px]">
+        
+        {/* Left Form Column */}
+        <div className="lg:col-span-7 flex flex-col justify-between p-6 md:p-8">
           <div>
-            <h3 className="font-semibold text-lg">
-              Restaurant Dashboard
-            </h3>
-
-            <p className="text-sm text-neutral-400">
-              Today&apos;s Overview
-            </p>
-          </div>
-
-          <div className="px-4 py-2 rounded-full bg-brand-burn/10 text-brand-burn text-sm font-medium">
-            Live
-          </div>
-
-        </div>
-
-        {/* Cards */}
-
-        <div className="grid grid-cols-2 gap-4 mt-8">
-
-          <div className="rounded-2xl bg-orange-50 p-5">
-            <p className="text-sm text-neutral-500">
-              Revenue
-            </p>
-
-            <h4 className="text-3xl font-bold mt-2">
-              ₦245k
-            </h4>
-
-            <p className="text-green-600 text-sm mt-2">
-              +12.8%
-            </p>
-          </div>
-
-          <div className="rounded-2xl bg-neutral-100 p-5">
-            <p className="text-sm text-neutral-500">
-              Orders
-            </p>
-
-            <h4 className="text-3xl font-bold mt-2">
-              128
-            </h4>
-
-            <p className="text-brand-burn text-sm mt-2">
-              Active Today
-            </p>
-          </div>
-
-        </div>
-
-        {/* Sales Chart */}
-
-        <div className="mt-8">
-
-          <div className="flex items-center justify-between mb-4">
-            <h4 className="font-semibold">
-              Weekly Sales
-            </h4>
-
-            <span className="text-sm text-neutral-400">
-              Last 7 Days
-            </span>
-          </div>
-
-         
-        </div>
-
-        {/* Inventory */}
-
-        <div className="mt-8 space-y-5">
-
-          <h4 className="font-semibold">
-            Inventory
-          </h4>
-
-          {[
-            ["Ingredients", "85%"],
-            ["Beverages", "60%"],
-            ["Packaging", "42%"],
-          ].map(([title, value]) => (
-            <div key={title}>
-
-              <div className="flex justify-between text-sm mb-2">
-                <span>{title}</span>
-                <span>{value}</span>
-              </div>
-
-              <div className="h-2 rounded-full bg-neutral-200 overflow-hidden">
-
-                <div
-                  className="h-full bg-brand-burn rounded-full"
-                  style={{
-                    width: value,
-                  }}
-                />
-
-              </div>
-
+            {/* Header */}
+            <div className="space-y-1.5 mb-6">
+              <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+                Setup Your Location
+              </h1>
+              <p className="text-xs text-neutral-500 leading-relaxed max-w-md">
+                Setting up your operational location enables us to optimize service deliveries and map your customer radius accurately.
+              </p>
             </div>
-          ))}
 
+            {/* Form Fields */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              
+              {/* Country & State Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label htmlFor="country" className="block text-xs font-medium text-neutral-700">
+                    Country
+                  </label>
+                  <div className="flex px-3 py-2 items-center border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
+                    <HiOutlineGlobeAlt className="w-4 h-4 text-neutral-400 shrink-0" />
+                    <input
+                      type="text"
+                      id="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      placeholder="e.g. United States"
+                      className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="state" className="block text-xs font-medium text-neutral-700">
+                    State / Region
+                  </label>
+                  <div className="flex px-3 py-2 items-center border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
+                    <HiOutlineMap className="w-4 h-4 text-neutral-400 shrink-0" />
+                    <input
+                      type="text"
+                      id="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      placeholder="e.g. California"
+                      className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* City & Address Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="md:col-span-1 space-y-1">
+                  <label htmlFor="city" className="block text-xs font-medium text-neutral-700">
+                    City
+                  </label>
+                  <div className="flex px-3 py-2 items-center border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
+                    <HiOutlineOfficeBuilding className="w-4 h-4 text-neutral-400 shrink-0" />
+                    <input
+                      type="text"
+                      id="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      placeholder="San Francisco"
+                      className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="md:col-span-2 space-y-1">
+                  <label htmlFor="address" className="block text-xs font-medium text-neutral-700">
+                    Street Address
+                  </label>
+                  <div className="flex px-3 py-2 items-center border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
+                    <input
+                      type="text"
+                      id="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      placeholder="e.g. 123 Market St, Suite 400"
+                      className="flex-1 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Business Hours Text Area */}
+              <div className="space-y-1">
+                <label htmlFor="businessHours" className="block text-xs font-medium text-neutral-700">
+                  Business Hours
+                </label>
+                <div className="flex px-3 py-2 items-start border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
+                  <HiOutlineClock className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
+                  <textarea
+                    id="businessHours"
+                    value={formData.businessHours}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Mon - Fri: 9:00 AM - 6:00 PM&#10;Sat: 10:00 AM - 4:00 PM"
+                    rows={3}
+                    className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 resize-none min-h-[70px]"
+                    required
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+
+          {/* Stepper Footer Action */}
+          <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setStep((prev) => Math.max(1, prev - 1))}
+              className="px-4 py-2 font-medium text-xs text-neutral-500 hover:text-neutral-800 transition-colors"
+            >
+              Back
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
+            >
+              Continue
+            </button>
+          </div>
         </div>
 
-        {/* Reservations */}
-
-        <div className="mt-8 rounded-2xl bg-neutral-50 p-5 flex justify-between items-center">
-
-          <div>
-            <p className="text-sm text-neutral-500">
-              Reservations
+        {/* Right Panel: Globe Side */}
+        <div className="hidden lg:flex lg:col-span-5 flex-col items-center justify-between bg-orange-500 p-8 relative overflow-hidden text-white">
+          {/* Backdrop gradient shading */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.15)_0%,transparent_75%)] z-0" />
+          
+          {/* Top Panel Text */}
+          <div className="relative w-full z-10 space-y-1 text-center mt-2">
+            <span className="text-[10px] tracking-wider uppercase font-bold text-orange-100 bg-white/10 px-2 py-0.5 rounded-full">
+              Step 2 of 3
+            </span>
+            <h3 className="text-base font-bold pt-1">Global Scale Engine</h3>
+            <p className="text-xs text-orange-100/80 max-w-50 mx-auto leading-normal">
+              Visualize your market location live. We map your branches onto global telemetry charts seamlessly.
             </p>
-
-            <h4 className="text-2xl font-bold mt-1">
-              24 Today
-            </h4>
           </div>
 
-          <div className="w-14 h-14 rounded-full bg-brand-burn flex items-center justify-center text-white font-bold">
-            24
+          {/* Center Graphic: Aceternity Globe Area */}
+          <div className="relative w-full aspect-square flex items-center justify-center my-auto z-10 max-h-[260px]">
+            <WorldGlobe />
           </div>
 
+          {/* Bottom Badge */}
+          <div className="relative w-full z-10 text-center border-t border-white/10 pt-3">
+            <p className="text-[11px] font-medium text-orange-50/90 tracking-wide">
+              Reliable • Fast • Confidential • Secure
+            </p>
+          </div>
         </div>
 
       </div>
+    </motion.section>
+  );
+}
 
-    </div>  {/* Dashboardend */}
-
- {isLoading ? (
-                <div className="flex items-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  {isSignIn ? "Signing in..." : "Creating account..."}

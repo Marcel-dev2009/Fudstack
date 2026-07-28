@@ -1,8 +1,11 @@
 "use client";
 import { brand } from "@/brand";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { updateUserRoleForAgent } from "@/lib/backendOperation";
 import Image from "next/image"
+// const ThreeDotHorizontal = dynamic(() => import("../ui/three-dot-widget"));
+
 import {
   ChefHat,
   User,
@@ -13,12 +16,18 @@ import dashboard from "@/public/authMock.png"
 import {useRouter} from "next/navigation"
 import { toast } from "sonner";
 import { signUp } from "@/lib/actions/signupAgent";
-import {motion} from "framer-motion";
+import {AnimatePresence, motion} from "framer-motion";
+const CreateOrganization = dynamic(() => import("./onboarding/create-organization"));
+ const CreateRestuarant = dynamic(() => import("./onboarding/create-restuarant"));
+ const VerifyCreation = dynamic(() => import("./onboarding/verify-creation"));
+const LocationConfig = dynamic(() => import("./onboarding/location-config"))
 export default function SignUpAgent() {
  const [name , setName] = useState(""); 
  const [email , setEmail] = useState(""); 
  const [password , setPassword] = useState("");
- const [agreed , setAgreed] = useState(false)
+ const [ShowOnboarding , setShowOnboarding] = useState(false); //To fix later3
+ const [step , setStep] = useState<number>(1);
+ const [agreed , setAgreed] = useState(false);
  const [isLoading , setLoading] = useState(false);
  const handleSubmit = async (e:React.SubmitEvent) => {
    e.preventDefault();
@@ -37,9 +46,7 @@ export default function SignUpAgent() {
     }
       toast.success("agent account created");
        await updateUserRoleForAgent(result.user.id);
-      router.replace("agent/dashboard");
-    
-   
+      setShowOnboarding(true);
    }catch(err){
    toast.error(`
     Authentication error:${
@@ -253,6 +260,33 @@ export default function SignUpAgent() {
 
 </section>
       </div>
+     <AnimatePresence mode="wait">
+      {ShowOnboarding && (
+        <section className="fixed inset-0 bg-white flex justify-center items-center "
+  
+        >
+         <div className=" relative flex justify-center items-center h-auto min-h-[90dvh] w-auto shadow-md">
+           {step === 1 && (
+         <CreateOrganization setStep={setStep} setShowOnboarding={setShowOnboarding}/>
+        )}
+        {step === 2 && (
+         <CreateRestuarant setStep={setStep}/>
+        )}
+        {step === 3 && (
+         <LocationConfig setStep={setStep}/>
+        )}
+        {step === 4 && (
+          <VerifyCreation setStep={setStep}/>
+        )}
+
+     {/*    <div className="text-neutral-400 scale-90 absolute bottom-29">
+              <ThreeDotHorizontal step={step}/>
+            </div> */}
+         </div>
+        </section>
+        
+      )}
+     </AnimatePresence>
     </motion.main>
     
   );

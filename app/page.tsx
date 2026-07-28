@@ -9,15 +9,11 @@ export const metadata: Metadata = {
   description: brand.description,
 };
 export default async function Home() {
-  const session = await auth.api.getSession({
+/*   const session = await auth.api.getSession({
     headers:await headers(),
-  })
-  if(!session){
-      return (
-   <section className="overflow-x-hidden overflow-y-auto">
-   <Parent/>
-    </section> 
-  );
+  }) */
+/*   if(!session){
+ 
   }
   const user = await prisma.user.findUnique({
     where:{
@@ -31,5 +27,10 @@ export default async function Home() {
     redirect("/client/dashboard")
   } else if(user?.role === "AGENT"){
     redirect("/agent/dashboard")
-  }
+  } */
+      return (
+   <section className="overflow-x-hidden overflow-y-auto">
+   <Parent/>
+    </section> 
+  );
 }
