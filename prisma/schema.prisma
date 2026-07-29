@@ -40,21 +40,23 @@ model Restaurant {
   name           String       @unique
   logoUrl        String?
   phone          String
-  openingHours   String
+  email          String
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
+  locations      Location?
 
   @@map("restaurant")
 }
 
 model Location {
-  id             String       @id @default(cuid())
-  state          String
-  zipCode        String
-  address        String
-  city           String
-  organizationId String
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  id      String @id @default(cuid())
+  state   String
+  country String
+  address String
+  city    String
+
+  restaurantId String     @unique
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
 
   @@map("location")
 }
@@ -65,9 +67,9 @@ model Organization {
   name        String       @unique
   logoUrl     String?
   ownerId     String
+  description String
   owner       User         @relation(fields: [ownerId], references: [id])
   restaurants Restaurant[]
-  locations   Location[]
 
   @@map("organization")
 }

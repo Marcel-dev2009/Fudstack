@@ -25,7 +25,7 @@ export default function SignUpAgent() {
  const [name , setName] = useState(""); 
  const [email , setEmail] = useState(""); 
  const [password , setPassword] = useState("");
- const [ShowOnboarding , setShowOnboarding] = useState(false); //To fix later3
+ const [ShowOnboarding , setShowOnboarding] = useState(true); //To fix later3
  const [step , setStep] = useState<number>(1);
  const [agreed , setAgreed] = useState(false);
  const [isLoading , setLoading] = useState(false);
