@@ -11,7 +11,7 @@ import { auth } from "@/lib/auth";
 import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
 import { toast } from "sonner";
 import Loading from "../../ui/loading";
- type Session = Awaited<ReturnType<typeof auth.api.getSession>> | null
+ type Session = Awaited<ReturnType<typeof auth.api.getSession>>
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
   handleOnboardingSubmit:() => void;
@@ -45,12 +45,8 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
   }, [timeLeft]);
 
   // Handler to restart verification countdown sequence safely
-  
-   if (!session){
-    return null;
-  };
-
   const handleResendCode = async () => {
+    if(!session) return;
     if (!canResend) return;
    await sendVerificationEmail(session.user.email)
     setTimeLeft(59);
@@ -58,6 +54,7 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
   };
   
   const handleVerification = async () => {
+    if(!session) return;
     if(isVerifying) return;
      const code = inputRefs.map((ref) => ref.current?.value || "").join("");
      if(code.length !== 6) return;

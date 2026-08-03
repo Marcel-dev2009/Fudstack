@@ -11,19 +11,17 @@ import type { organizationData } from "@/types";
 import { CloudinaryClientResponse } from "@/cloudinary";
 import { toast } from "sonner";
 import dynamic from "next/dynamic";
-const Loading = dynamic(() => import("../../ui/loading"));
+// const Loading = dynamic(() => import("../../ui/loading"));
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
   setShowOnboarding:React.Dispatch<SetStateAction<boolean>>
   setOrganizationData: React.Dispatch<SetStateAction<organizationData>>
+  organizationName:string;
+  organizationDescription:string
 }
 
-function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData}: Props) {
-  const organizationData:organizationData = {
-  name:"",
-  logoUrl:"",
-  description:"", 
- }
+function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData , organizationName , organizationDescription}: Props) {
+
   const [loading , setLoading] = useState<boolean>(false)
   const image = "https://res.cloudinary.com/dfsrso3jk/image/upload/v1785098926/asset1_v6wump.png";
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -35,8 +33,8 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
     const formData = new FormData() //a constructor that creates a new javascript object and accepts input data prt multimedia as key-value pairs in the object 
     formData.append("file" , file);
     formData.append(
-      "upload_presents",
-      "Fudstack_media"
+      "upload_preset",
+      "agent_media"
     );
     try{
     setLoading(true)
@@ -67,13 +65,13 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
       setLoading(false);
     }
   };
-  const handleOrganizationDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-   const {name , value} = e.target;
-   setOrganizationData((prev) => ({
-    ...prev,
-    [name as keyof organizationData] : value
-   }))
-  }
+     const handleOrganizationChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const {name , value} = e.target;
+      setOrganizationData((prev) => ({
+       ...prev, //copy all existing keys
+       [name] : value //overwrite only the key that changed
+      }))
+     }
   return (
     <motion.section
       initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
@@ -107,7 +105,7 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
               {photoPreview ? (
                 <div className="flex items-center gap-4 animate-in fade-in duration-200">
                   <div className="relative w-16 h-16 rounded-full border-2 border-orange-500 p-0.5 shadow-sm">
-                  {loading ? (<Loading/>) : (  <img
+                  {loading ? "Setting profile" : (  <img
                       src={photoPreview}
                       alt="organization logo"
                       className="w-full h-full object-cover rounded-full"
@@ -155,9 +153,10 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
                   <HiOutlineOfficeBuilding className="w-4 h-4 text-neutral-400 shrink-0" />
                   <input
                     type="text"
+                    name="name"
                     placeholder="e.g. Gourmet Group"
-                    value={organizationData.name}
-                    onChange={handleOrganizationDataDynamicChange}
+                    value={organizationName}
+                    onChange={handleOrganizationChange}
                     id="organizationName"
                     autoComplete="name"
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -175,8 +174,9 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
                     placeholder="Briefly describe your organization or restaurant chain..."
                     id="organizationDescription"
                     autoComplete="description"
-                    value={organizationData.description}
-                    onChange={handleOrganizationDataDynamicChange}
+                    name="description"
+                    value={organizationDescription}
+                    onChange={handleOrganizationChange} // to fix
                     rows={2}
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 resize-none min-h-14"
                     maxLength={150}

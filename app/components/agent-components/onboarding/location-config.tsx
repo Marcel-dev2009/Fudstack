@@ -10,29 +10,27 @@ import { auth } from "@/lib/auth";
 interface Props {
  setStep:React.Dispatch<SetStateAction<number>>         
  setLocationData:React.Dispatch<SetStateAction<locationData>>
+ country:string;
+ city:string;
+ state:string;
+ businessHours:string;
+ address:string;
 }
 type Session = Awaited<ReturnType<typeof auth.api.getSession>> | null
 interface Props {
  session :Session 
 }
-function LoacationConfig({setStep , setLocationData , session}:Props) {
+function LoacationConfig({setStep , setLocationData , session , country , city , state , address , businessHours}:Props) {
   if(!session) {
    return; 
   }
-  const handleLocationDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleLocationChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     e.preventDefault();
     const {name , value} = e.target
     setLocationData((prev) => ({
      ...prev,
-     [name as keyof locationData] : value
+     [name] : value
     }))
-   }
-   const locationData:locationData = {
-    country: "",
-   city:"",
-   state:"",
-   address:"",
-   businessHours:""
    }
   return (
     <motion.section
@@ -69,9 +67,10 @@ function LoacationConfig({setStep , setLocationData , session}:Props) {
                     <HiOutlineGlobeAlt className="w-4 h-4 text-neutral-400 shrink-0" />
                     <input
                       type="text"
-                      value={locationData.country}
+                      name="country"
+                      value={country}
                       id="country"
-                      onChange={handleLocationDataDynamicChange}
+                      onChange={handleLocationChange}
                       autoComplete="country"
                       placeholder="e.g. Nigeria"
                       className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -88,8 +87,9 @@ function LoacationConfig({setStep , setLocationData , session}:Props) {
                     <HiOutlineMap className="w-4 h-4 text-neutral-400 shrink-0" />
                     <input
                       type="text"
-                      value={locationData.state}
-                      onChange={handleLocationDataDynamicChange}
+                      value={state}
+                      name="state"
+                      onChange={handleLocationChange}
                       autoComplete="state"
                       id="state"
                       placeholder="e.g. Enugu , Lagos"
@@ -111,8 +111,9 @@ function LoacationConfig({setStep , setLocationData , session}:Props) {
                     <input
                       type="text"
                       id="city"
-                      value={locationData.city}
-                      onChange={handleLocationDataDynamicChange}
+                      name="city"
+                      value={city}
+                      onChange={handleLocationChange}
                       placeholder="New Haven"
                       autoComplete="city"
                       className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -129,8 +130,9 @@ function LoacationConfig({setStep , setLocationData , session}:Props) {
                     <input
                       type="text"
                       id="address"
-                      value={locationData.address}
-                      onChange={handleLocationDataDynamicChange}
+                      value={address}
+                      name="address"
+                      onChange={handleLocationChange}
                       autoComplete="address"
                       placeholder="e.g. 123 Market St, Suite 400"
                       className="flex-1 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -149,8 +151,9 @@ function LoacationConfig({setStep , setLocationData , session}:Props) {
                   <HiOutlineClock className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                   <textarea
                     id="businessHours"
-                    value={locationData.businessHours}
-                    onChange={handleLocationDataDynamicChange}
+                    name="businessHours"
+                    value={businessHours}
+                    onChange={handleLocationChange}
                     autoComplete="businessHours"
                     placeholder="e.g. Mon - Fri: 9:00 AM - 6:00 PM&#10;Sat: 10:00 AM - 4:00 PM"
                     rows={3}
