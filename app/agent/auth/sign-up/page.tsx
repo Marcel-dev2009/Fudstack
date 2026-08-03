@@ -3,12 +3,14 @@ import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
  async function SignUpPageForAgent() {
-/*   const session = await auth.api.getSession({
+/*    const session = await auth.api.getSession({
     headers: await headers(),
   })
-  if(session){
+   if(session){
     redirect("/agent/dashboard")
-  } */
-  return <SignUpAgent/>
+   } */
+  return (
+   <div>Hello world</div>
+  )
 }
 export default SignUpPageForAgent

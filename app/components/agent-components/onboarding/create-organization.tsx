@@ -7,31 +7,73 @@ import { FaFileAlt } from "react-icons/fa";
 import { Trash, UploadCloud } from "lucide-react";
 import React, { ChangeEvent, SetStateAction, useRef, useState } from "react";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
-
+import type { organizationData } from "@/types";
+import { CloudinaryClientResponse } from "@/cloudinary";
+import { toast } from "sonner";
+import dynamic from "next/dynamic";
+const Loading = dynamic(() => import("../../ui/loading"));
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
   setShowOnboarding:React.Dispatch<SetStateAction<boolean>>
+  setOrganizationData: React.Dispatch<SetStateAction<organizationData>>
 }
 
-
-function CreateOrganization({ setStep  , setShowOnboarding}: Props) {
+function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData}: Props) {
+  const organizationData:organizationData = {
+  name:"",
+  logoUrl:"",
+  description:"", 
+ }
+  const [loading , setLoading] = useState<boolean>(false)
   const image = "https://res.cloudinary.com/dfsrso3jk/image/upload/v1785098926/asset1_v6wump.png";
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
-
-  const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
+ 
+  const handlePhoto = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = ev.target?.result;
-      if (typeof result === "string") {
-        setPhotoPreview(result);
+    const formData = new FormData() //a constructor that creates a new javascript object and accepts input data prt multimedia as key-value pairs in the object 
+    formData.append("file" , file);
+    formData.append(
+      "upload_presents",
+      "Fudstack_media"
+    );
+    try{
+    setLoading(true)
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, 
+      {
+        method:"POST",
+        body:formData
       }
-    };
-    reader.readAsDataURL(file);
+    );
+    const data = (await response.json()) as CloudinaryClientResponse;
+    if("error" in data){
+      toast.error("error uploading organization photo");
+    }else{
+       setPhotoPreview(data.secure_url);
+       setOrganizationData((prev) => ({
+        ...prev,
+        logoUrl:data.secure_url
+       }))
+    }
+   
+    }catch(err){
+      toast.error(`
+        Upload error: ${
+          err instanceof Error ? err.message : "Unkown error"
+        }
+        `)
+    }finally{
+      setLoading(false);
+    }
   };
-
+  const handleOrganizationDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+   const {name , value} = e.target;
+   setOrganizationData((prev) => ({
+    ...prev,
+    [name as keyof organizationData] : value
+   }))
+  }
   return (
     <motion.section
       initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
@@ -65,11 +107,11 @@ function CreateOrganization({ setStep  , setShowOnboarding}: Props) {
               {photoPreview ? (
                 <div className="flex items-center gap-4 animate-in fade-in duration-200">
                   <div className="relative w-16 h-16 rounded-full border-2 border-orange-500 p-0.5 shadow-sm">
-                    <img
+                  {loading ? (<Loading/>) : (  <img
                       src={photoPreview}
                       alt="organization logo"
                       className="w-full h-full object-cover rounded-full"
-                    />
+                    />)}
                   </div>
                   <button
                     type="button"
@@ -114,6 +156,8 @@ function CreateOrganization({ setStep  , setShowOnboarding}: Props) {
                   <input
                     type="text"
                     placeholder="e.g. Gourmet Group"
+                    value={organizationData.name}
+                    onChange={handleOrganizationDataDynamicChange}
                     id="organizationName"
                     autoComplete="name"
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -131,6 +175,8 @@ function CreateOrganization({ setStep  , setShowOnboarding}: Props) {
                     placeholder="Briefly describe your organization or restaurant chain..."
                     id="organizationDescription"
                     autoComplete="description"
+                    value={organizationData.description}
+                    onChange={handleOrganizationDataDynamicChange}
                     rows={2}
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 resize-none min-h-14"
                     maxLength={150}

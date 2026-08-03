@@ -9,6 +9,7 @@ async function SignInAgentPage() {
   if(session){
     redirect("/agent/dashboard")
   } */
+ 
   return <LoginAgent/>
 }
 export default SignInAgentPage

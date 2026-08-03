@@ -1,13 +1,39 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { SetStateAction } from "react";
+import { ChangeEvent, SetStateAction } from "react";
 import {motion} from "framer-motion";
 import { HiOutlineClock, HiOutlineGlobeAlt, HiOutlineMap, HiOutlineOfficeBuilding } from "react-icons/hi";
+import { locationData } from "@/types";
+import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
+import { auth } from "@/lib/auth";
 interface Props {
  setStep:React.Dispatch<SetStateAction<number>>         
+ setLocationData:React.Dispatch<SetStateAction<locationData>>
 }
-function LoacationConfig({setStep}:Props) {
+type Session = Awaited<ReturnType<typeof auth.api.getSession>> | null
+interface Props {
+ session :Session 
+}
+function LoacationConfig({setStep , setLocationData , session}:Props) {
+  if(!session) {
+   return; 
+  }
+  const handleLocationDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    e.preventDefault();
+    const {name , value} = e.target
+    setLocationData((prev) => ({
+     ...prev,
+     [name as keyof locationData] : value
+    }))
+   }
+   const locationData:locationData = {
+    country: "",
+   city:"",
+   state:"",
+   address:"",
+   businessHours:""
+   }
   return (
     <motion.section
       initial={{opacity:0  , height:120 , filter:"blur(4px)"}}
@@ -43,7 +69,10 @@ function LoacationConfig({setStep}:Props) {
                     <HiOutlineGlobeAlt className="w-4 h-4 text-neutral-400 shrink-0" />
                     <input
                       type="text"
+                      value={locationData.country}
                       id="country"
+                      onChange={handleLocationDataDynamicChange}
+                      autoComplete="country"
                       placeholder="e.g. Nigeria"
                       className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                       required
@@ -59,6 +88,9 @@ function LoacationConfig({setStep}:Props) {
                     <HiOutlineMap className="w-4 h-4 text-neutral-400 shrink-0" />
                     <input
                       type="text"
+                      value={locationData.state}
+                      onChange={handleLocationDataDynamicChange}
+                      autoComplete="state"
                       id="state"
                       placeholder="e.g. Enugu , Lagos"
                       className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
@@ -79,7 +111,10 @@ function LoacationConfig({setStep}:Props) {
                     <input
                       type="text"
                       id="city"
+                      value={locationData.city}
+                      onChange={handleLocationDataDynamicChange}
                       placeholder="New Haven"
+                      autoComplete="city"
                       className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                       required
                     />
@@ -94,6 +129,9 @@ function LoacationConfig({setStep}:Props) {
                     <input
                       type="text"
                       id="address"
+                      value={locationData.address}
+                      onChange={handleLocationDataDynamicChange}
+                      autoComplete="address"
                       placeholder="e.g. 123 Market St, Suite 400"
                       className="flex-1 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                       required
@@ -111,6 +149,9 @@ function LoacationConfig({setStep}:Props) {
                   <HiOutlineClock className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                   <textarea
                     id="businessHours"
+                    value={locationData.businessHours}
+                    onChange={handleLocationDataDynamicChange}
+                    autoComplete="businessHours"
                     placeholder="e.g. Mon - Fri: 9:00 AM - 6:00 PM&#10;Sat: 10:00 AM - 4:00 PM"
                     rows={3}
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 resize-none min-h-17.5"
@@ -125,7 +166,10 @@ function LoacationConfig({setStep}:Props) {
           <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
             
             <button
-              onClick={() => setStep((prev) => prev + 1)}
+              onClick={() => {
+                sendVerificationEmail(session.user.email);
+                setStep((prev) => prev + 1)
+              }}
               className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
               Continue

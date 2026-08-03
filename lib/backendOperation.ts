@@ -1,24 +1,5 @@
 "use server";
-type onboardingData = {
- organization:{
-    name : string,
-    logoUrl : string,
-    description:string,
- },
-  restaurant:{
-      name:string,
-      logoUrl:string,
-      phone:string,
-      email:string,
- },
- location:{
-     state:string,
-     country:string,
-     address:string,
-     city :string,
- }
-}
-
+import { onboardingData } from "@/types";
 import { prisma } from "./auth";
 export const updateUserRoleForAgent =  async (userId:string) => {
  if(!userId) return;
@@ -79,4 +60,3 @@ export const handleOnboarding = async (
    })
   })
 }
-//the create organization function in a nutshell submits our user data for creating an organization 

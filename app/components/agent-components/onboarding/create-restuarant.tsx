@@ -11,26 +11,71 @@ UploadCloud
 } from "lucide-react"
 import {FaPhoneAlt } from "react-icons/fa";
 import { HiOutlineOfficeBuilding} from "react-icons/hi";
-
+import type { restaurantData} from "@/types";
+import { toast } from "sonner";
+import { CloudinaryClientResponse } from "@/cloudinary";
+import dynamic from "next/dynamic";
 interface Props {
  setStep:React.Dispatch<SetStateAction<number>>         
+ setRestaurantData:React.Dispatch<SetStateAction<restaurantData>>
 }
-function CreateRestaurant({setStep}:Props) {
+const Loading = dynamic(() => import("../../ui/loading"))
+function CreateRestaurant({setStep , setRestaurantData}:Props) {
+  const restaurantData:restaurantData = {
+name:"",
+logoUrl:"",
+email:"",
+phone:""
+}
   const [photoPreview , setPhotoPreview] = useState<string>("");
  const inputRef = useRef<HTMLInputElement | null>(null) 
- const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
+ const [loading , setLoading] = useState(false);
+ const handlePhoto = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = ev.target?.result;
-      if (typeof result === "string") {
-        setPhotoPreview(result);
+    const formData = new FormData() //a constructor that creates a new javascript object and accepts input data prt multimedia as key-value pairs in the object 
+    formData.append("file" , file);
+    formData.append(
+      "upload_presents",
+      "Fudstack_media"
+    );
+    try{
+    setLoading(true)
+    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, 
+      {
+        method:"POST",
+        body:formData
       }
-    };
-    reader.readAsDataURL(file);
+    );
+    const data = (await response.json()) as CloudinaryClientResponse;
+    if("error" in data){
+      toast.error("error uploading organization photo");
+    }else{
+       setPhotoPreview(data.secure_url);
+       setRestaurantData((prev) => ({
+        ...prev,
+        logoUrl:data.secure_url
+       }))
+    }
+   
+    }catch(err){
+      toast.error(`
+        Upload error: ${
+          err instanceof Error ? err.message : "Unkown error"
+        }
+        `)
+    }finally{
+      setLoading(false);
+    }
   };
-
+ const handleRestaurantDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  e.preventDefault();
+  const {name , value} = e.target
+  setRestaurantData((prev) => ({
+   ...prev,
+   [name as keyof restaurantData] : value
+  }))
+ }
   const image = "https://res.cloudinary.com/dfsrso3jk/image/upload/v1785098928/asset2_lgxknd.png";
   return (
         <motion.section
@@ -63,11 +108,15 @@ function CreateRestaurant({setStep}:Props) {
                     {photoPreview ? (
                       <div className="flex items-center gap-4 animate-in fade-in duration-200">
                         <div className="relative w-16 h-16 rounded-full border-2 border-orange-500 p-0.5 shadow-sm">
-                          <img
+                          {loading ? (
+                            <Loading/>
+                          ) : (
+                           <img
                             src={photoPreview}
                             alt="organization logo"
                             className="w-full h-full object-cover rounded-full"
-                          />
+                          /> 
+                          )}
                         </div>
                         <button
                           type="button"
@@ -111,8 +160,10 @@ function CreateRestaurant({setStep}:Props) {
                         <HiOutlineOfficeBuilding className="w-4 h-4 text-neutral-400 shrink-0" />
                         <input
                           type="text"
+                          value={restaurantData.name}
                           placeholder="e.g. Toast hall restaurant"
                           id="organizationName"
+                          onChange={handleRestaurantDataDynamicChange}
                           autoComplete="name"
                           className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                         />
@@ -126,6 +177,8 @@ function CreateRestaurant({setStep}:Props) {
                       <div className="flex px-3 py-2 items-start border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
                         <FaPhoneAlt className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                          <input
+                         value={restaurantData.phone}
+                         onChange={handleRestaurantDataDynamicChange}
                           type="text"
                           placeholder="e.g. +234......."
                           id="organizationName"
@@ -143,6 +196,8 @@ function CreateRestaurant({setStep}:Props) {
                         <Mail className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                          <input
                           type="text"
+                          value={restaurantData.email}
+                          onChange={handleRestaurantDataDynamicChange}
                           placeholder="e.g. toasthalls@gmail.com"
                           id="restaurant email"
                           autoComplete="email"
@@ -180,7 +235,7 @@ function CreateRestaurant({setStep}:Props) {
                 {/* Top dynamic info section */}
                 <div className="relative w-full z-10 space-y-1 text-center mt-2">
                   <span className="text-[10px] tracking-wider uppercase font-bold text-orange-100 bg-white/10 px-2 py-0.5 rounded-full">
-                    Step 2 of 3
+                    Step 2 of 4
                   </span>
                   <h3 className="text-base font-bold pt-1">Create Your First Restaurant</h3>
                   <p className="text-xs text-orange-100/80 max-w-50 mx-auto leading-normal">

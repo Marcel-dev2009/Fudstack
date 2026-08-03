@@ -6,21 +6,26 @@ import React, { SetStateAction, useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { HiOutlineMailOpen } from "react-icons/hi";
-import { ArrowLeft } from "lucide-react";
-
+import { verifyOtp } from "@/lib/actions/verifyOtp";
+import { auth } from "@/lib/auth";
+import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
+import { toast } from "sonner";
+import Loading from "../../ui/loading";
+ type Session = Awaited<ReturnType<typeof auth.api.getSession>> | null
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
+  handleOnboardingSubmit:() => void;
+  session:Session
 }
-
-function VerifyCreation({ setStep }: Props) {
+function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
   const router = useRouter();
   
   // Timer state manager (Starts at 59 seconds)
   const [timeLeft, setTimeLeft] = useState<number>(59);
   const [canResend, setCanResend] = useState<boolean>(false);
-
+ const [isVerifying , setIsVerifying] = useState(false);
   // Six Input Block References
-  const inputRefs = [
+  const inputRefs = [ //this guy right here enables you to control focus 
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
@@ -28,7 +33,7 @@ function VerifyCreation({ setStep }: Props) {
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
   ];
-
+   
   // Countdown timer tracker effect
   useEffect(() => {
     if (timeLeft === 0) {
@@ -40,12 +45,42 @@ function VerifyCreation({ setStep }: Props) {
   }, [timeLeft]);
 
   // Handler to restart verification countdown sequence safely
-  const handleResendCode = () => {
+  
+   if (!session){
+    return null;
+  };
+
+  const handleResendCode = async () => {
     if (!canResend) return;
-    // Inject resend API network telemetry trigger triggers here
+   await sendVerificationEmail(session.user.email)
     setTimeLeft(59);
     setCanResend(false);
   };
+  
+  const handleVerification = async () => {
+    if(isVerifying) return;
+     const code = inputRefs.map((ref) => ref.current?.value || "").join("");
+     if(code.length !== 6) return;
+     try{
+      setIsVerifying(true);
+      const result = await verifyOtp( session.user.email , code);  
+     if(result.success){
+      await handleOnboardingSubmit();
+      router.replace("/agent/dashboard")
+     } else{
+      toast.error("Invalid code");
+     }
+     }catch(err){
+      toast.error(
+  `Error creating user: ${
+    err instanceof Error ? err.message : "Unknown error"
+  }`
+);
+     }finally{
+      setIsVerifying(false);
+     }
+     
+    }
 
   // Advanced Clipboard Interceptor / Clipboard Paste auto-fill engine
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
@@ -65,7 +100,7 @@ function VerifyCreation({ setStep }: Props) {
   };
 
   // Enforces only numeric keystrokes inside structural parameters
-  const handleInputChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     
     // Erase non-digits globally instantly if passed by alternative entry methods
@@ -74,9 +109,13 @@ function VerifyCreation({ setStep }: Props) {
       return;
     }
 
-    if (value.length === 1 && index < 5) {
-      inputRefs[index + 1].current?.focus();
+    if (value.length === 1) {
+      if(index < 5){
+    inputRefs[index + 1].current?.focus();
+      }  else {
+      await handleVerification()
     }
+    } 
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -110,7 +149,7 @@ function VerifyCreation({ setStep }: Props) {
           We have sent a secure 6-digit confirmation code to your email address. Enter it below to activate your account.
         </p>
 
-        {/* Six Block Verification Inputs */}
+        {/* Six Block V erification Inputs */}
         <div className="flex gap-2 sm:gap-3 justify-center mb-6 w-full">
           {inputRefs.map((ref, index) => (
             <input
@@ -118,10 +157,13 @@ function VerifyCreation({ setStep }: Props) {
               ref={ref}
               type="text"
               maxLength={1}
+              disabled={isVerifying}
               pattern="\d*"
               inputMode="numeric"
               onPaste={index === 0 ? handlePaste : undefined} // Listen to paste events directly on block one
-              onChange={(e) => handleInputChange(index, e)}
+              onChange={(e) => {
+                handleInputChange(index, e);
+              }}
               onKeyDown={(e) => handleKeyDown(index, e)}
               className="w-11 h-12 sm:w-12 sm:h-14 text-center text-lg font-bold border border-neutral-200 rounded-xl bg-neutral-50/50 text-neutral-900 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/10 transition-all outline-none"
               placeholder="•"
@@ -154,20 +196,21 @@ function VerifyCreation({ setStep }: Props) {
 
         {/* Footer Actions */}
         <div className="w-full pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
-        <button
+            {isVerifying ? (
+                <button
+               disabled={isVerifying}
+             className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
+            >
+            <Loading/>
+            </button>
+            ) : (
+                   <button
             onClick={() => setStep((prev) => prev - 1)}
              className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
             Back 
             </button>
-          
-          <button
-            type="button"
-            onClick={() => router.replace("/agent/dashboard")}
-            className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150 focus:outline-none"
-          >
-            Complete Verification
-          </button>
+            )}
         </div>
 
       </div>
