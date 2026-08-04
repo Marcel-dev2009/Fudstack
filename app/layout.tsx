@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.className} scroll-smooth`}
+      className={`${inter.className}`}
     >
       <body className={`${inter.variable}min-h-full flex flex-col`}>
  

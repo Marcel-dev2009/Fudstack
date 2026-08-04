@@ -1,7 +1,7 @@
 "use client"
 import { brand } from "@/brand";
 import { toast } from "sonner";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Image from "next/image"
 import {
   User2,
@@ -39,7 +39,7 @@ function SignUpClient() {
   }
      toast.success("client account created");
      updateUserRoleForClient(result.user.id);
-     router.replace("client/dashboard");
+     router.replace("/client/dashboard");
    }catch(err){
    toast.error(`
     Authentication error: ${
@@ -49,6 +49,10 @@ function SignUpClient() {
    }finally{
     setIsLoading(false)
    }
+  }
+  const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
+  const targetStatus = event.target.checked;
+  setAgreed(targetStatus)
   }
    const router = useRouter()
   return (
@@ -144,7 +148,8 @@ function SignUpClient() {
               <input
                 type="checkbox"
                 className="mt-1 accent-orange-500"
-                onChange={(e) => setAgreed(e.target.checked)}
+                onChange={handleCheck}
+                checked={agreed}
               />
 
               <p className="text-xs text-neutral-500">
@@ -161,7 +166,6 @@ function SignUpClient() {
 
             <button
               type="submit"
-              disabled={agreed === false}
               className="w-full mt-2 mb-2 max-w-98 rounded-sm p-2 bg-brand-burn text-white text-xs tracking-tighter hover:brightness-110 transition-all duration-75"
             >
             {Isloading ? (

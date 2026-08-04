@@ -11,6 +11,7 @@
   "dependencies": {
     "@better-auth/prisma-adapter": "^1.6.24",
     "@gsap/react": "^2.1.2",
+    "@lottiefiles/dotlottie-react": "^0.19.12",
     "@prisma/adapter-pg": "^7.9.0",
     "@prisma/client": "^7.9.0",
     "@tailwindcss/cli": "^4.3.2",

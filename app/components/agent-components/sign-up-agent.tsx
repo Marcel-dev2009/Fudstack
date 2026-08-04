@@ -3,7 +3,8 @@
 import { brand } from "@/brand";
 import { ChangeEvent, useState } from "react";
 import dynamic from "next/dynamic";
-import { handleOnboarding, updateUserRoleForAgent } from "@/lib/backendOperation";
+import { motion } from "framer-motion";
+import { updateUserRoleForAgent } from "@/lib/backendOperation";
 import Image from "next/image"
 // const ThreeDotHorizontal = dynamic(() => import("../ui/three-dot-widget"));
 import { auth } from "@/lib/auth";
@@ -13,68 +14,25 @@ import {
   Mail,
   Lock,
 } from "lucide-react";
-type Session = Awaited<ReturnType<typeof auth.api.getSession>>
-interface Props{
-  session:Session
-}
 import dashboard from "@/public/authMock.png"
 import {useRouter} from "next/navigation"
 import { toast } from "sonner";
 import { signUp } from "@/lib/actions/signupAgent";
-import {AnimatePresence, motion} from "framer-motion";
-import { locationData, organizationData, restaurantData } from "@/types";
-
-const CreateOrganization = dynamic(() => import("./onboarding/create-organization"));
- const CreateRestuarant = dynamic(() => import("./onboarding/create-restuarant"));
- const VerifyCreation = dynamic(() => import("./onboarding/verify-creation"));
-const LocationConfig = dynamic(() => import("./onboarding/location-config"))
 const Loading = dynamic(() => import("../ui/loading"));
-export default function SignUpAgent({session}:Props) {
+export default function SignUpAgent() {
  const [name , setName] = useState(""); 
  const [email , setEmail] = useState(""); 
  const [password , setPassword] = useState("");
- const [ShowOnboarding , setShowOnboarding] = useState(true); //To fix later3
- const [step , setStep] = useState<number>(1);
  const [agreed , setAgreed] = useState(false);
  const [isLoading , setLoading] = useState(false);
 //  const [onBoardingloading ,setOnboardingLoading] = useState<boolean>(false);
  const router = useRouter()
- const [organizationData , setOrganizationData] = useState<organizationData>({
-   name: "",
-   logoUrl:"",
-   description:"",
- })
- const [restaurantData , setRestaurantData] = useState<restaurantData>({
-   name: "",
-   logoUrl:"",
-   phone:"",
-   email:""
- })
- const [locationData , setLocationData] = useState<locationData>({
-   country: "",
-   city:"",
-   state:"",
-   address:"",
-   businessHours:""
- })
- const handleOnboardingSubmit = async () => {
-  try{
-  if(!session) return;
-    await handleOnboarding(session.user.id, {
-    organization:organizationData, 
-    restaurant:restaurantData,
-    location:locationData
-  });
-  }catch(err){
-  toast.error(`
-    error carrying out operation:${
-      err instanceof Error ? err.message : "Unknown Error"
+
+ const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
+     const targetStatus = event.target.checked
+     setAgreed(targetStatus);
     }
-    `)
-  }finally{
-    //setOnboardingLoading(false)
-  }
-}
+
  const handleSubmit = async (e:React.SubmitEvent) => {
    e.preventDefault();
    if(!email || !name || !password){
@@ -92,8 +50,7 @@ export default function SignUpAgent({session}:Props) {
     }
       toast.success("agent account created");
        await updateUserRoleForAgent(result.user.id);
-           router.refresh()
-      setShowOnboarding(true);
+      router.replace("/agent/onboarding")
    }catch(err){
    toast.error(`
     Authentication error:${
@@ -163,7 +120,7 @@ export default function SignUpAgent({session}:Props) {
                 <input
                   type="email"
                   id="email"
-                  autoComplete=".....@gmail.com"
+                  autoComplete="email"
                   placeholder="organization@email.com"
                   className="flex-1 text-xs text-secondary-coal ml-3 outline-none bg-transparent placeholder:text-xs"
                   onChange={(e) => setEmail(e.target.value)}
@@ -198,7 +155,8 @@ export default function SignUpAgent({session}:Props) {
             <div className="flex items-start gap-0.5 pt-2">
               <input
                 type="checkbox"
-                onChange={(e) => setAgreed(e.target.checked)}
+                onChange={handleCheck}
+                checked={agreed}
                 className="mt-1 accent-orange-500" 
               />
 
@@ -286,33 +244,7 @@ export default function SignUpAgent({session}:Props) {
 
 </section>
       </div>
-     <AnimatePresence mode="wait">
-      {ShowOnboarding && (
-        <section className="fixed inset-0 bg-white flex justify-center items-center "
-  
-        >
-         <div className=" relative flex justify-center items-center h-auto min-h-[90dvh] w-auto shadow-md">
-           {step === 1 && (
-         <CreateOrganization setStep={setStep} setShowOnboarding={setShowOnboarding} setOrganizationData={setOrganizationData} organizationName={organizationData.name} organizationDescription={organizationData.description}/>
-        )}
-        {step === 2 && (
-         <CreateRestuarant setStep={setStep} setRestaurantData={setRestaurantData} restaurantName={restaurantData.name} restaurantEmail={restaurantData.email} restaurantPhone={restaurantData.phone}/>
-        )}
-        {step === 3 && (
-         <LocationConfig setStep={setStep} setLocationData={setLocationData} session={session} country={locationData.country} state={locationData.state} city={locationData.city} address={locationData.address} businessHours={locationData.businessHours}/>
-        )}
-        {step === 4 && session && (
-          <VerifyCreation setStep={setStep} handleOnboardingSubmit={handleOnboardingSubmit} session={session}/>
-        )}
-
-     {/*    <div className="text-neutral-400 scale-90 absolute bottom-29">
-              <ThreeDotHorizontal step={step}/>
-            </div> */}
-         </div>
-        </section>
-        
-      )}
-     </AnimatePresence>
+    
     </motion.main>
     
   );

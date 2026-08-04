@@ -1,9 +1,10 @@
 "use client"
 import type { ModalProps } from "@/app/types/type";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { MdClose } from "react-icons/md";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 function ClientTerms({setOpen , setCustomerType}:ModalProps) {
 const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
   const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -19,7 +20,12 @@ const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
     observer.disconnect();
    }
   },[])
+  const [agreed , setAgreed] = useState<boolean>(false); 
   const router = useRouter();
+  const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
+   const targetStatus = event.target.checked;
+   setAgreed(targetStatus);
+  }
   return (
     <>
     <section>
@@ -96,6 +102,8 @@ const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
     <input
       type="checkbox"
       id="agreeTerms"
+      onChange={handleCheck}
+      checked={agreed}
       name="agreeTerms"
       required
       className="p-2"
@@ -126,7 +134,11 @@ const [showRouteButton , setShowRouteButton] = useState<boolean>(false);
          mb-2
          "
          onClick={() => {
-          router.push("/client/auth/sign-up")
+          if(agreed === false){
+           toast.warning("agree to the terms and conditions")
+          } else{
+              router.push("/client/auth/sign-up")
+          }
          }}
          >
      continue

@@ -15,16 +15,17 @@ datasource db {
 model User {
   id String @id @default(cuid())
 
-  name          String
-  email         String         @unique
-  role          Role           @default(CLIENT)
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  organization  Organization[]
+  name                String
+  email               String         @unique
+  role                Role           @default(CLIENT)
+  emailVerified       Boolean
+  onboardingCompleted Boolean        @default(false)
+  image               String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  organization        Organization[]
 
   @@map("user")
 }
@@ -61,7 +62,6 @@ model EmailOtp {
 model Location {
   id            String     @id @default(cuid())
   state         String
-  country       String
   address       String
   city          String
   businessHours String

@@ -11,6 +11,7 @@ import { auth } from "@/lib/auth";
 import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
 import { toast } from "sonner";
 import Loading from "../../ui/loading";
+import { CheckOnboardingComplete } from "@/lib/backendOperation";
  type Session = Awaited<ReturnType<typeof auth.api.getSession>>
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
@@ -63,6 +64,7 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
       const result = await verifyOtp( session.user.email , code);  
      if(result.success){
       await handleOnboardingSubmit();
+      await CheckOnboardingComplete(session.user.id)
       router.replace("/agent/dashboard")
      } else{
       toast.error("Invalid code");
@@ -194,12 +196,12 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
         {/* Footer Actions */}
         <div className="w-full pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
             {isVerifying ? (
-                <button
-               disabled={isVerifying}
+                     <div
              className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
-            <Loading/>
-            </button>
+            <p className="text-xs tracking-tighter animate-pulse">Verifying...</p>
+            </div>
+              
             ) : (
                    <button
             onClick={() => setStep((prev) => prev - 1)}
