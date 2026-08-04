@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { brand } from "@/brand";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import { handleOnboarding, updateUserRoleForAgent } from "@/lib/backendOperation";
 import Image from "next/image"
 // const ThreeDotHorizontal = dynamic(() => import("../ui/three-dot-widget"));
-
+import { auth } from "@/lib/auth";
 import {
   ChefHat,
   User,
@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 type Session = Awaited<ReturnType<typeof auth.api.getSession>>
 interface Props{
-  session:Session | null
+  session:Session
 }
 import dashboard from "@/public/authMock.png"
 import {useRouter} from "next/navigation"
@@ -23,7 +23,7 @@ import { toast } from "sonner";
 import { signUp } from "@/lib/actions/signupAgent";
 import {AnimatePresence, motion} from "framer-motion";
 import { locationData, organizationData, restaurantData } from "@/types";
-import { auth } from "@/lib/auth";
+
 const CreateOrganization = dynamic(() => import("./onboarding/create-organization"));
  const CreateRestuarant = dynamic(() => import("./onboarding/create-restuarant"));
  const VerifyCreation = dynamic(() => import("./onboarding/verify-creation"));
@@ -33,7 +33,7 @@ export default function SignUpAgent({session}:Props) {
  const [name , setName] = useState(""); 
  const [email , setEmail] = useState(""); 
  const [password , setPassword] = useState("");
- const [ShowOnboarding , setShowOnboarding] = useState(false); //To fix later3
+ const [ShowOnboarding , setShowOnboarding] = useState(true); //To fix later3
  const [step , setStep] = useState<number>(1);
  const [agreed , setAgreed] = useState(false);
  const [isLoading , setLoading] = useState(false);
@@ -105,7 +105,7 @@ export default function SignUpAgent({session}:Props) {
    }
    
  }
- 
+
   return (
    <motion.main
     initial={{opacity:0 , y:20 , scale:0.5}}
@@ -293,13 +293,13 @@ export default function SignUpAgent({session}:Props) {
         >
          <div className=" relative flex justify-center items-center h-auto min-h-[90dvh] w-auto shadow-md">
            {step === 1 && (
-         <CreateOrganization setStep={setStep} setShowOnboarding={setShowOnboarding} setOrganizationData={setOrganizationData}/>
+         <CreateOrganization setStep={setStep} setShowOnboarding={setShowOnboarding} setOrganizationData={setOrganizationData} organizationName={organizationData.name} organizationDescription={organizationData.description}/>
         )}
         {step === 2 && (
-         <CreateRestuarant setStep={setStep} setRestaurantData={setRestaurantData}/>
+         <CreateRestuarant setStep={setStep} setRestaurantData={setRestaurantData} restaurantName={restaurantData.name} restaurantEmail={restaurantData.email} restaurantPhone={restaurantData.phone}/>
         )}
         {step === 3 && (
-         <LocationConfig setStep={setStep} setLocationData={setLocationData} session={session}/>
+         <LocationConfig setStep={setStep} setLocationData={setLocationData} session={session} country={locationData.country} state={locationData.state} city={locationData.city} address={locationData.address} businessHours={locationData.businessHours}/>
         )}
         {step === 4 && session && (
           <VerifyCreation setStep={setStep} handleOnboardingSubmit={handleOnboardingSubmit} session={session}/>

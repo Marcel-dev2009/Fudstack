@@ -18,15 +18,12 @@ import dynamic from "next/dynamic";
 interface Props {
  setStep:React.Dispatch<SetStateAction<number>>         
  setRestaurantData:React.Dispatch<SetStateAction<restaurantData>>
+ restaurantName:string;
+ restaurantPhone:string;
+ restaurantEmail:string;
 }
 const Loading = dynamic(() => import("../../ui/loading"))
-function CreateRestaurant({setStep , setRestaurantData}:Props) {
-  const restaurantData:restaurantData = {
-name:"",
-logoUrl:"",
-email:"",
-phone:""
-}
+function CreateRestaurant({setStep , setRestaurantData , restaurantName , restaurantPhone ,restaurantEmail}:Props) {
   const [photoPreview , setPhotoPreview] = useState<string>("");
  const inputRef = useRef<HTMLInputElement | null>(null) 
  const [loading , setLoading] = useState(false);
@@ -36,8 +33,8 @@ phone:""
     const formData = new FormData() //a constructor that creates a new javascript object and accepts input data prt multimedia as key-value pairs in the object 
     formData.append("file" , file);
     formData.append(
-      "upload_presents",
-      "Fudstack_media"
+      "upload_preset",
+      "agent_media"
     );
     try{
     setLoading(true)
@@ -68,7 +65,7 @@ phone:""
       setLoading(false);
     }
   };
- const handleRestaurantDataDynamicChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+ const handleRestaurantChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
   e.preventDefault();
   const {name , value} = e.target
   setRestaurantData((prev) => ({
@@ -160,10 +157,11 @@ phone:""
                         <HiOutlineOfficeBuilding className="w-4 h-4 text-neutral-400 shrink-0" />
                         <input
                           type="text"
-                          value={restaurantData.name}
+                          name="name"
+                          value={restaurantName}
                           placeholder="e.g. Toast hall restaurant"
                           id="organizationName"
-                          onChange={handleRestaurantDataDynamicChange}
+                          onChange={handleRestaurantChange}
                           autoComplete="name"
                           className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                         />
@@ -177,12 +175,13 @@ phone:""
                       <div className="flex px-3 py-2 items-start border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
                         <FaPhoneAlt className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                          <input
-                         value={restaurantData.phone}
-                         onChange={handleRestaurantDataDynamicChange}
+                         value={restaurantPhone}
+                         onChange={handleRestaurantChange}
+                         name="phone"
                           type="text"
                           placeholder="e.g. +234......."
                           id="organizationName"
-                          autoComplete="name"
+                          autoComplete="phone"
                           className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
                         />
                       </div>
@@ -196,8 +195,9 @@ phone:""
                         <Mail className="w-4 h-4 text-neutral-400 shrink-0 mt-0.5" />
                          <input
                           type="text"
-                          value={restaurantData.email}
-                          onChange={handleRestaurantDataDynamicChange}
+                          name="email"
+                          value={restaurantEmail}
+                          onChange={handleRestaurantChange}
                           placeholder="e.g. toasthalls@gmail.com"
                           id="restaurant email"
                           autoComplete="email"
