@@ -1,16 +1,19 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-
-import { ChangeEvent, SetStateAction } from "react";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { ChangeEvent, SetStateAction, useState } from "react";
 import {motion} from "framer-motion";
-import { HiOutlineClock, HiOutlineGlobeAlt, HiOutlineMap, HiOutlineOfficeBuilding } from "react-icons/hi";
+import { HiOutlineClock, HiOutlineMap, HiOutlineOfficeBuilding } from "react-icons/hi";
 import { locationData } from "@/types";
 import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
 import { auth } from "@/lib/auth";
+import { toast } from 'sonner';
 interface Props {
  setStep:React.Dispatch<SetStateAction<number>>         
  setLocationData:React.Dispatch<SetStateAction<locationData>>
- country:string;
+ 
+ 
+ setHasSentVerification:React.Dispatch<SetStateAction<boolean>>
  city:string;
  state:string;
  businessHours:string;
@@ -20,7 +23,7 @@ type Session = Awaited<ReturnType<typeof auth.api.getSession>> | null
 interface Props {
  session :Session 
 }
-function LoacationConfig({setStep , setLocationData , session , country , city , state , address , businessHours}:Props) {
+function LoacationConfig({setStep , setLocationData , session , city , state , address , businessHours ,setHasSentVerification}:Props) {
   if(!session) {
    return; 
   }
@@ -32,6 +35,7 @@ function LoacationConfig({setStep , setLocationData , session , country , city ,
      [name] : value
     }))
    }
+  
   return (
     <motion.section
       initial={{opacity:0  , height:120 , filter:"blur(4px)"}}
@@ -58,26 +62,8 @@ function LoacationConfig({setStep , setLocationData , session , country , city ,
              <form className="space-y-4">
               
               {/* Country & State Grid */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <label htmlFor="country" className="block text-xs font-medium text-neutral-700">
-                    Country
-                  </label>
-                  <div className="flex px-3 py-2 items-center border rounded-lg border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all duration-150">
-                    <HiOutlineGlobeAlt className="w-4 h-4 text-neutral-400 shrink-0" />
-                    <input
-                      type="text"
-                      name="country"
-                      value={country}
-                      id="country"
-                      onChange={handleLocationChange}
-                      autoComplete="country"
-                      placeholder="e.g. Nigeria"
-                      className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400"
-                      required
-                    />
-                  </div>
-                </div>
+              <div className="">
+               
 
                 <div className="space-y-1">
                   <label htmlFor="state" className="block text-xs font-medium text-neutral-700">
@@ -169,10 +155,23 @@ function LoacationConfig({setStep , setLocationData , session , country , city ,
           <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
             
             <button
-              onClick={() => {
-                sendVerificationEmail(session.user.email);
-                setStep((prev) => prev + 1)
-              }}
+            type="submit"
+             onClick={() => {
+               if(state === ""){
+                toast.error("Fill out the required fields");
+              } else if (address === ""){
+                toast.error("Fill out the required fields");
+              } else if(city === ""){
+                toast.error("Fill out the required fields");
+              } else if(businessHours === ""){
+                toast.error("Fill out the required fields")
+              } else {
+              sendVerificationEmail(session.user.email);
+              setHasSentVerification(true)
+              }
+              
+             }}
+           
               className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
               Continue

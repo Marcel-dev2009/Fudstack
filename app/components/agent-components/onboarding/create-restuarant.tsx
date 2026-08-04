@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import {motion} from "framer-motion";
-import { ChangeEvent, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import { brand } from "@/brand";
 import {
   
@@ -49,6 +50,7 @@ function CreateRestaurant({setStep , setRestaurantData , restaurantName , restau
       toast.error("error uploading organization photo");
     }else{
        setPhotoPreview(data.secure_url);
+       console.log(data.secure_url)
        setRestaurantData((prev) => ({
         ...prev,
         logoUrl:data.secure_url
@@ -212,14 +214,26 @@ function CreateRestaurant({setStep , setRestaurantData , restaurantName , restau
                 <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
                   
                   <button
-                    onClick={() => setStep((prev) => prev + 1)}
+                    type="submit"
+                             onClick={() => {
+                                if(restaurantName === ""){
+                                toast.error("Fill out the required fields")
+                             } else if (restaurantPhone=== ""){
+                                toast.error("Fill out the required fields")
+                             } else if(restaurantEmail === ""){
+                               toast.error("Fill out the required fields")
+                             }
+                             else{
+                               setStep((prev) => prev + 1)
+                             }
+                              }}
                     className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
                   >
                     Continue
                   </button>
 
                   <button
-            onClick={() => setStep((prev) => prev - 1 )}
+                 onClick={() => setStep((prev) => prev - 1)}
              className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
             Back 

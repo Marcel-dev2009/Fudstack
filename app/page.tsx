@@ -9,13 +9,17 @@ export const metadata: Metadata = {
   description: brand.description,
 };
 export default async function Home() {
-/*   const session = await auth.api.getSession({
+  const session = await auth.api.getSession({
     headers:await headers(),
-  }) */
-/*   if(!session){
- 
+  })
+  if(!session){
+    return (
+   <section className="overflow-x-hidden overflow-y-auto">
+   <Parent/>
+    </section> 
+    )
   }
-  const user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
     where:{
       id:session.user.id,
     },
@@ -24,13 +28,8 @@ export default async function Home() {
     }
   });
   if(user?.role === "CLIENT"){
-    redirect("/client/dashboard")
+    redirect("/client/auth/sign-in")
   } else if(user?.role === "AGENT"){
-    redirect("/agent/dashboard")
-  } */
-      return (
-   <section className="overflow-x-hidden overflow-y-auto">
-   <Parent/>
-    </section> 
-  );
+    redirect("/agent/auth/sign-in")
+  }  
 }

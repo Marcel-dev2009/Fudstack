@@ -1,8 +1,9 @@
 "use client"
-import { SetStateAction, useEffect, useRef , useState} from "react"
+import { ChangeEvent, SetStateAction, useEffect, useRef , useState} from "react"
 import { MdClose } from "react-icons/md"
 import {motion} from "framer-motion"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 interface Props{
  setOpen:React.Dispatch<SetStateAction<boolean>>,
  setCustomerType:React.Dispatch<SetStateAction< "select" | "client" | "agent">>,
@@ -10,13 +11,13 @@ interface Props{
 function AgentTerms({setOpen , setCustomerType}:Props) {
   const text = `("Agreement")`
   const [showRouteButton , setShowRouteButton] = useState<boolean>(false)
-  const [hasReadTerms , setHasReadTerms] = useState(false);
+  const [agreed , setAgreed] = useState(false);
   const bottomRef = useRef<HTMLDivElement | null>(null)
     useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       const entry = entries[0]
       if(entry.isIntersecting){
-         setHasReadTerms(true)
+         setAgreed(true)
         setShowRouteButton(true)
       }
     })
@@ -25,6 +26,10 @@ function AgentTerms({setOpen , setCustomerType}:Props) {
       observer.disconnect();
     }
     },[])
+    const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
+     const targetStatus = event.target.checked
+     setAgreed(targetStatus);
+    }
     const router = useRouter();
   return (
    <>
@@ -272,7 +277,8 @@ By selecting &quot;I Agree&quot;, the restaurant confirms that it has read, unde
       type="checkbox"
       id="restaurantAgreeTerms"
       name="restaurantAgreeTerms"
-      disabled={!hasReadTerms}
+       checked={agreed}
+       onChange={handleCheck}
       required
       className="p-2 "
     />
@@ -301,7 +307,12 @@ By selecting &quot;I Agree&quot;, the restaurant confirms that it has read, unde
          mb-2
          "
          onClick={() => {
-          router.push("/agent/auth/sign-up")
+          if(agreed === false){
+            toast.warning("Agree to the terms and condition")
+          } else{
+            router.push("/agent/auth/sign-up")
+          }
+          
          }}
          >
      continue

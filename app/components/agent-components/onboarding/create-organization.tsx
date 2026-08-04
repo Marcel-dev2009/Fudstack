@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @next/next/no-img-element */
 // /* eslint-disable @next/next/no-img-element */
 "use client";
@@ -5,7 +6,7 @@ import { brand } from "@/brand";
 import { motion } from "framer-motion";
 import { FaFileAlt } from "react-icons/fa";
 import { Trash, UploadCloud } from "lucide-react";
-import React, { ChangeEvent, SetStateAction, useRef, useState } from "react";
+import React, { ChangeEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import { HiOutlineOfficeBuilding } from "react-icons/hi";
 import type { organizationData } from "@/types";
 import { CloudinaryClientResponse } from "@/cloudinary";
@@ -14,19 +15,18 @@ import dynamic from "next/dynamic";
 // const Loading = dynamic(() => import("../../ui/loading"));
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
-  setShowOnboarding:React.Dispatch<SetStateAction<boolean>>
   setOrganizationData: React.Dispatch<SetStateAction<organizationData>>
   organizationName:string;
   organizationDescription:string
 }
 
-function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData , organizationName , organizationDescription}: Props) {
+function CreateOrganization({ setStep  , setOrganizationData , organizationName , organizationDescription}: Props) {
 
   const [loading , setLoading] = useState<boolean>(false)
   const image = "https://res.cloudinary.com/dfsrso3jk/image/upload/v1785098926/asset1_v6wump.png";
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string>("");
- 
+  
   const handlePhoto = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -48,11 +48,12 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
     if("error" in data){
       toast.error("error uploading organization photo");
     }else{
-       setPhotoPreview(data.secure_url);
        setOrganizationData((prev) => ({
         ...prev,
         logoUrl:data.secure_url
-       }))
+       }));
+         console.log(data.secure_url)
+         setPhotoPreview(data.secure_url);
     }
    
     }catch(err){
@@ -156,6 +157,7 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
                     name="name"
                     placeholder="e.g. Gourmet Group"
                     value={organizationName}
+                    required
                     onChange={handleOrganizationChange}
                     id="organizationName"
                     autoComplete="name"
@@ -176,6 +178,7 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
                     autoComplete="description"
                     name="description"
                     value={organizationDescription}
+                    required
                     onChange={handleOrganizationChange} // to fix
                     rows={2}
                     className="flex-1 ml-2.5 outline-none bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 resize-none min-h-14"
@@ -190,16 +193,19 @@ function CreateOrganization({ setStep  , setShowOnboarding , setOrganizationData
           <div className="mt-6 pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
             
             <button
-              onClick={() => setStep((prev) => prev + 1)}
+            type="submit"
+              onClick={() => {
+                 if(organizationName === ""){
+                  toast.error("Fill out the required fields")
+              } else if (organizationDescription === ""){
+                 toast.error("Fill out the required fields")
+              } else{
+                setStep((prev) => prev + 1)
+              }
+               }}
               className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
               Continue
-            </button>
-            <button
-            onClick={() => setShowOnboarding(false)}
-             className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
-            >
-            Back 
             </button>
           </div>
         </div>

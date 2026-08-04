@@ -8,7 +8,8 @@ export const updateUserRoleForAgent =  async (userId:string) => {
     id:userId      
    },
    data:{
-    role:"AGENT"      
+    role:"AGENT", 
+    emailVerified:true     
    }       
  })
 } 
@@ -19,7 +20,8 @@ export const updateUserRoleForClient =  async (userId:string) => {
     id:userId      
    },
    data:{
-    role:"CLIENT"      
+    role:"CLIENT", 
+    emailVerified:true,     
    }       
  })
 } 
@@ -34,7 +36,17 @@ export const CheckUserRole = async (userId:string) => {
    }
   })
 }
-
+export const CheckOnboardingComplete = async (userId:string) => {
+if(!userId) return;
+await prisma.user.update({
+  where:{
+    id:userId
+  },
+  data:{
+    onboardingCompleted:true
+  }
+})
+}
 export const handleOnboarding = async (
   userId:string,
   data:onboardingData

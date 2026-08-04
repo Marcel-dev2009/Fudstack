@@ -15,7 +15,7 @@ export async function sendVerificationEmail(email:string){
     }      
  });
   await resend.emails.send({
-    from: `${brand.name} <onboarding@yourdomain.com>`,
+    from: `${brand.name} <onboarding@resend.dev>`,
     to: email,
     subject: "Verify your email",
 
@@ -33,7 +33,5 @@ export async function sendVerificationEmail(email:string){
 
       </div>
     `,
-  });
-
-  return true;
+  }); 
 }
