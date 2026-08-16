@@ -72,3 +72,16 @@ export const handleOnboarding = async (
    })
   })
 }
+/* type getOrganization = Awaited<ReturnType<typeof prisma.organization.findFirst>>
+ export const getOrganization:getOrganization = async (userId:string) => {
+  await prisma.organization.findFirst({
+  where:{
+    ownerId:userId,
+  },
+  select:{
+   name:true,
+   description:true,
+   logoUrl:true,
+  }
+ });
+  } */

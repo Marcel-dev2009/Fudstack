@@ -11,15 +11,16 @@ export const metadata: Metadata = {
 export default async function Home() {
   const session = await auth.api.getSession({
     headers:await headers(),
-  })
+  });
   if(!session){
     return (
    <section className="overflow-x-hidden overflow-y-auto">
    <Parent/>
     </section> 
     )
-  }
-    const user = await prisma.user.findUnique({
+  } 
+
+   const user = await prisma.user.findUnique({
     where:{
       id:session.user.id,
     },
@@ -27,9 +28,11 @@ export default async function Home() {
       role : true
     }
   });
-  if(user?.role === "CLIENT"){
-    redirect("/client/auth/sign-in")
-  } else if(user?.role === "AGENT"){
-    redirect("/agent/auth/sign-in")
-  }  
+  
+   if(session && user?.role === "CLIENT"){  
+    redirect("/client/auth/sign-in");
+  }
+   if(session && user?.role === "AGENT"){
+   redirect("/agent/auth/sign-in");
+  }
 }

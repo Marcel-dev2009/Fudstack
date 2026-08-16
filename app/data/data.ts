@@ -3,7 +3,14 @@ import { RiInfinityLine } from "react-icons/ri";
 import {TiShoppingCart } from "react-icons/ti";
 import { MdOutlineLocationOn , MdOutlineInventory, MdBolt  } from "react-icons/md";
 import { GrAnalytics } from "react-icons/gr";
+import {
 
+  TrendingUp,
+  ShoppingCart,
+  Package,
+  Wallet,
+  
+} from "lucide-react";
 import { IoPerson, IoShieldCheckmark } from "react-icons/io5";
 import { FaHeadset} from "react-icons/fa";
 import { CiLock } from "react-icons/ci";
@@ -194,3 +201,53 @@ export const DropItems = [
       "Yes. Customers can reserve tables online while your staff manages availability directly from the dashboard."
   }
 ];
+
+export const summaryCards = [
+  {
+    title: "Total live sales value",
+    value: "111,076",
+    icon: TrendingUp,
+    tone: "bg-blue-50 text-blue-500",
+    change: "↑ 2.15%",
+  },
+  {
+    title: "Total value orders",
+    value: "2,022",
+    icon: ShoppingCart,
+    tone: "bg-pink-50 text-pink-500",
+    change: "↓ 2.15%",
+  },
+  {
+    title: "Total waste value",
+    value: "413",
+    icon: Package,
+    tone: "bg-orange-50 text-orange-500",
+    change: "↓ 2.15%",
+  },
+  {
+    title: "Total events cost",
+    value: "2,022",
+    icon: Wallet,
+    tone: "bg-purple-50 text-purple-500",
+    change: "↑ 2.15%",
+  },
+];
+export const days = [
+  { id: "mon", label: "Monday", short: "Mon" },
+  { id: "tue", label: "Tuesday", short: "Tue" },
+  { id: "wed", label: "Wednesday", short: "Wed" },
+  { id: "thu", label: "Thursday", short: "Thu" },
+  { id: "fri", label: "Friday", short: "Fri" },
+  { id: "sat", label: "Saturday", short: "Sat" },
+  { id: "sun", label: "Sunday", short: "Sun" },
+];
+
+export const weeklyData: Record<string, number[]> = {
+  mon: [20, 38, 30, 50, 42, 62, 55],
+  tue: [35, 25, 48, 42, 68, 55, 72],
+  wed: [18, 42, 35, 58, 48, 70, 63],
+  thu: [30, 46, 38, 65, 52, 74, 69],
+  fri: [25, 40, 55, 45, 72, 66, 82],
+  sat: [42, 32, 50, 62, 55, 78, 70],
+  sun: [28, 45, 40, 58, 65, 60, 76],
+};
