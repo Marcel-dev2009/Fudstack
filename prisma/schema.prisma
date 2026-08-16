@@ -75,7 +75,7 @@ model Organization {
   id String @id @default(cuid())
 
   name        String       @unique
-  logoUrl     String?
+  logoUrl     String
   ownerId     String
   description String
   owner       User         @relation(fields: [ownerId], references: [id])
