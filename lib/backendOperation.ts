@@ -1,6 +1,7 @@
 "use server";
 import { onboardingData } from "@/types";
-import { prisma } from "./auth";
+import { auth, prisma } from "./auth";
+import { headers } from "next/headers";
 export const updateUserRoleForAgent =  async (userId:string) => {
  if(!userId) return;
  await prisma.user.update({
@@ -71,17 +72,36 @@ export const handleOnboarding = async (
     }
    })
   })
-}
-/* type getOrganization = Awaited<ReturnType<typeof prisma.organization.findFirst>>
- export const getOrganization:getOrganization = async (userId:string) => {
-  await prisma.organization.findFirst({
-  where:{
-    ownerId:userId,
-  },
-  select:{
-   name:true,
-   description:true,
-   logoUrl:true,
-  }
+ }
+ const session = await auth.api.getSession({
+  headers:await headers()
  });
-  } */
+
+ export async function getRestaurants(){
+    if(!session?.user.id) return;
+  const organization = await prisma.organization.findFirst({
+    where:{
+      ownerId:session.user.id // actually the user's sesssion when creating an account;
+    },
+    select:{
+      id:true
+    }
+  });
+  if(!organization?.id) throw new Error("Unauthorized access , No restaurant found");
+   const restaurant = await prisma.restaurant.findMany({
+    where:{
+      organizationId:organization?.id
+    },
+     select:{
+    id:true,
+    name:true,
+    logoUrl:true,
+    phone:true,
+    email:true,
+    staffNos:true,
+    status:true,
+    resNos:true
+   } 
+   });
+   return restaurant;
+ }

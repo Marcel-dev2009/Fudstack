@@ -114,7 +114,7 @@ function AgentDashboardHero({
             <img
               alt={organizationName}
               src={organizationPhoto}
-              className=" w-5 h-full mx-auto  object-cover"
+              className=" w-full h-full mx-auto  object-cover"
             />
           </div>
 

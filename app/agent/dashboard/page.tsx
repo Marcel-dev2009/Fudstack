@@ -1,6 +1,7 @@
 import { auth, prisma } from "@/lib/auth"
 import AgentPage from "./agentPage"
 import { headers } from "next/headers"
+import { redirect } from "next/navigation";
 async function AgentDashboardPage() {
   const session = await auth.api.getSession({
     headers: await headers()
@@ -17,7 +18,7 @@ async function AgentDashboardPage() {
   }
  });
  
- if(!createdOrganization) throw new Error("Oops, No Organization found");
+ if(!createdOrganization) redirect("/agent/onboarding");
   return (
    <AgentPage  organizationName={createdOrganization?.name} organizationPhoto={createdOrganization.logoUrl}/>
   )
