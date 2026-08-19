@@ -1,6 +1,7 @@
 import SideBar from "@/app/components/agent-components/sidebar";
 import { auth, prisma } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 async function DashboardLayout({children}:{
     children:React.ReactNode      
 }) {    
@@ -20,7 +21,7 @@ async function DashboardLayout({children}:{
    }
   });
   
-  if(!createdOrganization) throw new Error("Oops, No Organization found");         
+ if(!createdOrganization) redirect("/agent/onboarding");    
 
   return (
      <main className="flex min-h-screen w-full overflow-hidden bg-white">

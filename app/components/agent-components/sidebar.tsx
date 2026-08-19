@@ -12,6 +12,7 @@ import {
   User,
   Cog,
   Bell,
+  UtensilsCrossed,
 } from "lucide-react";
 import { useState } from "react";
 interface Props{
@@ -30,9 +31,9 @@ function AgentSideBar({ className , organizationName , tagline}:Props) {
     },
     {
       id:"1",
-      name: "Products",
-      icon: Package,
-      route: "/agent/dashboard/products",
+      name: "Restaurants",
+      icon: UtensilsCrossed,
+      route: "/agent/dashboard/restaurants",
       dropdown: false,
     },
     {
