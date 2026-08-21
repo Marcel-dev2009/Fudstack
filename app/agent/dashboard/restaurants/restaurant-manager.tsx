@@ -9,7 +9,10 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-const SkeletonLoader = dynamic(() => import("../../../components/ui/skeleton-loader"))
+import { AnimatePresence } from "framer-motion";
+const CreateRestaurantModal = dynamic(() => import("./restaurant-dialogue"))
+const SkeletonLoader = dynamic(() => import("../../../components/ui/skeleton-loader"));
+const RefreshButton = dynamic(() => import("@/app/components/ui/refresh-button"))
 type Restaurant = {
    id:string
    name:string,
@@ -23,6 +26,7 @@ type Restaurant = {
 function RestaurantManager() {
   // const router = useRouter();
   const [restaurantData , setRestaurantData] = useState<Restaurant[]>([]);
+  const [showModal , setShowModal] = useState<boolean>(false);
   const [loading , setLoading] = useState<boolean>(true);
   const [error , setError] = useState<string| undefined>(undefined)
   useEffect(() => {
@@ -80,12 +84,16 @@ function RestaurantManager() {
               </p>
             </div>
 
-            <button
+           <div className="flex flex-col">
+             <button
+            onClick={() => {
+              setShowModal(true);
+            }}
               className="
                 inline-flex items-center justify-center gap-2
                 rounded-xl bg-brand-burn px-4 py-2.5
                 text-xs font-semibold text-white
-                shadow-sm
+                shadow-sm mb-2
                 transition-all duration-200
                 hover:-translate-y-0.5 hover:shadow-md
                 active:translate-y-0
@@ -94,7 +102,12 @@ function RestaurantManager() {
               <Plus size={16} />
               New restaurant
             </button>
+             <div className="self-end">
+            <RefreshButton/>
           </div>
+           </div>
+          </div>
+         
         </div>
       </section>
 
@@ -219,6 +232,13 @@ function RestaurantManager() {
           </div>
         </div>
       </section>
+      {showModal && (
+    <AnimatePresence mode="wait">
+       <CreateRestaurantModal onClose={() => {
+        setShowModal(false);
+       }}/> 
+    </AnimatePresence>  
+      )}
     </main>
   );
 }

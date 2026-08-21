@@ -1,6 +1,10 @@
- async function RestaurantPage() {
+import { Suspense } from "react"
+import RestaurantDashboard from "./restaurant-dashboard"
+function RestaurantPage() {
   return (
-    <div>RestaurantPage</div>
+  <Suspense fallback="Loading...">
+      <RestaurantDashboard/>
+  </Suspense>
   )
 }
 export default RestaurantPage

@@ -251,3 +251,4 @@ export const weeklyData: Record<string, number[]> = {
   sat: [42, 32, 50, 62, 55, 78, 70],
   sun: [28, 45, 40, 58, 65, 60, 76],
 };
+

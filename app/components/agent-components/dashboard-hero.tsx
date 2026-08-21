@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { startTransition, useState } from "react";
+import { useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -33,7 +33,7 @@ type Organization = {
 };
 
 const AnalyticsPopover = dynamic(() => import("@/app/components/agent-components/analytics-provider"));
-
+const RefreshButton = dynamic(() => import("@/app/components/ui/refresh-button"));
 const OrganizationSwitcher = dynamic(() => import("@/app/components/agent-components/organization-switcher"))
 const SummaryCard = dynamic(() => import("@/app/components/agent-components/summary-card"))
 const ChartPlaceholder = dynamic(() => import("@/app/components/agent-components/chart-placeholder"))
@@ -53,20 +53,6 @@ function AgentDashboardHero({
   const [organizationOpen, setOrganizationOpen] = useState(false);
   const [numbersHidden, setNumbersHidden] = useState(false);
   const [selectedDay, setSelectedDay] = useState("mon");
-  const [refreshing, setRefreshing] = useState(false);
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-
-    startTransition(() => {
-      router.refresh();
-    });
-
-    // Animation reset
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 650);
-  };
 
   return (
     <main className="min-h-screen bg-white text-slate-900">
@@ -211,29 +197,7 @@ function AgentDashboardHero({
         </button>
 
         {/* Refresh */}
-        <button
-          onClick={handleRefresh}
-          title="Refresh page"
-          className="
-            flex h-9 w-9 items-center justify-center
-            rounded-lg bg-brand-burn
-            text-white shadow-sm
-            transition-all
-            hover:scale-105
-          "
-        >
-          <motion.div
-            animate={{
-              rotate: refreshing ? [0, 180, 150, 180] : 0,
-            }}
-            transition={{
-              duration: 0.65,
-              ease: "easeInOut",
-            }}
-          >
-            <RefreshCw size={14} />
-          </motion.div>
-        </button>
+      <RefreshButton/>
 
         {/* Hide/show numbers */}
         <button

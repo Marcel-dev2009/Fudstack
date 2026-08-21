@@ -8,16 +8,15 @@ async function RestaurantList() {
 const restaurantData = await getRestaurants();
  if(!restaurantData) throw new Error("No restaurant found!"); 
  return (
-   <div>
+   <div className="mx-10">
             {restaurantData.map((restaurant) => (
                   <div
                 key={restaurant.id}
                 className="
-                  group w-full
-                  border-b border-black/5
-                  p-4 text-left
+                  group w-full rounded-sm
+                  p-4 text-left border
+                   hover:border-orange-600/50
                   transition-all duration-200
-                  last:border-b-0
                   hover:bg-brand-burn/2.5
                   sm:p-5
                 "
@@ -29,6 +28,7 @@ const restaurantData = await getRestaurants();
                     lg:grid-cols-[minmax(220px,1.5fr)_minmax(160px,1fr)_minmax(120px,0.7fr)_40px]
                     lg:items-center
                     lg:gap-6
+                  
                   "
                 >
                   {/* Identity */}
@@ -80,7 +80,7 @@ const restaurantData = await getRestaurants();
                         className="shrink-0 text-slate-400"
                       />
 
-                      <span>{restaurant.staffNos} staff</span>
+                      <span>{restaurant.staffNos ?? "0"} staff</span> {/* would still find a way to use reduce method to find restaurant */}
                     </div>
 
                     <div className="flex items-center gap-2 text-[11px] text-slate-500">
