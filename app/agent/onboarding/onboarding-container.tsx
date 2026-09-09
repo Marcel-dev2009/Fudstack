@@ -1,5 +1,5 @@
 "use client"
-import { handleOnboarding } from "@/lib/backendOperation"
+import { handleOnboarding } from "@/lib/server-operation"
 import { useState } from "react"
 import { locationData, organizationData, restaurantData } from "@/types";
 import dynamic from "next/dynamic"

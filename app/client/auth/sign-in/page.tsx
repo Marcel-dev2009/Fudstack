@@ -1,11 +1,8 @@
 import LoginClient from "@/app/components/client-components/login"
-import { auth } from "@/lib/auth"
-import { headers } from "next/headers";
+import { getUserSession } from "@/lib/actions/getSession";
 import { redirect } from "next/navigation"
 async function SignInClientPage() {
-  const session = await auth.api.getSession({
-  headers: await headers()
-  });
+  const session = await getUserSession()
   if(session){
     redirect("client/dashboard")
   } else{
