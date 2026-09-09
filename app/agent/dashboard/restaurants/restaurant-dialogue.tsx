@@ -2,19 +2,17 @@
 "use client";
 
 import { CloudinaryClientResponse } from "@/cloudinary";
-import { createRestaurant } from "@/lib/backendOperation";
+import { createRestaurant } from "@/lib/server-operation";
 import { motion } from "framer-motion";
 import { Trash, UploadCloud } from "lucide-react";
 import {ChangeEvent, useRef, useState } from "react";
 import { toast } from "sonner";
-
-type CreateRestaurantModalProps = {
-  onClose: () => void;
-};
-
+interface Props{
+ onClose:() => void;
+}
 export default function CreateRestaurantModal({
   onClose,
-}: CreateRestaurantModalProps) {
+}: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [staffNos, setStaffNos] = useState(0);

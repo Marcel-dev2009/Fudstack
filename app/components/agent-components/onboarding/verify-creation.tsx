@@ -10,8 +10,7 @@ import { verifyOtp } from "@/lib/actions/verifyOtp";
 import { auth } from "@/lib/auth";
 import { sendVerificationEmail } from "@/lib/actions/sendVerficationEmail";
 import { toast } from "sonner";
-import Loading from "../../ui/loading";
-import { CheckOnboardingComplete } from "@/lib/backendOperation";
+import {completeOnboarding } from "@/lib/server-operation";
  type Session = Awaited<ReturnType<typeof auth.api.getSession>>
 interface Props {
   setStep: React.Dispatch<SetStateAction<number>>;
@@ -64,8 +63,8 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
       const result = await verifyOtp( session.user.email , code);  
      if(result.success){
       await handleOnboardingSubmit();
-      await CheckOnboardingComplete(session.user.id)
-      router.replace("/agent/dashboard")
+      await completeOnboarding(session.user.id)
+      router.replace("/agent/dashboard");
      } else{
       toast.error("Invalid code");
      }

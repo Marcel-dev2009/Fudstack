@@ -1,20 +1,17 @@
-"use client";
+import AgentDashboardHero from "@/app/components/agent-components/dashboard-hero";
+import { getOrganization } from "@/lib/actions/getOrganization";
 
-import dynamic from "next/dynamic";
+async function AgentPage() {
+  const organization = await getOrganization();
+  if (!organization) return null;
 
-const Dashboard = dynamic(
-  () => import("@/app/components/agent-components/dashboard-hero")
-);
-interface Props{
- organizationName:string
- organizationPhoto:string
-}
-function AgentPage({ organizationName, organizationPhoto}:Props) {
   return (
-    <main className="flex min-h-screen w-full overflow-hidden bg-white">
-      {/* Remaining available space */}
-      <section className="min-w-0 flex-1 overflow-y-auto">
-        <Dashboard organizationName={organizationName} organizationPhoto={organizationPhoto}/>
+    <main className="min-h-screen w-full bg-white pt-16 lg:pt-0 lg:pl-64 transition-all duration-300">
+      <section className="w-full min-w-0">
+        <AgentDashboardHero 
+          organizationName={organization.name} 
+          organizationPhoto={organization.logoUrl}
+        />
       </section>
     </main>
   );

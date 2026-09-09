@@ -1,4 +1,4 @@
-import { getRestaurants } from "@/lib/backendOperation";
+import { getRestaurants } from "@/lib/server-operation";
 /* 
 When using dynamic metadata in nextjs the dynamic route [id] returns a promise object that can be resolved to get what [id] was actually substituted with 
 */

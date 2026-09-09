@@ -10,19 +10,15 @@ import {
 import{
     CalendarDays,
     ChevronDown,
-    ChevronRight,
     Eye,
     EyeOff,
     TrendingUp,
     ShoppingCart,
     Package,
-    List,
     BarChart3,
-    RefreshCw,
     Receipt,
     Truck,
     Bell,
-    Check,
     Plus,
 } from "lucide-react"
 import { summaryCards} from "@/app/data/data";

@@ -1,25 +1,10 @@
 import SideBar from "@/app/components/agent-components/sidebar";
-import { auth, prisma } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getOrganization } from "@/lib/actions/getOrganization";
 import { redirect } from "next/navigation";
 async function DashboardLayout({children}:{
     children:React.ReactNode      
 }) {    
-   const session = await auth.api.getSession({
-     headers: await headers()
-   });
-    if (!session?.user.id) return;
-  
-   const createdOrganization = await prisma.organization.findFirst({
-   where:{
-     ownerId:session.user.id,
-   },
-   select:{
-    name:true,
-    description:true,
-    logoUrl:true,
-   }
-  });
+   const createdOrganization = await getOrganization()
   
  if(!createdOrganization) redirect("/agent/onboarding");    
 

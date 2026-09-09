@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import RootHeader from "../ui/general-header"
 import "../../globals.css"
 import { useRef, useState } from "react"
-import { handleEnter, handleLeave } from "@/lib/utils"
 import ContentRatio from "./aspect-ratio"
 import { SplitText } from "gsap/all"
 import { useGSAP } from "@gsap/react"
@@ -27,7 +26,6 @@ function HeroSection() {
  const modalRef = useRef<HTMLDivElement | null>(null)
   const [showScrollTop , setShowScrollTop] = useState(false);
   const [showScrollBottom , setShowScrollBottom] = useState(false); 
- const btnRef  = useRef<HTMLButtonElement | null>(null)
   useGSAP(() => {
     const split = SplitText.create(".text" , {type:"words , chars"});
     gsap.from(split.chars,{
@@ -130,10 +128,7 @@ const handleEnterType = () => {
       <div className="flex">
        <Button variant="link" onClick={() => router.push("/docs")}>Learn More</Button>
        <Button
-       ref={btnRef}
        onClick={() => setOpen(true)}
-       onMouseEnter={() => handleEnter(btnRef)}
-       onMouseLeave={() => handleLeave(btnRef)} 
        className="rounded-sm bg-brand-burn">Get Started</Button>
       </div>
       <ContentRatio/>

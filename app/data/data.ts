@@ -9,6 +9,13 @@ import {
   ShoppingCart,
   Package,
   Wallet,
+  Home,
+  UtensilsCrossed,
+  User,
+  Cog,
+  Bell,
+  BarChart3,
+  Lightbulb,
   
 } from "lucide-react";
 import { IoPerson, IoShieldCheckmark } from "react-icons/io5";
@@ -252,3 +259,54 @@ export const weeklyData: Record<string, number[]> = {
   sun: [28, 45, 40, 58, 65, 60, 76],
 };
 
+export const navItems = [
+    {
+      id:"0",
+      name: "Dashboard",
+      icon: Home,
+      route: "/agent/dashboard",
+    },
+    {
+      id:"1",
+      name: "Restaurants",
+      icon: UtensilsCrossed,
+      route: "/agent/dashboard/restaurants",
+      dropdown: false,
+    },
+    {
+       id:"2",
+      name: "Profile",
+      icon: User,
+        route: "/agent/dashboard/profile",
+      dropdown: false,
+    },
+    {
+       id:"3",
+      name: "Sales",
+        route: "/agent/dashboard/sales",
+      icon: BarChart3,
+    },
+    {
+       id:"4",
+      name: "Insights",
+      icon: Lightbulb,
+        route: "/agent/dashboard/insights",
+      dropdown: false,
+          
+    },
+    {
+       id:"5",
+      name: "Notifications",
+      icon: Bell,
+      route: "/agent/dashboard/notifications",
+      dropdown: false,
+          
+    },
+    {
+       id:"6",
+      name: "Settings",
+      icon: Cog,
+      route: "/agent/dashboard/settings",
+      dropdown: false,
+    },
+  ];

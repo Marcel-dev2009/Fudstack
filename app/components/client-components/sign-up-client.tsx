@@ -12,7 +12,7 @@ import {
 import {useRouter} from "next/navigation"
 import dashboard from "@/public/clientdash.png"
 import { signUp } from "@/lib/actions/signupClient";
-import { updateUserRoleForClient } from "@/lib/backendOperation";
+import { updateUserRoleForClient } from "@/lib/server-operation";
 import {motion} from "framer-motion";
 function SignUpClient() {
   const [name , setName] = useState("")

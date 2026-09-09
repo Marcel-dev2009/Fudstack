@@ -16,7 +16,7 @@ function VerificationNotification({session , setStep}:Props) {
   useEffect(() => {
    const timer = setTimeout(() => {
     setStep((prev) => prev + 1);
-   } , 4000);
+   } , 2000);
    return () => clearTimeout(timer);
   },[setStep])
   if(!session) return;

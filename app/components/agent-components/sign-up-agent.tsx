@@ -4,10 +4,8 @@ import { brand } from "@/brand";
 import { ChangeEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
-import { updateUserRoleForAgent } from "@/lib/backendOperation";
+import { updateUserRoleForAgent } from "@/lib/server-operation";
 import Image from "next/image"
-// const ThreeDotHorizontal = dynamic(() => import("../ui/three-dot-widget"));
-import { auth } from "@/lib/auth";
 import {
   ChefHat,
   User,
@@ -25,7 +23,6 @@ export default function SignUpAgent() {
  const [password , setPassword] = useState("");
  const [agreed , setAgreed] = useState(false);
  const [isLoading , setLoading] = useState(false);
-//  const [onBoardingloading ,setOnboardingLoading] = useState<boolean>(false);
  const router = useRouter()
 
  const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
@@ -203,8 +200,8 @@ export default function SignUpAgent() {
 <section className="hidden lg:flex relative overflow-hidden bg-brand-burn text-white p-12 items-center justify-center">
 
   {/* Background Blur */}
- {/*  <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-  <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-orange-300/20 blur-3xl"/> */}
+  <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+  <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-orange-300/20 blur-3xl"/>
 
   {/* Grid Pattern */}
   <div

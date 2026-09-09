@@ -2,10 +2,10 @@ import SignUpClient from "@/app/components/client-components/sign-up-client"
 import { auth, prisma } from "@/lib/auth"
 import { redirect } from "next/navigation"
 import { headers } from "next/headers"
+import { getUser } from "@/lib/actions/getUser"
+import { getUserSession } from "@/lib/actions/getSession"
 async function SignUpClientPage() {
-  const session = await auth.api.getSession({
-    headers:await headers()
-  })
+  const session = await getUserSession();
   if(!session){
     return(
    <section>
@@ -14,14 +14,7 @@ async function SignUpClientPage() {
     )
 
   }
-  const user = await prisma.user.findUnique({
-    where:{
-      id:session.user.id
-    },
-    select:{
-      role:true
-    }
-  });
+  const user = await getUser(session.user.id);
  if (user?.role === "AGENT"){
   redirect("/agent/dashboard");
   }else if(user?.role === "CLIENT"){

@@ -1,10 +1,8 @@
 import { CalendarDays,  LocateFixed, Phone, Users } from "lucide-react";
 // import {useRouter} from "next/navigation";
-import { getRestaurants } from "@/lib/backendOperation";
+import { getRestaurants } from "@/lib/server-operation";
 import NavigateButton from "./navigateButton";
-async function RestaurantList() {
-// const router = useRouter();          
-
+async function RestaurantList(){
 const restaurantData = await getRestaurants();
  if(!restaurantData) throw new Error("No restaurant found!"); 
  return (
