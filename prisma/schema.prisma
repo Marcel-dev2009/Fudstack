@@ -41,15 +41,14 @@ enum Status {
 }
 
 model Restaurant {
-  id String @id @default(cuid())
-
+  id             String       @id @default(cuid())
   name           String       @unique
   logoUrl        String?
   phone          String
   email          String
-  staffNos       Int?
+  staffNos       Int          @default(1)
   status         Status       @default(ACTIVE)
-  resNos         Int?         @default(1)
+  resNos         Int          @default(1)
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
   locations      Location?

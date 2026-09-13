@@ -18,6 +18,7 @@ if(!session){
   )
 };
    const user = await getUser(session.user.id)
+   if(!user) return;
    if(user.onboardingCompleted === false){
     redirect("/agent/onboarding")
    } else if(user.onboardingCompleted === true){

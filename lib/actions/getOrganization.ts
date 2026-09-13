@@ -1,19 +1,21 @@
 "use server";
+import { cacheTag } from "next/cache";
 import { prisma } from "../auth";
-import { getUserSession } from "./getSession";
-export async function getOrganization() {
-  const session = await getUserSession();
-  if(!session) return;
+export async function getOrganization(userId:string) {
+  "use cache";
+  cacheTag(`organization-data-tag`);
   const organization = await prisma.organization.findFirst({
    where:{
-    ownerId:session.user.id,   
+    ownerId:userId,   
    },
    select:{
    id:true,
+   ownerId:true,
    name:true,
    logoUrl:true,
    description:true
-  }
+  },
+  // take: 2,
   });
    return organization;      
 }

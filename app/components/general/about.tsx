@@ -1,90 +1,149 @@
-"use client"
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/all"
-import { Button } from "@/components/ui/button"
-import aboutPhoto from "../../../public/about.png"
-import Image from "next/image"
-import {MoveRight} from "lucide-react"
-import { SplitText } from "gsap/all"
-import AboutGrid from "../ui/about-grid"
-import { useRef } from "react"
-import { motion } from "framer-motion"
-import { useRouter } from "next/navigation"
-gsap.registerPlugin(ScrollTrigger , SplitText);
+"use client";
+
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger, SplitText } from "gsap/all";
+import { Button } from "@/components/ui/button";
+import aboutPhoto from "../../../public/about.png";
+import Image from "next/image";
+import { MoveRight } from "lucide-react";
+import AboutGrid from "../ui/about-grid";
+import { useRef } from "react";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
 function About() {
   const router = useRouter();
-   const section = useRef<HTMLDivElement| null>(null);  
-   const gridRef = useRef<HTMLDivElement | null>(null);
-    useGSAP(() => {
-     const split = SplitText.create(".text",{type:"words , chars"})
-     gsap.from(split.words,{
-      scrollTrigger:{
-        scrub:true,
-       trigger:".text",
-       start:"top 100%",
-       toggleActions:"play none none none"
-      },
-      duration:1.2,
-      y:100,
-      autoAlpha:0,
-      stagger:0.05,
-      ease:"power2.inOut"
-     }) 
-     const tl = gsap.timeline({
-       defaults:{
-        opacity:0.2,
-        x:-20
-       } ,
-      scrollTrigger:{
-        trigger:gridRef.current,
-        start:"-80% top",
-        end:"center top",
-         scrub:true, 
-      }  
-     })
-     tl.from(gridRef.current , {x:-20 , opacity:0.2 , ease:"power1.in"})
-     tl.to(gridRef.current, {x:0 , opacity:1, ease:"power1.in"})
-    },{scope:section})
-  return (
-    <>
-    <div
-    ref={section}
-    className="bg-black text-white min-h-screen h-auto">
-       <h2 className="p-4 text-xl font-bold  tracking-tighter">About Us</h2>
-      <div className="flex flex-col lg:flex-row  justify-evenly ">
-           <div className="bg-secondary-onyx/20 backdrop-blur-sm rounded-2xl w-auto max-w-75 mx-auto md:mx-0">
-          <Image src={aboutPhoto} alt="Fudstack - About Photo" aria-label="about Photo" className="h-auto max-h-[65dvh] w-fit max-w-175 rounded-2xl object-contain mx-auto p-2"/>
-       </div>
-       <div>
-          <h2 className="w-auto text max-w-md font-semibold text-md text-center md:text-2xl align-baseline tracking-tighter">We automate your tasks without the friction of complexity.</h2>
+  const section = useRef<HTMLDivElement | null>(null);
+  const headlineRef = useRef<HTMLHeadingElement | null>(null);
+  const gridRef = useRef<HTMLDivElement | null>(null);
 
-          <div className="mt-2 p-4  gap-8">
-             <motion.p
-             initial={{opacity:0 , x:-100 , y:20}}
-             whileInView={{opacity:1 , x:0 , y:0}}
-             transition={{duration:1 ,ease:"easeInOut" }}
-             className=" w-auto max-w-98 text-center font-light text-sm tracking-tighter">
-               Your all in one solution for management of day to day tasks in your workplace 
-               such as Inventory management,  client interaction, deliveries and scheduling    
-             </motion.p>
-             <div className="w-full flex justify-center">
-              <Button
-                onClick={() => router.push("/docs")}
-              className="m-2 w-1/3 "><span className="tracking-tight text-xs">Read More</span> <MoveRight data-icon="inline-end"/> </Button>      
-              </div> 
-          </div>
-          <div
-          ref={gridRef}
-          className="grid p-4"
+  useGSAP(
+    () => {
+      // 1. Smooth SplitText Heading Animation
+      if (headlineRef.current) {
+        const split = new SplitText(headlineRef.current, {
+          type: "words",
+        });
+
+        gsap.from(split.words, {
+          scrollTrigger: {
+            trigger: headlineRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          y: 24,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.04,
+          ease: "power3.out",
+        });
+      }
+
+      // 2. Smooth Grid Fade/Slide Reveal
+      if (gridRef.current) {
+        gsap.fromTo(
+          gridRef.current,
+          {
+            opacity: 0,
+            y: 30,
+          },
+          {
+            scrollTrigger: {
+              trigger: gridRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power2.out",
+          }
+        );
+      }
+    },
+    { scope: section }
+  );
+
+  return (
+    <section
+      ref={section}
+      className="relative min-h-screen w-full bg-black py-12 text-white sm:py-20"
+    >
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 className="mb-8 text-xl font-bold tracking-tight text-white/90 sm:text-2xl">
+          About Us
+        </h2>
+
+        <div className="flex flex-col items-center justify-between gap-10 lg:flex-row lg:items-start lg:gap-16">
+          {/* Photo Container */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-lg shrink-0 rounded-2xl bg-white/5 p-2 backdrop-blur-sm ring-1 ring-white/10"
           >
-            <AboutGrid/>
+            <Image
+              src={aboutPhoto}
+              alt="Fudstack - About Photo"
+              className="h-auto max-h-137.5 w-full rounded-xl object-contain"
+              priority
+            />
+          </motion.div>
+
+          {/* Text & Content Container */}
+          <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
+            {/* SplitText Animated Headline */}
+            <h2
+              ref={headlineRef}
+              className="max-w-xl text-2xl font-semibold tracking-tight text-white sm:text-3xl md:text-4xl leading-tight"
+            >
+              We automate your tasks without the friction of complexity.
+            </h2>
+
+            {/* Paragraph & CTA */}
+            <div className="mt-6 flex flex-col items-center gap-6 lg:items-start">
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+                className="max-w-md text-sm font-normal leading-relaxed text-gray-400 sm:text-base"
+              >
+                Your all-in-one solution for management of day-to-day tasks in your
+                workplace such as inventory management, client interaction,
+                deliveries, and scheduling.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.25, ease: "easeOut" }}
+                className="w-full sm:w-auto"
+              >
+                <Button
+                  onClick={() => router.push("/docs")}
+                  className="group flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-brand-burn px-6 text-xs font-semibold text-white transition-all hover:bg-brand-burn/90 active:scale-95 sm:w-auto"
+                >
+                  <span>Read More</span>
+                  <MoveRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </motion.div>
+            </div>
+
+            {/* Grid Container */}
+            <div ref={gridRef} className="mt-10 w-full">
+              <AboutGrid />
+            </div>
           </div>
-       </div>
-        
+        </div>
       </div>
-    </div>
-    </>
-  )
+    </section>
+  );
 }
-export default About
+
+export default About;

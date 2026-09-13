@@ -1,49 +1,91 @@
-"use client"
-import gsap from "gsap"
-import { useGSAP } from "@gsap/react"
-import { ScrollTrigger } from "gsap/all"
-import {motion} from "framer-motion"
-import { SplitText } from "gsap/all"
-import ServiceGrid from "../ui/service-grid"
-import { useRef } from "react"
-gsap.registerPlugin(ScrollTrigger , SplitText)
-function Services() {
- const divRef = useRef<HTMLDivElement | null>(null);
-  useGSAP(() =>{
-  const split = SplitText.create(".text",{type:"words,chars"})
-  gsap.from(split.words, {
-    scrollTrigger:{
-      trigger:".text",
-      start:"top 80%",
-      scrub:false,
+"use client";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger, SplitText } from "gsap/all";
+import ServiceGrid from "../ui/service-grid";
+import { useRef } from "react";
+
+gsap.registerPlugin(ScrollTrigger, SplitText);
+
+export default function Services() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+  const gridWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      // 1. Heading Word-by-Word Reveal
+      if (headingRef.current) {
+        const split = new SplitText(headingRef.current, {
+          type: "words",
+        });
+
+        gsap.from(split.words, {
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: "top 85%",
+            toggleActions: "play none none reverse",
+          },
+          y: 35,
+          opacity: 0,
+          duration: 0.8,
+          stagger: 0.05,
+          ease: "power3.out",
+        });
+      }
+
+      // 2. Smooth Grid Fade-In
+      if (gridWrapperRef.current) {
+        gsap.fromTo(
+          gridWrapperRef.current,
+          {
+            opacity: 0,
+            y: 30,
+          },
+          {
+            scrollTrigger: {
+              trigger: gridWrapperRef.current,
+              start: "top 85%",
+              toggleActions: "play none none reverse",
+            },
+            opacity: 1,
+            y: 0,
+            duration: 0.9,
+            ease: "power2.out",
+          }
+        );
+      }
     },
-    duration:.7,
-    stagger:.08,
-    ease:"power2.inOut",
-    y:100,
-    autoAlpha:1,
-  })
-  },{scope:divRef})
+    { scope: containerRef }
+  );
+
   return (
-    <div
-    ref={divRef}
-    className="bg-secondary-licorice text-white
-    w-auto
-    h-auto min-h-[80dvh]
-    p-10
-    "
+    <section
+      ref={containerRef}
+      className="relative w-full min-h-[80vh] bg-secondary-licorice text-white py-16 sm:py-24 px-4 sm:px-6 lg:px-8"
     >
-           <h2 className="p-4 text-sm font-light text-center text-brand-apricot tracking-tighter">Our Services</h2>    
-    <div className="text-center">
-     <motion.h1 
-     initial={{opacity:0}}
-     whileInView={{opacity:1}}
-     className="font-heading text  md:text-xl lg:text-2xl font-bold tracking-tighter">The services we offer include ...</motion.h1>
-     <div>
-       <ServiceGrid/>   
-     </div>
-    </div>
-    </div>
-  )
+      <div className="mx-auto max-w-7xl text-center">
+        {/* Section Tagline */}
+        <span className="inline-block text-xs font-semibold uppercase tracking-wider text-brand-apricot mb-3">
+          Our Services
+        </span>
+
+        {/* Animated Heading Container */}
+        <div className="overflow-hidden mb-12">
+          <h1
+            ref={headingRef}
+            className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight"
+          >
+            The services we offer include ...
+          </h1>
+        </div>
+
+        {/* Service Grid Section */}
+        <div ref={gridWrapperRef} className="w-full">
+          <ServiceGrid />
+        </div>
+      </div>
+    </section>
+  );
 }
-export default Services

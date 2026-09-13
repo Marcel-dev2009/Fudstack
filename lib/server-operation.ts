@@ -79,12 +79,16 @@ export const handleOnboarding = async (
 
 
  export async function getRestaurants(){
-  const organization = await getOrganization();
+  const session = await getUserSession();
+  if(!session) return;
+  const organization = await getOrganization(session.user.id);
   if(!organization) return;
    return await CachedRestaurantList(organization.id);
  }
 export async function createRestaurant( name:string, logoUrl:string, phone:string, email:string, staffNos:number, resNos:number){  
-    const organization = await getOrganization();
+    const session = await getUserSession();
+  if(!session) return;
+    const organization = await getOrganization(session.user.id);
     if(!organization) return;
    await prisma.restaurant.create({
     data:{

@@ -1,6 +1,6 @@
+import AgentProfile from "./agent-profile"
+
 function ProfilePage() {
-  return (
-    <div>ProfilePage</div>
-  )
+  return <AgentProfile/>
 }
 export default ProfilePage

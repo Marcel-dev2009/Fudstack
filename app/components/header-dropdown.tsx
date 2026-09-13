@@ -2,8 +2,9 @@ import Link from "next/link"
 interface Props{
  children:string,
  href : string,
+ onClick?:React.MouseEventHandler
 }
-function DropDown({children,href}:Props) {
+function DropDown({children , href , onClick}:Props) {
   return (
      <>
       <div>

@@ -1,10 +1,13 @@
 import SideBar from "@/app/components/agent-components/sidebar";
 import { getOrganization } from "@/lib/actions/getOrganization";
+import { getUserSession } from "@/lib/actions/getSession";
 import { redirect } from "next/navigation";
 async function DashboardLayout({children}:{
     children:React.ReactNode      
-}) {    
-   const createdOrganization = await getOrganization()
+}) { 
+   const session = await getUserSession();
+   if(!session) return; //we'll throw new Error later   
+   const createdOrganization = await getOrganization(session.user.id);
   
  if(!createdOrganization) redirect("/agent/onboarding");    
 

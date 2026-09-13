@@ -1,8 +1,11 @@
 import AgentDashboardHero from "@/app/components/agent-components/dashboard-hero";
 import { getOrganization } from "@/lib/actions/getOrganization";
+import { getUserSession } from "@/lib/actions/getSession";
 
 async function AgentPage() {
-  const organization = await getOrganization();
+  const session = await getUserSession();
+  if(!session) return;
+  const organization = await getOrganization(session.user.id);
   if (!organization) return null;
 
   return (

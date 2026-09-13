@@ -1,9 +1,12 @@
 import { getOrganization } from "@/lib/actions/getOrganization";
+import { getUserSession } from "@/lib/actions/getSession";
 import { getStats } from "@/lib/cache/getStats";
 import { ArrowUpRight, Store, Users } from "lucide-react";
 
-async function RestaurantStats() {         
-  const organization = await getOrganization();         
+async function RestaurantStats() {  
+  const session = await getUserSession();
+  if (!session) return;       
+  const organization = await getOrganization(session.user.id);         
   // 1. Fallback guard: Prevent crashes if the user doesn't have an active organization yet
   if (!organization) {
     return (

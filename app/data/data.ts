@@ -16,51 +16,96 @@ import {
   Bell,
   BarChart3,
   Lightbulb,
+  Headset,
+  Zap,
+  ShieldCheck,
   
 } from "lucide-react";
 import { IoPerson, IoShieldCheckmark } from "react-icons/io5";
 import { FaHeadset} from "react-icons/fa";
 import { CiLock } from "react-icons/ci";
 
-interface gridProps{
-  icon:IconType
-  fill? : string,
-  title:string,
-  description:string,
-  indepth?:string
-}
- export const serviceGrid = [
+
+export const serviceGrid = [
   {
-    icon : RiInfinityLine,
-   title:"Seamless Client Interaction",
-   description:"Get in Contact with your client by chatting with them so as to meet up to their desired needs" 
+    id: "client-interaction",
+    icon: RiInfinityLine,
+    title: "Seamless Client Interaction",
+    description:
+      "Get in contact with your clients by chatting with them directly to cater to their desired needs in real-time.",
+    details: [
+      "Instant live messaging channel for customer support",
+      "Automated automated response triggers for frequently asked queries",
+      "Custom interaction history logging & staff notes assignment",
+    ],
+    featured: true,
   },
   {
-    icon : TiShoppingCart,
-   title:"Ordering",
-   description:"An automated system for your clients to make orders for your services in a specified to location" 
+    id: "ordering",
+    icon: TiShoppingCart,
+    title: "Ordering System",
+    description:
+      "An automated system for your clients to make orders for your services at specified locations.",
+    details: [
+      "Custom digital menus & dynamic pricing tables",
+      "Instant checkout integration with automated receipt generation",
+      "Direct kitchen and bar order dispatching logic",
+    ],
+    featured: false,
   },
   {
-      icon :MdOutlineLocationOn,
-   title:"Food delivery Tracking",
-   description:"Track and monitor delivery progress until goods get from manufacturer to the consumer" 
+    id: "delivery-tracking",
+    icon: MdOutlineLocationOn,
+    title: "Food Delivery Tracking",
+    description:
+      "Track and monitor delivery progress until goods reach from kitchen to consumer.",
+    details: [
+      "Real-time GPS mapping & ETA estimation",
+      "Automated SMS dispatch notifications for customers",
+      "Rider route optimization to ensure food arrives warm",
+    ],
+    featured: false,
   },
   {
-    icon : MdOutlineInventory ,
-   title:"Inventory Management",
-   description:"Management your products with ease without the friction of complexity" 
+    id: "inventory",
+    icon: MdOutlineInventory,
+    title: "Inventory Management",
+    description:
+      "Manage your products with ease without the friction of complexity.",
+    details: [
+      "Real-time stock level depletion tracking per order",
+      "Automated low-stock threshold alerts for essential ingredients",
+      "Vendor purchase order generation & batch tracking",
+    ],
+    featured: false,
   },
   {
-      icon : GrAnalytics,
-   title:"Sales Analytics",
-   description:"Monitor and track sales with your device" 
+    id: "analytics",
+    icon: GrAnalytics,
+    title: "Sales Analytics",
+    description:
+      "Monitor and track sales performance directly from your primary dashboard.",
+    details: [
+      "Visual revenue trends & peak operational hour heatmaps",
+      "Item popularity reports to identify bestsellers",
+      "Exportable financial summaries for accounting integration",
+    ],
+    featured: false,
   },
   {
-      icon : IoPerson,
-   title:"Customer Management",
-   description:"See your recent customers and view business history with them as well" 
-  }
- ] 
+    id: "customer-management",
+    icon: IoPerson,
+    title: "Customer Management",
+    description:
+      "See your recent customers and view business history with them as well.",
+    details: [
+      "Customer lifetime value calculation & visit frequency stats",
+      "Loyalty rewards & automated promotional campaign targeting",
+      "Direct feedback collection and satisfaction scoring",
+    ],
+    featured: false,
+  },
+]
 export const DropItems = [
     {
       title : "Seamless client Interaction",
@@ -88,32 +133,63 @@ export const DropItems = [
     },
 
   ]
-  export const gridItems:gridProps[] = [
-    {
-      icon:CiLock,
-      fill:" #FAA0A0",
-     title :  "Confidentiality",
-     description:"Your data shared with us are safe and secured"
-    },
-    {
-      icon :IoShieldCheckmark,
-      fill:"#228B22",
-      title:"Reliability",
-      "description":"You can always rely on our team for efficent managment of your task",
-    },
-    {
-      icon:MdBolt,
-      fill:"#FFFF8F",
-      title:"Speed",
-      description:"Our solutions are lightweight which makes processes fast and accurate"
-    },
-    {
-      icon:FaHeadset,
-      fill:"#008AA4",
-      title:"Availability",
-      description:"Our strong team of developers are always at an armslength to give you proper support"
-    }
-  ]
+  export interface GridItem {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  icon: IconType;
+  badge: string;
+  metrics: { label: string; value: string };
+  accentColor: string;
+  badgeColor: string;
+}
+  export const gridItemsData: GridItem[] = [
+  {
+    id: "confidentiality",
+    title: "Confidentiality",
+    subtitle: "Data Protection",
+    description: "Strict end-to-end encryption & zero-knowledge data isolation protocols.",
+    icon: CiLock,
+    badge: "SOC2 Type II",
+    metrics: { label: "Encryption", value: "AES-256" },
+    accentColor: "from-amber-500/20 via-orange-500/10 to-transparent",
+    badgeColor: "text-amber-400 bg-amber-400/10 border-amber-400/20"
+  },
+  {
+    id: "reliability",
+    title: "Reliability",
+    subtitle: "Consistent Performance",
+    description: "Guaranteed SLA uptime with fail-safe redundant node clusters.",
+    icon: ShieldCheck,
+    badge: "99.99% Uptime",
+    metrics: { label: "Availability SLA", value: "99.99%" },
+    accentColor: "from-emerald-500/20 via-teal-500/10 to-transparent",
+    badgeColor: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
+  },
+  {
+    id: "speed",
+    title: "Speed",
+    subtitle: "Ultra Low Latency",
+    description: "Lightning-fast request execution and real-time edge processing.",
+    icon: Zap,
+    badge: "< 50ms Edge",
+    metrics: { label: "Response Time", value: "32ms Avg" },
+    accentColor: "from-cyan-500/20 via-blue-500/10 to-transparent",
+    badgeColor: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20"
+  },
+  {
+    id: "availability",
+    title: "Availability",
+    subtitle: "Always On Support",
+    description: "24/7 dedicated technical monitoring & rapid resolution teams.",
+    icon: Headset,
+    badge: "24/7 Support",
+    metrics: { label: "First Response", value: "< 5 Mins" },
+    accentColor: "from-purple-500/20 via-indigo-500/10 to-transparent",
+    badgeColor: "text-purple-400 bg-purple-400/10 border-purple-400/20"
+  }
+];
   interface PriceProps{
    trend:string,
    fill:string,
@@ -136,7 +212,7 @@ export const DropItems = [
      features:["Basic automation","Inventory Management","Ordering"]
       },
       {
-      trend : "most popular",
+      trend : "popular",
      fill:"bg-purple-400/50 p-2 rounded-full",
       title:"M1-GROWTH",
       price: 20000,
@@ -159,19 +235,24 @@ export const DropItems = [
     export const footerItems = [
       {
            title:"Home",
+           href:"#"
       },
       {
              title:"About",
+              href:"#"
       },
           {
-               title:"Pricing",
+        title:"Pricing",
+         href:"#"
       },
       {
         
          title:"Contact Us",
+          href:"#"
       },
       {
-               title:"FAQ",
+          title:"FAQ",
+          href:"#"
       },
   
     ]
