@@ -51,7 +51,7 @@ function AgentTerms({setOpen , setCustomerType}:Props) {
         <div className="">
   <span className="w-auto max-w-98 m-2 text-xs text-wrap">
 <pre  className="m-2 text-sm  tracking-tighter">
-  RESTAURANT PARTNER TERMS & AGREEMENT <br />
+ ORGANIZATION - RESTAURANT PARTNER TERMS & AGREEMENT <br />
 
 Welcome to FudStack.
 </pre>

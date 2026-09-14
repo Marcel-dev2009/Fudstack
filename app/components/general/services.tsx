@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger, SplitText } from "gsap/all";
-import ServiceGrid from "../ui/service-grid";
+import ServiceGrid from "../../../../ui/service-grid";
 import { useRef } from "react";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);

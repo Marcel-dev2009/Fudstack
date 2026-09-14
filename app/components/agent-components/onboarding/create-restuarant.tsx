@@ -23,7 +23,7 @@ interface Props {
  restaurantPhone:string;
  restaurantEmail:string;
 }
-const Loading = dynamic(() => import("../../ui/loading"))
+const Loading = dynamic(() => import("../../../../../ui/loading"))
 function CreateRestaurant({setStep , setRestaurantData , restaurantName , restaurantPhone ,restaurantEmail}:Props) {
   const [photoPreview , setPhotoPreview] = useState<string>("");
  const inputRef = useRef<HTMLInputElement | null>(null) 

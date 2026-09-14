@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import RootHeader from "../ui/general-header"
+import RootHeader from "../../../../ui/general-header"
 import "../../globals.css"
 import { useRef, useState } from "react"
 import ContentRatio from "./aspect-ratio"
@@ -136,7 +136,7 @@ const handleEnterType = () => {
       {open && (
         <>
         <section
-        className="z-10 fixed inset-0 bg-black/50 flex justify-center items-center">
+        className="z-50 fixed inset-0 bg-black/50 flex justify-center items-center">
             <div className="relative w-full max-w-120">
                       <motion.div 
         onScroll={handleScroll}

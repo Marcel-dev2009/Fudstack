@@ -3,7 +3,7 @@ import RestaurantList from "./restaurant-list"
 import RestaurantManager from "./restaurant-manager"
 import { Suspense } from "react"
 import RestaurantStats from "./restaurant-stats-board";
-import SkeletonLoader from "../../../components/ui/skeleton-loader"
+import SkeletonLoader from "../../../../../ui/skeleton-loader"
   function RestuarantDashboard() {
   return (
       <main className="min-h-screen w-full bg-white pt-16 lg:pt-0 lg:pl-64 transition-all duration-300">

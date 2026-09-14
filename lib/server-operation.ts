@@ -5,11 +5,12 @@ import { updateTag } from "next/cache";
 import { CachedRestaurantList } from "./cache/getRestaurant";
 import { getOrganization } from "./actions/getOrganization";
 import { getUserSession } from "./actions/getSession";
-export const updateUserRoleForAgent =  async (userId:string) => {
- if(!userId) return;
+export const updateUserRoleForAgent =  async () => {
+ const session = await getUserSession();
+ if(!session) return;
  await prisma.user.update({
    where:{
-    id:userId      
+    id:session.user.id
    },
    data:{
     role:"AGENT", 
@@ -103,3 +104,7 @@ export async function createRestaurant( name:string, logoUrl:string, phone:strin
   });
    updateTag(`organization-restaurant:${organization.id}`);
 }
+
+
+
+

@@ -7,7 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { Mail, Phone, MapPin, Clock, ArrowUpRight } from "lucide-react";
-import Form from "../ui/contact-form";
+import Form from "../../../../ui/contact-form";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 

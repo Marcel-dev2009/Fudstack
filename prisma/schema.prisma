@@ -48,7 +48,6 @@ model Restaurant {
   email          String
   staffNos       Int          @default(1)
   status         Status       @default(ACTIVE)
-  resNos         Int          @default(1)
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
   locations      Location?
@@ -84,6 +83,7 @@ model Organization {
   name        String       @unique
   logoUrl     String
   ownerId     String
+  resNos      Int          @default(1)
   description String
   owner       User         @relation(fields: [ownerId], references: [id])
   restaurants Restaurant[]

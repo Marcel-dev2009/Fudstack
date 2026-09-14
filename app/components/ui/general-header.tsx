@@ -3,7 +3,7 @@
 import Image from "next/image";
 import logo from "../../../public/icon.png";
 import Link from "next/link";
-import DropDown from "../header-dropdown";
+import DropDown from "../foodey/app/components/header-dropdown";
 import { DropItems } from "@/app/data/data";
 import { useRef, useState, useEffect } from "react";
 import { ChevronDown, Menu, X, FileText } from "lucide-react";
@@ -31,7 +31,7 @@ export default function RootHeader() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-gray-100 bg-white/95 backdrop-blur-md transition-all">
+    <header className="sticky top-0 z-10 w-full border-b border-gray-100 bg-white/95 backdrop-blur-md transition-all">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Left: Brand Logo */}

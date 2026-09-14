@@ -29,7 +29,7 @@ type Organization = {
 };
 
 const AnalyticsPopover = dynamic(() => import("@/app/components/agent-components/analytics-provider"));
-const RefreshButton = dynamic(() => import("@/app/components/ui/refresh-button"));
+const RefreshButton = dynamic(() => import("../../../../ui/refresh-button"));
 const OrganizationSwitcher = dynamic(() => import("@/app/components/agent-components/organization-switcher"))
 const SummaryCard = dynamic(() => import("@/app/components/agent-components/summary-card"))
 const ChartPlaceholder = dynamic(() => import("@/app/components/agent-components/chart-placeholder"))
