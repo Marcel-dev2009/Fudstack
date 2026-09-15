@@ -4,8 +4,6 @@ import { updateTag } from "next/cache";
 import { CachedRestaurantList } from "./cache/getRestaurant";
 import { getOrganization } from "./actions/getOrganization";
 import { getUserSession } from "./actions/getSession";
-import { onboardingSchema ,onboardingInput} from "./z-schema/onboarding/onboarding";
-import {z} from "zod";
 export const updateUserRoleForAgent =  async () => {
  const session = await getUserSession();
  if(!session) return;
@@ -65,7 +63,7 @@ await prisma.user.update({
   if(!organization) return;
    return await CachedRestaurantList(organization.id);
  }
-export async function createRestaurant( name:string, logoUrl:string, phone:string, email:string, staffNos:number, resNos:number){  
+export async function createRestaurant( name:string, logoUrl:string, phone:string, email:string, staffNos:number){  
     const session = await getUserSession();
   if(!session) return;
     const organization = await getOrganization(session.user.id);
@@ -77,7 +75,6 @@ export async function createRestaurant( name:string, logoUrl:string, phone:strin
     phone,
     email,
     staffNos,
-    resNos,
     organizationId:organization.id
     }
   });

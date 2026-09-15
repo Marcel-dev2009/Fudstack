@@ -22,15 +22,13 @@ function LoginClient() {
      }
     try{
     setLoading(true);
-    const result = await signIn(email , password)
-    if(!result.user){
+    const result = await signIn({email , password})
+    if(!result.success){
       toast.error("No account found");
       return;
     }
-     if(result.user){
         toast.success("login successful")
         router.push("/client/dashboard") //Might change later
-      }
     }catch(err){
      toast.error(`
       Authentication error: ${

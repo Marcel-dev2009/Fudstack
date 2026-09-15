@@ -28,7 +28,7 @@ export default function CreateRestaurantModal({
     e.preventDefault();
     setIsSubmitting(true);
     try {
-       await createRestaurant(name,logoUrl, phone, email, staffNos , resNos);
+       await createRestaurant(name,logoUrl, phone, email, staffNos);
        toast.success("New Restaurant added succesfully");
        onClose();
     } catch(error) {

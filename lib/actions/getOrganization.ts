@@ -11,6 +11,7 @@ export async function getOrganization(userId:string) {
    select:{
    id:true,
    ownerId:true,
+   resNos:true,
    name:true,
    logoUrl:true,
    description:true

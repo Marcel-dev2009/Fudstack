@@ -13,13 +13,13 @@ import {
   Mail,
   UserCheck,
   Store,
-  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Organization } from "@/lib/generated/prisma";
+import Loading from "@/app/components/ui/loading";
 import { Restaurant } from "@/lib/generated/prisma";
 import { CloudinaryClientResponse } from "@/cloudinary";
-import { updateOrganizationDescription, updateOrganizationName } from "@/lib/actions/update-organization-data";
+import { updateOrganizationDescription, updateOrganizationName, updateOrganizationPhoto } from "@/lib/actions/update-organization-data";
 interface Props {
   organization: Organization;
   organizationId:string
@@ -34,11 +34,28 @@ export default function AgentDashboardProfile({
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [descriptionInput, setDescriptionInput] = useState("Description");
   const [isSavingDesc, setIsSavingDesc] = useState(false);
+  const [isSavingName, setIsSavingName] = useState(false);
   const [photoPreview , setPhotoPreview] = useState(organization.logoUrl);
   const [searchQuery, setSearchQuery] = useState("");
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [loading , setLoading] = useState(false);
+  const [isEditingName , setIsEditingName] = useState(false);
+  const [nameInput ,  setNameInput] = useState(organization.name);
   const ref = useRef<HTMLInputElement | null>(null);
   // --- Handlers ---
+  const handleSaveName = async (data:string) => {
+    try{
+    setIsSavingName(true);
+     await updateOrganizationName(organization.id , data);
+     setIsEditingName(false);
+     toast.success("Organization Name Updated Succesfully");
+    }catch(error:unknown){
+     toast.error(`Error changing name:${
+      error instanceof Error ? error.message : "Unkown error"
+     }`)
+    } finally{
+      setIsSavingName(false);
+    }
+  }
   const handleSaveDescription = async (data:string) => {
      setIsSavingDesc(true);
     try {
@@ -62,6 +79,7 @@ export default function AgentDashboardProfile({
    formData.append("file" , file);
    formData.append("upload_preset" , "agent_media");
    try{
+   setLoading(true);
    const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, 
          {
            method:"POST",
@@ -72,7 +90,7 @@ export default function AgentDashboardProfile({
        if("error" in data){
          toast.error("error uploading organization photo");
        }else{
-            await updateOrganizationName(organizationId , data.secure_url);
+            await updateOrganizationPhoto(organizationId , data.secure_url);
             toast.success("Organization profile updated succesfully");
             setPhotoPreview(data.secure_url);
        }
@@ -81,6 +99,8 @@ export default function AgentDashboardProfile({
    toast.error(`failed to update photo: ${
     err instanceof Error ? err.message : "Unkown Error"      
    }`);
+   }finally{
+    setLoading(false);
    }
   };
 
@@ -93,13 +113,6 @@ export default function AgentDashboardProfile({
 
   return (
     <main className="min-h-screen w-full bg-white pt-16 lg:pt-0 lg:pl-64 transition-all duration-300">
-      {/* Notification Toast Alert */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl border border-gray-800 text-xs sm:text-sm animate-bounce">
-          <Sparkles className="w-4 h-4 text-orange-400" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         
         {/* ========================================== */}
@@ -112,12 +125,18 @@ export default function AgentDashboardProfile({
             <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-4 border-white ring-4 ring-orange-500/20 shadow-xl bg-gray-100 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
               {photoPreview ? (
                <div>
-              <img
+              {loading ? (
+                <Loading/>
+              ): (
+                <>
+                  <img
              src={organization.logoUrl}
              alt={organization.name}
              className="w-full h-full object-cover"
                 />
                 <input className="hidden" accept="image/*" onChange={handleChange} type="file" ref={ref}/>
+                </>
+              )}
                </div>
               ) : (
                 <Building2 className="w-14 h-14 text-gray-400" />
@@ -136,10 +155,63 @@ export default function AgentDashboardProfile({
           </div>
 
           {/* Organization Name (Immediately below image container) */}
-          <h1 className="mt-5 text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight font-serif">
-            {organization.name}
-          </h1>
-
+           <div className="mt-6 w-full max-w-xl  border-gray-100 rounded-2xl p-2 sm:p-2 shadow-sm transition-all duration-200 hover:border-orange-200">
+            {isEditingName ? (
+              <div className="space-y-3">
+                <textarea
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  rows={3}
+                  className="w-full text-xs sm:text-sm text-gray-800 bg-white border border-orange-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-500 transition-all resize-none shadow-inner"
+                  placeholder="Enter organization name..."
+                />
+                <div className="flex items-center justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditingName(false)}
+                    disabled={isSavingName}
+                    className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSaveName(nameInput)}
+                    disabled={isSavingName}
+                    className="inline-flex items-center gap-1 px-3.5 py-1.5 text-xs font-semibold text-white bg-brand-burn hover:bg-orange-700 rounded-lg shadow-sm transition-colors"
+                  >
+                    {isSavingName ? (
+                      <span>Saving...</span>
+                    ) : (
+                      <>
+                        <Check className="w-3.5 h-3.5" />
+                        <span>Save Changes</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between p-4">
+                 <h1 className="mt-5 text-md md:text-cl font-extrabold text-gray-900 tracking-tight font-serif">
+                    {organization.name}
+                  </h1>
+                   <button
+                  type="button"
+                  onClick={() => {
+                    
+                    setIsEditingName(true);
+                  }}
+                  className="inline-flex gap-2 text-xs font-semibold text-brand-burn transition-colors p-1 rounded-md"
+                  aria-label="Edit Name"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  <span>Edit</span>
+                </button>
+              </div>
+            )}
+          </div>
           {/* Owner Metadata Tag */}
           <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 border border-orange-100 text-xs sm:text-sm text-gray-700 font-medium">
             <UserCheck className="w-3.5 h-3.5 text-brand-burn" />
@@ -305,7 +377,7 @@ export default function AgentDashboardProfile({
 
                         <span className="flex items-center gap-1 font-medium text-gray-600 bg-gray-100/70 px-2 py-0.5 rounded-md">
                           <Users className="w-3.5 h-3.5 text-brand-burn" />
-                          <span> {restaurant.staffNos ?? 1} active staff</span>
+                          <span> {restaurantAmount} active staff</span>
                         </span>
                       </div>
                     </div>
@@ -314,7 +386,7 @@ export default function AgentDashboardProfile({
                   {/* Right: Action Arrow Link Button */}
                   <div className="flex items-center justify-end sm:justify-center border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-50 shrink-0">
                     <a
-                      href={`/agent/dashboard/restaurants/${restaurant.id}`}
+                      href={`/restaurants/${restaurant.id}`}
                       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-gray-700 bg-gray-50 group-hover:bg-brand-burn group-hover:text-white transition-all duration-200 shadow-sm"
                       aria-label={`Open website for ${restaurant.name}`}
                     >

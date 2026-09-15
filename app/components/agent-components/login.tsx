@@ -22,16 +22,16 @@ function LoginAgent() {
    }
   try{
   setLoading(true);
-  const result = await signIn(email , password)
-  if(!result.user){
-    toast.error("No account found");
+  const result = await signIn({email , password})
+  if(!result.success){
+    toast.error("Login Failed");
     return
   }
       toast.success("login sucessfull")
-      router.replace("agent/dashboard") //Might change later
+      router.replace("/agent/dashboard") //Might change later
   }catch(err){
    toast.error(`
-    Authentication error: ${
+    Login error: ${
      err instanceof Error ? err.message : "unkown error" 
     }
     `)

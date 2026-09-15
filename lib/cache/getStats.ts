@@ -12,7 +12,6 @@ cacheTag(`organization-restaurant-stats:${organizationId}`)
     id:true,
     staffNos:true,
     status:true,
-    resNos:true
    } 
  });           
 }
