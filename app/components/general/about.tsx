@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import aboutPhoto from "../../../public/about.png";
 import Image from "next/image";
 import { MoveRight } from "lucide-react";
-import AboutGrid from "../../../../ui/about-grid";
+import AboutGrid from "@/app/components/ui/about-grid";
 import { useRef } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";

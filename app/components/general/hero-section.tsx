@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import RootHeader from "../../../../ui/general-header"
+import RootHeader from "@/app/components/ui/general-header"
 import "../../globals.css"
 import { useRef, useState } from "react"
 import ContentRatio from "./aspect-ratio"

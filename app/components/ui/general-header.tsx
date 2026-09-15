@@ -3,7 +3,7 @@
 import Image from "next/image";
 import logo from "../../../public/icon.png";
 import Link from "next/link";
-import DropDown from "../foodey/app/components/header-dropdown";
+import DropDown from "@/app/components/header-dropdown";
 import { DropItems } from "@/app/data/data";
 import { useRef, useState, useEffect } from "react";
 import { ChevronDown, Menu, X, FileText } from "lucide-react";

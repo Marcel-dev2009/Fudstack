@@ -4,9 +4,9 @@ import { getUserSession } from "@/lib/actions/getSession";
 
 async function AgentPage() {
   const session = await getUserSession();
-  if(!session) return;
+  if(!session) throw new Error ("No session found");
   const organization = await getOrganization(session.user.id);
-  if (!organization) return null;
+  if (!organization) return;
 
   return (
     <main className="min-h-screen w-full bg-white pt-16 lg:pt-0 lg:pl-64 transition-all duration-300">

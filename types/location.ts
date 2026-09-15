@@ -1,6 +1,5 @@
 export type locationData = {
-   city:string,
    state:string,
-   address:string,
-   businessHours:string,     
+   address:string,  
+   city:string,
 }

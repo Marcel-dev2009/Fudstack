@@ -1,10 +1,11 @@
 "use server";
-import { onboardingData } from "@/types";
 import {prisma } from "./auth";
 import { updateTag } from "next/cache";
 import { CachedRestaurantList } from "./cache/getRestaurant";
 import { getOrganization } from "./actions/getOrganization";
 import { getUserSession } from "./actions/getSession";
+import { onboardingSchema ,onboardingInput} from "./z-schema/onboarding/onboarding";
+import {z} from "zod";
 export const updateUserRoleForAgent =  async () => {
  const session = await getUserSession();
  if(!session) return;
@@ -52,31 +53,9 @@ await prisma.user.update({
   }
 });
 }
-export const handleOnboarding = async (
-  userId:string,
-  data:onboardingData
-) => {
-  await prisma.$transaction(async (tx) => {
-    const organization = await tx.organization.create({
-      data:{
-      ...data.organization,
-        ownerId:userId
-      }
-    });
-  const restaurant = await tx.restaurant.create({
-    data:{
-     ...data.restaurant,
-      organizationId : organization.id,
-    }
-   });
-   await tx.location.create({
-    data:{
-    ...data.location,
-    restaurantId :restaurant.id
-    }
-   })
-  })
- }
+
+
+
 
 
  export async function getRestaurants(){

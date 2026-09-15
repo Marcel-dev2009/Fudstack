@@ -66,13 +66,12 @@ model EmailOtp {
 }
 
 model Location {
-  id            String     @id @default(cuid())
-  state         String
-  address       String
-  city          String
-  businessHours String
-  restaurantId  String     @unique
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  id           String     @id @default(cuid())
+  state        String
+  address      String
+  city         String
+  restaurantId String     @unique
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
 
   @@map("location")
 }

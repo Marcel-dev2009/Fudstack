@@ -1,10 +1,9 @@
-import { auth } from "@/lib/auth"
+import { redirect } from "next/navigation";
 import OnboardingContainer from "./onboarding-container"
-import { headers } from "next/headers"
+import { getUserSession } from "@/lib/actions/getSession"
 async function OnboardingPage() {
- const session = await auth.api.getSession({
-  headers: await headers()
- }) 
+ const session = await getUserSession();
+ if(!session) redirect("/");
   return (
     <OnboardingContainer session={session}/>
   ) 

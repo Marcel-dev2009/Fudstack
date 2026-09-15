@@ -1,5 +1,4 @@
 "use client"
-import dynamic from "next/dynamic";
 import HeroSection from "./hero-section";
 import About from "./about"
 import Services from "./services";

@@ -2,5 +2,6 @@ export type restaurantData = {
    name: string,
    logoUrl:string,
    phone:string,
-   email:string,     
+   email:string,  
+   staffNos:number,   
 }

@@ -7,6 +7,6 @@ export const createRestaurantSchema = z.object({
   "Invalid Nigerian phone number format (should start with 080, 081, 070, 090, etc.)" 
 ),
 email: z.email(),
-staffNos:z.number(),
-status:z.string().trim(),
+staffNos:z.number().min(1 , "At least a staff must be within the restaurant"),
 })
+export type restaurantInput = z.infer<typeof createRestaurantSchema>

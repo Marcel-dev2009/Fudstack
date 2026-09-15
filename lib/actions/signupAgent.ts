@@ -3,9 +3,9 @@ import z from "zod";
 import { auth } from "../auth";
 import { signUpSchema , signUpInput} from "../z-schema/signup/schema";
 export type ActionResponse = {
- success: boolean,
- message:string,
- errors?:{
+  success: boolean,
+  message:string,
+  errors?:{
   name?:string[],
   email?:string[],
   password?:string[]

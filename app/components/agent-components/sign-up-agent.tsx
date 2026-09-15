@@ -15,7 +15,7 @@ import { signUp } from "@/lib/actions/signupAgent";
 import { signUpInput } from "@/lib/z-schema/signup/schema";
 import dashboard from "@/public/authMock.png";
 
-const Loading = dynamic(() => import("../../components/ui/loading"), { ssr: false });
+const Loading = dynamic(() => import("@/app/components/ui/loading"), { ssr: false });
 
 export default function SignUpAgent() {
   const router = useRouter();

@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import React, { SetStateAction, useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { HiOutlineMailOpen } from "react-icons/hi";
@@ -13,11 +13,10 @@ import { toast } from "sonner";
 import {completeOnboarding } from "@/lib/server-operation";
  type Session = Awaited<ReturnType<typeof auth.api.getSession>>
 interface Props {
-  setStep: React.Dispatch<SetStateAction<number>>;
-  handleOnboardingSubmit:() => void;
+  handleOnboardingSubmit:() => Promise<void>;
   session:Session
 }
-function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
+function VerifyCreation({ handleOnboardingSubmit, session}: Props) {
   const router = useRouter();
   
   // Timer state manager (Starts at 59 seconds)
@@ -62,9 +61,8 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
       setIsVerifying(true);
       const result = await verifyOtp( session.user.email , code);  
      if(result.success){
+      await completeOnboarding(session.user.id);
       await handleOnboardingSubmit();
-      await completeOnboarding(session.user.id)
-      router.replace("/agent/dashboard");
      } else{
       toast.error("Invalid code");
      }
@@ -194,21 +192,15 @@ function VerifyCreation({ setStep , handleOnboardingSubmit ,session}: Props) {
 
         {/* Footer Actions */}
         <div className="w-full pt-4 border-t border-neutral-100 flex flex-row items-center justify-between gap-4">
-            {isVerifying ? (
+            {isVerifying && (
                      <div
              className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
             >
             <p className="text-xs tracking-tighter animate-pulse">Verifying...</p>
             </div>
               
-            ) : (
-                   <button
-            onClick={() => setStep((prev) => prev - 1)}
-             className="px-5 py-2 font-medium text-xs bg-orange-500 hover:bg-orange-600 text-white rounded-lg shadow-sm hover:shadow active:scale-[0.98] transition-all duration-150"
-            >
-            Back 
-            </button>
-            )}
+            )
+            }
         </div>
 
       </div>

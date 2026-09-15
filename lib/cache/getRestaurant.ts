@@ -16,7 +16,6 @@ export async function CachedRestaurantList(organizationId:string){
           email:true,
           staffNos:true,
           status:true,
-          resNos:true,
           organizationId:true,
           } 
       });          

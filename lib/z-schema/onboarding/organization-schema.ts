@@ -1,8 +1,8 @@
 import {z} from "zod"
 export const createOrganizationSchema = z.object({
- state: z.string().trim().min(3, "Name of state must be at least 3 characters"),
- address: z.string().trim().min(5, "Addresses must be at least 5 characters long"),
- city: z.string().trim().min(3, "Name of city must be at least 3 characters"),
- // openHours Later;
+ name:z.string().trim().min(5, "Name should be at least 5 characters!"),
+ logoUrl:z.string(),
+ resNos:z.number().min(1, "At least one restaurant should be under this organization"),
+ description:z.string().trim().min(10, "Description should be at least 10 characters")
 });
-
+export type organizationInput = z.infer<typeof createOrganizationSchema>

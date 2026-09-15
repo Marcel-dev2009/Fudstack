@@ -1,5 +1,6 @@
 export type organizationData = {
    name :string,
    logoUrl:string,
-   description:string,       
+   description:string,      
+   resNos:number 
 }

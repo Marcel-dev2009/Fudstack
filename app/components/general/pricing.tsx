@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import PriceGrid from "../../../../ui/pricing-grid";
+import PriceGrid from "@/app/components/ui/pricing-grid";
 
 export default function Pricing() {
   return (

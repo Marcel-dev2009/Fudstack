@@ -14,7 +14,7 @@ export default async function Home() {
   const session = await getUserSession();
 
   // 1. Unauthenticated users stay on the home landing page
-  if (!session?.user?.id) {
+  if (!session) {
     return (
       <section className="overflow-x-hidden overflow-y-auto">
         <Parent />
@@ -22,10 +22,8 @@ export default async function Home() {
     );
   }
 
-  // 2. Authenticated users: Fetch their cached database details
-  const user = await getUser(session?.user.id);
-
-  // 3. Route authenticated users directly to their dashboards (not sign-in pages)
+  const user = await getUser(session.user.id);
+  if(!user) return;
   if (user.role === "CLIENT") {
     redirect("/client/dashboard");
   }

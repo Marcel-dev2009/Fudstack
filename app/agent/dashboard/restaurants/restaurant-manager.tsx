@@ -6,7 +6,7 @@ import { Building2, ChevronRight, Plus } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 // Dynamic imports for optimized bundle splitting
 const CreateRestaurantModal = dynamic(() => import("./restaurant-dialogue"), { ssr: false });
-const RefreshButton = dynamic(() => import("../../../../../ui/refresh-button"), { ssr: false });
+const RefreshButton = dynamic(() => import("@/app/components/ui/refresh-button"), { ssr: false });
 
 function RestaurantManager({serverSlot}:{serverSlot:React.ReactNode}) {
   const [showModal, setShowModal] = useState<boolean>(false);
