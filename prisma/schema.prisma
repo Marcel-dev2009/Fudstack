@@ -50,7 +50,7 @@ model Restaurant {
   status         Status       @default(ACTIVE)
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
-  locations      Location?
+  location       Location?
 
   @@map("restaurant")
 }

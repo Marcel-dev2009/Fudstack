@@ -1,38 +1,56 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import React, { ChangeEvent, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import {
+  Trash,
+  UploadCloud,
+  X,
+  Building2,
+  Mail,
+  Phone,
+  Users,
+  Loader2,
+} from "lucide-react";
+import { toast } from "sonner";
+
 import { CloudinaryClientResponse } from "@/cloudinary";
 import { createRestaurant } from "@/lib/server-operation";
-import { motion } from "framer-motion";
-import { Trash, UploadCloud } from "lucide-react";
-import {ChangeEvent, useRef, useState } from "react";
-import { toast } from "sonner";
-interface Props{
- onClose:() => void;
+
+interface Props {
+  onClose: () => void;
 }
-export default function CreateRestaurantModal({
-  onClose,
-}: Props) {
+
+export default function CreateRestaurantModal({ onClose }: Props) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [staffNos, setStaffNos] = useState(0);
-  const [resNos, setResNos] = useState(0)
+  const [phone, setPhone] = useState("");
+  const [staffNos, setStaffNos] = useState<number>(5);
   const [logoUrl, setLogoUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [phone, setPhone] = useState("");
-  const[loading ,setLoading] = useState(false);
-   const inputRef = useRef<HTMLInputElement | null>(null);
-  const handleSubmit = async (
-    e: React.ChangeEvent<HTMLFormElement>
-  ) => {
+  const [loading, setLoading] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!name.trim()) {
+      toast.error("Please enter a restaurant name");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-       await createRestaurant(name,logoUrl, phone, email, staffNos);
-       toast.success("New Restaurant added succesfully");
-       onClose();
-    } catch(error) {
-      toast.error(`Failed to create restaurant:${error instanceof Error ? error.message : "Unknown error"}`);
+      await createRestaurant(name, logoUrl, phone, email, staffNos);
+      toast.success("New restaurant created successfully");
+      onClose();
+    } catch (error) {
+      toast.error(
+        `Failed to create restaurant: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -43,373 +61,280 @@ export default function CreateRestaurantModal({
 
     setName("");
     setEmail("");
-    setStaffNos(0);
-    setResNos(0);
-    setLogoUrl("");
     setPhone("");
-
+    setStaffNos(5);
+    setLogoUrl("");
     onClose();
   };
- 
-  const handlePhoto = async (event:ChangeEvent<HTMLInputElement>) => {
-    const file =  event.target.files?.[0];
-    if(!file) return;
+
+  const handlePhoto = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
     const formData = new FormData();
-    formData.append("file" , file);
+    formData.append("file", file);
     formData.append("upload_preset", "agent_media");
-    try{
-      setLoading(true)
-         const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, 
-      {
-        method:"POST",
-        body:formData
+
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const data = (await response.json()) as CloudinaryClientResponse;
+
+      if ("error" in data) {
+        toast.error("Error uploading image");
+      } else {
+        setLogoUrl(data.secure_url);
+        toast.success("Logo uploaded successfully");
       }
-    );
-    const data = (await response.json()) as CloudinaryClientResponse
-    if("error" in data){
-      toast.error("error uploading organization photo");
-    }else{
-      setLogoUrl(data.secure_url);
-    }
-    }catch(error){
-         toast.error(`Failed to create restaurant:${error instanceof Error ? error.message : "Unknown error"}`);
-    }finally{
+    } catch (error) {
+      toast.error(
+        `Upload failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
+    } finally {
       setLoading(false);
     }
-  }
+  };
+
   return (
-        <motion.div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 px-4 py-6 backdrop-blur-[2px]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          <motion.div
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="create-restaurant-title"
-            className="max-h-[90vh] w-full max-w-xl scrollbar-thin overflow-y-auto rounded-sm bg-white shadow-2xl"
-            initial={{
-              opacity: 0,
-              y: 24,
-              scale: 0.97,
-            }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-            }}
-            exit={{
-              opacity: 0,
-              y: 16,
-              scale: 0.97,
-            }}
-            transition={{
-              duration: 0.22,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            {/* Header */}
-            <div className="flex items-start justify-between px-5 pt-5 sm:px-7 sm:pt-7">
-              <div>
-                <h2
-                  id="create-restaurant-title"
-                  className="text-xl font-semibold tracking-tight text-black sm:text-2xl"
-                >
-                  Create restaurant
-                </h2>
-
-                <p className="mt-1 text-sm text-black/50">
-                  Add a new restaurant to your organization.
-                </p>
-
-                <div className="mt-3 h-1 w-8 rounded-full bg-brand-burn" />
-              </div>
-
-              <button
-                type="button"
-                onClick={handleClose}
-                disabled={isSubmitting}
-                aria-label="Close modal"
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xl leading-none text-black/40 transition hover:bg-black/5 hover:text-black disabled:pointer-events-none disabled:opacity-40"
-              >
-                &times;
-              </button>
-            </div>
-
-            {/* Form */}
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-5 px-5 pb-5 pt-6 sm:px-7 sm:pb-7"
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+    >
+      <motion.div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-restaurant-title"
+        className="w-full max-w-md bg-white rounded-2xl shadow-xl border border-neutral-100 overflow-hidden flex flex-col max-h-[90vh]"
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 12 }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
+          <div>
+            <h2
+              id="create-restaurant-title"
+              className="text-base font-bold text-neutral-900 tracking-tight"
             >
-              {/* Profile picture */}
-              <div>
-                <label
-                  htmlFor="restaurant-logo"
-                  className="mb-2 block text-sm font-medium text-black"
-                >
-                  Profile picture
-                </label>
+              Create New Restaurant
+            </h2>
+            <p className="text-xs text-neutral-500 mt-0.5">
+              Set up a new location for your business.
+            </p>
+          </div>
 
-            
-                {logoUrl ? (
-                  <div className="flex items-center gap-4 animate-in fade-in duration-200">
-                    <div className="relative w-16 h-16 rounded-full border-2 border-orange-500 p-0.5 shadow-sm">
-                      {loading ? (
-                        "Loading...."
-                      ) : (
-                        <img
-                        src={logoUrl}
-                        alt="organization logo"
-                        className="w-full h-full object-cover rounded-full"
-                      /> 
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setLogoUrl("")}
-                      className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
-                    >
-                      <Trash size={13} />
-                      Remove
-                    </button>
-                  </div>
-                ) : (
-                  <div
-                    onClick={() => inputRef.current?.click()}
-                    className="group flex flex-col items-center justify-center w-full max-w-xs h-24 border-2 border-dashed border-neutral-200 hover:border-orange-500 rounded-xl bg-neutral-50/50 hover:bg-orange-50/10 cursor-pointer transition-all duration-200 p-3 text-center"
-                  >
-                    <UploadCloud size={20} className="text-neutral-400 group-hover:text-orange-500 transition-colors mb-1" />
-                    <p className="text-xs font-medium text-neutral-700">
-                      Click to upload logo
-                    </p>
-                    <p className="text-[10px] text-neutral-400 mt-0.5">
-                      SVG, PNG, or JPG up to 2MB
-                    </p>
-                    <input
-                     ref={inputRef}
-                      id="restaurant-logo"
-                      name="logo"
-                      type="file"
-                      accept="image/**"
-                      onChange={handlePhoto}
-                      className="w-full cursor-pointer text-sm text-black/50 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-brand-burn file:px-4 file:py-2.5 file:text-sm file:font-medium file:text-white file:transition hover:file:opacity-90 hidden"
+          <button
+            type="button"
+            onClick={handleClose}
+            disabled={isSubmitting}
+            aria-label="Close modal"
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-colors disabled:opacity-40"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Scrollable Form Body */}
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
+          
+          {/* Logo Upload Section */}
+          <div className="space-y-1.5">
+            <label className="block text-xs font-medium text-neutral-700">
+              Restaurant Logo
+            </label>
+
+            {logoUrl ? (
+              <div className="flex items-center gap-3 p-2 bg-neutral-50 border border-neutral-200/80 rounded-xl w-fit">
+                <div className="relative w-12 h-12 rounded-lg border border-neutral-200 overflow-hidden bg-white shrink-0 flex items-center justify-center">
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 text-orange-500 animate-spin" />
+                  ) : (
+                    <img
+                      src={logoUrl}
+                      alt="Restaurant Logo"
+                      className="w-full h-full object-cover"
                     />
-                  </div>
-                                    )}
-                   {/*  */}
-                  
-              </div>
-
-              {/* Name */}
-              <div>
-                <label
-                  htmlFor="restaurant-name"
-                  className="mb-2 block text-sm font-medium text-black"
-                >
-                  Restaurant name
-                </label>
-
-                <input
-                  id="restaurant-name"
-                  name="name"
-                  type="text"
-                  value={name}
-                  onChange={(event) =>
-                    setName(event.target.value)
-                  }
-                  placeholder="Enter restaurant name"
-                  autoComplete="organization"
-                  required
-                  className="h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm text-black outline-none transition placeholder:text-black/30 focus:border-brand-burn focus:ring-4 focus:ring-brand-burn/10"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label
-                  htmlFor="restaurant-email"
-                  className="mb-2 block text-sm font-medium text-black"
-                >
-                  Email address
-                </label>
-
-                <input
-                  id="restaurant-email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(event) =>
-                    setEmail(event.target.value)
-                  }
-                  placeholder="restaurant@example.com"
-                  autoComplete="email"
-                  required
-                  className="h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm text-black outline-none transition placeholder:text-black/30 focus:border-brand-burn focus:ring-4 focus:ring-brand-burn/10"
-                />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label
-                  htmlFor="restaurant-phone"
-                  className="mb-2 block text-sm font-medium text-black"
-                >
-                  Phone number
-                </label>
-
-                <input
-                  id="restaurant-phone"
-                  name="phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(event) =>
-                    setPhone(event.target.value)
-                  }
-                  placeholder="+234...."
-                  autoComplete="tel"
-                  required
-                  pattern="+234" //checkout
-                  className="h-11 w-full rounded-xl border border-black/10 bg-white px-4 text-sm text-black outline-none transition placeholder:text-black/30 focus:border-brand-burn focus:ring-4 focus:ring-brand-burn/10"
-                />
-              </div>
-
-              {/* Selects */}
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                {/* Staff */}
-                <div>
-                  <label
-                    htmlFor="staff-number"
-                    className="mb-2 block text-sm font-medium text-black"
-                  >
-                    Number of staff
-                  </label>
-
-                 <div className="flex items-center gap-4 w-full">
-  <input
-    id="staff-number"
-    name="staffNos"
-    type="range"
-    min="1" // Add your desired minimum
-    max="100" // Add your desired maximum
-    value={staffNos}
-    onChange={(event) => setStaffNos(Number(event.target.value))}
-    required
-    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 outline-none transition
-               [&::-webkit-slider-thumb]:appearance-none 
-               [&::-webkit-slider-thumb]:h-5 
-               [&::-webkit-slider-thumb]:w-5 
-               [&::-webkit-slider-thumb]:rounded-full 
-               [&::-webkit-slider-thumb]:bg-orange-500 
-               [&::-webkit-slider-thumb]:border-2 
-               [&::-webkit-slider-thumb]:border-white
-               [&::-webkit-slider-thumb]:shadow-md
-               [&::-webkit-slider-thumb]:transition-all
-               [&::-webkit-slider-thumb]:hover:scale-110
-               [&::-webkit-slider-thumb]:active:bg-orange-600
-               /* Firefox Thumb styling */
-               [&::-moz-range-thumb]:h-5 
-               [&::-moz-range-thumb]:w-5 
-               [&::-moz-range-thumb]:rounded-full 
-               [&::-moz-range-thumb]:bg-orange-500 
-               [&::-moz-range-thumb]:border-2 
-               [&::-moz-range-thumb]:border-white
-               [&::-moz-range-thumb]:shadow-md
-               [&::-moz-range-thumb]:transition-all
-               [&::-moz-range-thumb]:hover:scale-110
-               [&::-moz-range-thumb]:active:bg-orange-600"
-  />
-  
-  {/* Live Numeric Value Indicator */}
-  <span className="flex h-9 min-w-12 items-center justify-center rounded-lg bg-orange-500 px-2 text-sm font-semibold text-white shadow-sm">
-    {staffNos}
-  </span>
-</div>
-
+                  )}
                 </div>
-
-                {/* Restaurants */}
-                <div>
-                  <label
-                    htmlFor="restaurant-number"
-                    className="mb-2 block text-sm font-medium text-black"
-                  >
-                    Restaurants
-                  </label>
-
-                <div className="flex items-center gap-4 w-full">
-  <input
-    id="restaurant-number"
-    name="resNos"
-    type="range"
-    min="1" // Add your desired minimum
-    max="100" // Add your desired maximum
-    value={resNos}
-    onChange={(event) => setResNos(Number(event.target.value))}
-    required
-    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 outline-none transition
-               [&::-webkit-slider-thumb]:appearance-none 
-               [&::-webkit-slider-thumb]:h-5 
-               [&::-webkit-slider-thumb]:w-5 
-               [&::-webkit-slider-thumb]:rounded-full 
-               [&::-webkit-slider-thumb]:bg-orange-500 
-               [&::-webkit-slider-thumb]:border-2 
-               [&::-webkit-slider-thumb]:border-white
-               [&::-webkit-slider-thumb]:shadow-md
-               [&::-webkit-slider-thumb]:transition-all
-               [&::-webkit-slider-thumb]:hover:scale-110
-               [&::-webkit-slider-thumb]:active:bg-orange-600
-               /* Firefox Thumb styling */
-               [&::-moz-range-thumb]:h-5 
-               [&::-moz-range-thumb]:w-5 
-               [&::-moz-range-thumb]:rounded-full 
-               [&::-moz-range-thumb]:bg-orange-500 
-               [&::-moz-range-thumb]:border-2 
-               [&::-moz-range-thumb]:border-white
-               [&::-moz-range-thumb]:shadow-md
-               [&::-moz-range-thumb]:transition-all
-               [&::-moz-range-thumb]:hover:scale-110
-               [&::-moz-range-thumb]:active:bg-orange-600"
-  />
-  
-  {/* Live Numeric Value Indicator */}
-  <span className="flex h-9 min-w-12 items-center justify-center rounded-lg bg-orange-500 px-2 text-sm font-semibold text-white shadow-sm">
-    {resNos}
-  </span>
-</div>
-
-                </div>
-              </div>
-
-              {/* Actions */}
-              <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
                 <button
                   type="button"
-                  onClick={handleClose}
-                  disabled={isSubmitting}
-                  className="h-11 rounded-xl border border-black/10 px-5 text-sm font-medium text-black transition hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-50"
+                  onClick={() => setLogoUrl("")}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
                 >
-                  Cancel
-                </button>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex h-11 items-center justify-center rounded-xl bg-brand-burn px-6 text-sm font-medium text-white transition hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                      Creating...
-                    </span>
-                  ) : (
-                    "Create restaurant"
-                  )}
+                  <Trash size={12} />
+                  <span>Remove</span>
                 </button>
               </div>
-            </form>
-          </motion.div>
-        </motion.div>
+            ) : (
+              <div
+                onClick={() => inputRef.current?.click()}
+                className="group flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-neutral-200 hover:border-orange-500 rounded-xl bg-neutral-50/50 hover:bg-orange-50/10 cursor-pointer transition-all duration-150 p-3 text-center"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2 text-xs text-orange-600 font-medium">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Uploading...</span>
+                  </div>
+                ) : (
+                  <>
+                    <UploadCloud
+                      size={20}
+                      className="text-neutral-400 group-hover:text-orange-500 transition-colors mb-1"
+                    />
+                    <p className="text-xs font-medium text-neutral-700">
+                      Click to upload image
+                    </p>
+                    <p className="text-[10px] text-neutral-400">
+                      PNG, JPG, or SVG up to 2MB
+                    </p>
+                  </>
+                )}
+                <input
+                  ref={inputRef}
+                  id="restaurant-logo"
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhoto}
+                  disabled={loading}
+                  className="hidden"
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Restaurant Name */}
+          <div className="space-y-1">
+            <label
+              htmlFor="restaurant-name"
+              className="block text-xs font-medium text-neutral-700"
+            >
+              Restaurant Name
+            </label>
+            <div className="flex items-center px-3 py-2 rounded-lg border border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all">
+              <Building2 className="w-4 h-4 text-neutral-400 shrink-0" />
+              <input
+                id="restaurant-name"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Taste of Lagos"
+                required
+                className="w-full ml-2.5 bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Email */}
+          <div className="space-y-1">
+            <label
+              htmlFor="restaurant-email"
+              className="block text-xs font-medium text-neutral-700"
+            >
+              Email Address
+            </label>
+            <div className="flex items-center px-3 py-2 rounded-lg border border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all">
+              <Mail className="w-4 h-4 text-neutral-400 shrink-0" />
+              <input
+                id="restaurant-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="restaurant@example.com"
+                required
+                className="w-full ml-2.5 bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Phone */}
+          <div className="space-y-1">
+            <label
+              htmlFor="restaurant-phone"
+              className="block text-xs font-medium text-neutral-700"
+            >
+              Phone Number
+            </label>
+            <div className="flex items-center px-3 py-2 rounded-lg border border-neutral-200 bg-white focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/10 transition-all">
+              <Phone className="w-4 h-4 text-neutral-400 shrink-0" />
+              <input
+                id="restaurant-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+234 800 000 0000"
+                required
+                className="w-full ml-2.5 bg-transparent text-xs text-neutral-900 placeholder:text-neutral-400 outline-none"
+              />
+            </div>
+          </div>
+
+          {/* Staff Capacity Range */}
+          <div className="space-y-1.5 pt-1">
+            <div className="flex justify-between items-center">
+              <label
+                htmlFor="staff-number"
+                className="block text-xs font-medium text-neutral-700"
+              >
+                Estimated Staff Count
+              </label>
+              <span className="flex items-center gap-1 text-[11px] font-semibold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full border border-orange-200/50">
+                <Users size={12} />
+                {staffNos} members
+              </span>
+            </div>
+
+            <input
+              id="staff-number"
+              type="range"
+              min="1"
+              max="100"
+              value={staffNos}
+              onChange={(e) => setStaffNos(Number(e.target.value))}
+              className="w-full h-1.5 bg-neutral-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            />
+          </div>
+
+          {/* Footer Actions */}
+          <div className="pt-4 mt-2 border-t border-neutral-100 flex items-center justify-end gap-2.5">
+            <button
+              type="button"
+              onClick={handleClose}
+              disabled={isSubmitting}
+              className="px-4 py-2 text-xs font-medium text-neutral-600 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-5 py-2 text-xs font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg shadow-sm hover:shadow transition-all duration-150 flex items-center gap-2 active:scale-[0.98] disabled:opacity-60"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Creating...</span>
+                </>
+              ) : (
+                <span>Create Restaurant</span>
+              )}
+            </button>
+          </div>
+
+        </form>
+      </motion.div>
+    </motion.div>
   );
 }

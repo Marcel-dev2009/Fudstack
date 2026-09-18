@@ -58,16 +58,19 @@ await prisma.user.update({
 
  export async function getRestaurants(){
   const session = await getUserSession();
-  if(!session) return;
+  if(!session) return null;
   const organization = await getOrganization(session.user.id);
-  if(!organization) return;
+  if(!organization) return null;
    return await CachedRestaurantList(organization.id);
  }
+
+
+ 
 export async function createRestaurant( name:string, logoUrl:string, phone:string, email:string, staffNos:number){  
     const session = await getUserSession();
-  if(!session) return;
+  if(!session) return null;
     const organization = await getOrganization(session.user.id);
-    if(!organization) return;
+    if(!organization) return null;
    await prisma.restaurant.create({
     data:{
     name,

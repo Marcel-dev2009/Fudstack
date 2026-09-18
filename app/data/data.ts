@@ -387,7 +387,7 @@ export const navItems = [
        id:"6",
       name: "Settings",
       icon: Cog,
-      route: "/agent/dashboard/settings",
+      route: "/agent/settings",
       dropdown: false,
     },
   ];
