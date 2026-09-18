@@ -4,7 +4,7 @@ import { prisma } from "../auth";
 export async function getOrganization(userId:string) {
   "use cache";
   cacheTag(`organization-data-tag`);
-  const organization = await prisma.organization.findFirst({
+  const organization = await prisma.organization.findUnique({
    where:{
     ownerId:userId,   
    },

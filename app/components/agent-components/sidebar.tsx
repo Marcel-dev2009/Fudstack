@@ -59,7 +59,6 @@ export function AgentSideBar({ className, organizationName, tagline }: Props) {
           flex flex-col flex-nowrap
           overflow-y-auto
           bg-brand-burn text-white
-          lg:rounded-tr-[28px]
           shadow-2xl lg:shadow-none
           transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}

@@ -19,6 +19,7 @@ import {
   Headset,
   Zap,
   ShieldCheck,
+  Clock,
   
 } from "lucide-react";
 import { IoPerson, IoShieldCheckmark } from "react-icons/io5";
@@ -391,3 +392,63 @@ export const navItems = [
       dropdown: false,
     },
   ];
+
+
+  export   const resNavItems = [
+      {
+        id:"0",
+        name: "Dashboard",
+        icon: Home,
+        route: "/agent/dashboard",
+      },
+      {
+        id:"1",
+        name: "Orders",
+        icon: UtensilsCrossed,
+        route: "/agent/dashboard/restaurants",
+        dropdown: false,
+      },
+      {
+         id:"2",
+        name: "Recents",
+        icon: Clock,
+        route: "/agent/dashboard/orders",
+        dropdown: false,
+      },
+      {
+         id:"3",
+        name: "Products",
+        icon: Package,
+          route: "/agent/dashboard/profile",
+        dropdown: false,
+      },
+      {
+         id:"4",
+        name: "Sales",
+          route: "/agent/dashboard/sales",
+        icon: BarChart3,
+      },
+      {
+         id:"5",
+        name: "Insights",
+        icon: Lightbulb,
+          route: "/agent/dashboard/insights",
+        dropdown: false,
+            
+      },
+      {
+         id:"6",
+        name: "Notifications",
+        icon: Bell,
+        route: "/agent/dashboard/notifications",
+        dropdown: false,
+            
+      },
+      {
+         id:"7",
+        name: "Settings",
+        icon: Cog,
+        route: "/agent/dashboard/settings",
+        dropdown: false,
+      },
+    ];

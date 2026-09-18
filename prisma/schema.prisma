@@ -12,6 +12,45 @@ datasource db {
   provider = "postgresql"
 }
 
+
+enum OrderType {
+  DINE_IN
+  TAKEOUT
+  DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  ACCEPTED
+  PREPARING
+  READY_FOR_PICKUP
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+  MOBILE_WALLET
+}
+
+enum Role {
+  AGENT
+  CLIENT
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -25,20 +64,20 @@ model User {
   updatedAt           DateTime       @updatedAt
   sessions            Session[]
   accounts            Account[]
-  organization        Organization[]
-
+  organization        Organization?
   @@map("user")
 }
-
-enum Role {
-  AGENT
-  CLIENT
-}
-
-enum Status {
-  ACTIVE
-  INACTIVE
-}
+  model Organization {
+    id String @id @default(cuid())
+    name        String       @unique
+    logoUrl     String
+    resNos      Int          @default(1)
+    description String
+    ownerId     String        @unique
+    owner       User         @relation(fields: [ownerId], references: [id])
+    restaurants Restaurant[]
+    @@map("organization")
+  }
 
 model Restaurant {
   id             String       @id @default(cuid())
@@ -51,8 +90,10 @@ model Restaurant {
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
   location       Location?
-
+  order          Order[]
+  products       Product[]
   @@map("restaurant")
+  @@index([organizationId])
 }
 
 model EmailOtp {
@@ -61,7 +102,6 @@ model EmailOtp {
   code      String
   expiresAt DateTime
   createdAt DateTime @default(now())
-
   @@index([email])
 }
 
@@ -72,23 +112,9 @@ model Location {
   city         String
   restaurantId String     @unique
   restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
-
   @@map("location")
 }
 
-model Organization {
-  id String @id @default(cuid())
-
-  name        String       @unique
-  logoUrl     String
-  ownerId     String
-  resNos      Int          @default(1)
-  description String
-  owner       User         @relation(fields: [ownerId], references: [id])
-  restaurants Restaurant[]
-
-  @@map("organization")
-}
 
 model Session {
   id        String   @id @default(cuid())
@@ -133,4 +159,90 @@ model Verification {
   updatedAt  DateTime? @updatedAt
 
   @@map("verification")
+}
+
+model Product {
+  id   String  @id  @default(cuid())
+  name String
+  logoUrl String 
+  price   Int
+  description String
+  stockQuantity Int
+  inStock   Boolean  @default(true)
+  restaurantId String
+  restaurant  Restaurant  @relation(fields:[restaurantId], references:[id]) 
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  orderItem   OrderItem[]
+  @@map("product")
+  @@index([restaurantId])
+}
+model Order {
+  id                  String           @id @default(uuid())
+  orderNumber         Int              @unique @default(autoincrement())
+  
+  // Fulfillment & Timing Data
+  orderType           OrderType
+  orderStatus         OrderStatus      @default(PENDING)
+  scheduledFor        DateTime?
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  specialInstructions String?          @db.Text
+  
+  // Customer & Contact Information
+  customerName        String
+  customerPhone       String
+  deliveryAddress     Address?         @relation(fields: [addressId], references: [id])
+  addressId           String?
+  tableNumber         String?          // Used for Dine-In orders
+  
+  // Financial Data
+  paymentStatus       PaymentStatus    @default(UNPAID)
+  paymentMethod       PaymentMethod
+  subtotal            Decimal          @db.Decimal(10, 2)
+  tax                 Decimal          @db.Decimal(10, 2)
+  deliveryFee         Decimal          @db.Decimal(10, 2) @default(0.00)
+  tip                 Decimal          @db.Decimal(10, 2) @default(0.00)
+  totalAmount         Decimal          @db.Decimal(10, 2)
+  
+  // Relations
+  items               OrderItem[]
+  restaurantId         String
+  restaurant           Restaurant       @relation(fields:[restaurantId], references:[id])
+  // Indexes for query optimization
+ @@index([restaurantId, orderStatus])
+@@index([restaurantId, createdAt])
+}
+
+
+model OrderItemModification {
+  id          String    @id @default(uuid())
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  name        String    // e.g., "Extra Spicy", "No Onions"
+  priceCharge Decimal   @db.Decimal(10, 2) @default(0.00) // If adding the modification costs extra
+
+  @@index([orderItemId])
+}
+
+model Address {
+  id                  String   @id @default(uuid())
+  streetAddress       String
+  apartmentSuiteNumber String?
+  city                String
+  postalCode          String
+  deliveryInstructions String? @db.Text
+  orders              Order[]
+}
+
+model OrderItem {
+  id         String    @id @default(uuid())
+  orderId    String
+  order      Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId  String
+  product    Product   @relation(fields: [productId], references: [id])
+  
+  quantity   Int
+  unitPrice  Decimal   @db.Decimal(10, 2) // Snapshotted price at checkout
+  totalPrice Decimal   @db.Decimal(10, 2)
 }
