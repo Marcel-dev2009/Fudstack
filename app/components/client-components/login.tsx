@@ -1,275 +1,241 @@
-"use client"
-import { brand } from "@/brand";
-import {useState} from "react"
-import {toast} from "sonner"
-  import {
+"use client";
+
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { toast } from "sonner";
+import {
   User2,
-  Lock,
   Mail,
+  Lock,
+  Loader2,
+  ArrowRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
-import {useRouter} from "next/navigation"
+
+import { brand } from "@/brand";
 import { signIn } from "@/lib/actions/loginClient";
-import {motion} from "framer-motion"
+
 function LoginClient() {
-   const [email , setEmail] = useState(""); 
-     const [password , setPassword] = useState("");
-      const [isLoading , setLoading] = useState(false);
   const router = useRouter();
-  const handleSubmit = async (e:React.SubmitEvent) => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if(!email  || !password){
-      toast.error("Field missing")
-     }
-    try{
-    setLoading(true);
-    const result = await signIn({email , password})
-    if(!result.success){
-      toast.error("No account found");
+
+    if (!email.trim() || !password.trim()) {
+      toast.warning("Please fill out all required fields.");
       return;
     }
-        toast.success("login successful")
-        router.push("/client/dashboard") //Might change later
-    }catch(err){
-     toast.error(`
-      Authentication error: ${
-       err instanceof Error ? err.message : "unkown error" 
+
+    try {
+      setIsLoading(true);
+      const result = await signIn({ email, password });
+
+      if (!result.success) {
+        toast.error("No account found with provided credentials.");
+        return;
       }
-      `)
-    }finally{
-      setLoading(false);
+
+      toast.success("Logged in successfully!");
+      router.push("/client/dashboard");
+    } catch (err) {
+      toast.error(
+        `Authentication error: ${
+          err instanceof Error ? err.message : "An unknown error occurred"
+        }`
+      );
+    } finally {
+      setIsLoading(false);
     }
-    }
+  };
+
   return (
-  <motion.main
-    initial={{opacity:0 , y:20 , scale:0.5}}
-    animate={{opacity:1 , y:0 , scale:1}}
-    transition={{duration:.8 , ease:"easeInOut", type:"spring"}}
-  className="fixed inset-0 flex justify-center items-center bg-neutral-100 p-6 lg:p-10">
-      <div className="w-full h-auto max-h-[90dvh]: max-w-175 bg-white rounded-sm shadow-2xl overflow-hidden border border-neutral-200 grid lg:grid-cols-2">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4 sm:p-6 backdrop-blur-sm">
+      <motion.main
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl shadow-neutral-900/10 border border-neutral-200/80 grid lg:grid-cols-12 max-h-[92vh]"
+      >
+        {/* LEFT FORM PANEL */}
+        <section className="lg:col-span-6 p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-y-auto">
+          <div>
+            {/* Logo / Brand Mark */}
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-xl bg-brand-burn/10 flex items-center justify-center border border-brand-burn/20">
+                <User2 className="text-brand-burn w-4 h-4" />
+              </div>
+              <span className="text-sm font-bold text-neutral-900 tracking-tight">
+                {brand.name}
+              </span>
+            </div>
 
-        {/* LEFT */}
+            {/* Header Text */}
+            <div className="space-y-1 mb-6">
+              <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+                Welcome back
+              </h1>
+              <p className="text-xs text-neutral-500 leading-relaxed">
+                Enter your credentials to access your account and enjoy a seamless dining experience.
+              </p>
+            </div>
 
-        <section className="px-2 py-4"> {/* px-4 py-8 lg:px-5 lg:py-10 flex flex-col justify-center */}
+            {/* Signin Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold tracking-wider text-neutral-700 uppercase">
+                  Email Address
+                </label>
+                <div className="flex items-center px-3 py-2 bg-neutral-50/50 border border-neutral-200 rounded-xl focus-within:bg-white focus-within:border-brand-burn focus-within:ring-2 focus-within:ring-brand-burn/10 transition-all">
+                  <Mail className="w-4 h-4 text-neutral-400 shrink-0" />
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full ml-2.5 outline-none bg-transparent text-xs font-medium text-neutral-800 placeholder:text-neutral-400"
+                  />
+                </div>
+              </div>
 
-          <div className="w-8 h-8 rounded-sm bg-brand-burn/10 flex items-center justify-center mb-8">
-            <User2 className="text-brand-burn w-4 h-4" />
+              {/* Password */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-[11px] font-semibold tracking-wider text-neutral-700 uppercase">
+                    Password
+                  </label>
+                </div>
+                <div className="flex items-center px-3 py-2 bg-neutral-50/50 border border-neutral-200 rounded-xl focus-within:bg-white focus-within:border-brand-burn focus-within:ring-2 focus-within:ring-brand-burn/10 transition-all">
+                  <Lock className="w-4 h-4 text-neutral-400 shrink-0" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    autoComplete="current-password"
+                    placeholder="Enter your password"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full ml-2.5 pr-2 outline-none bg-transparent text-xs font-medium text-neutral-800 placeholder:text-neutral-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="text-neutral-400 hover:text-neutral-700 transition-colors shrink-0 p-0.5 rounded-md focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-2.5 px-4 mt-2 rounded-xl bg-brand-burn text-white text-xs font-semibold tracking-wide hover:brightness-110 active:scale-[0.99] disabled:opacity-60 transition-all shadow-md shadow-brand-burn/20 flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+            </form>
           </div>
 
-          <h1 className="text-md lg:text-lg tracking-tight text-neutral-900">
-            Login to your Client account
-          </h1>
-
-          <p className="text-neutral-500 mt-3 text-xs leading-relaxed max-w-md">
-            Enter your credentials to get access to all our app&apos;s features and enjoy seamless restaurant experience as a customer
-          </p>
-
-          <form onSubmit={handleSubmit}> 
-
-            {/* Owner */}
-
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                 Email
-              </label>
-
-              <div className="flex px-4 py-2 items-center border rounded-sm border-neutral-200 focus-within:border-brand-burn transition">
-                <Mail className="w-3 h-3 text-neutral-400" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="yourname@gmail.com"
-                  className="flex-1 ml-3 outline-none bg-transparent text-xs text-secondary-coal placeholder:text-xs"
-                />
-              </div>
-            </div>
-
-  
-          
-
-            {/* Password */}
-
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                Password
-              </label>
-
-              <div className="flex items-center px-4 py-2 border rounded-sm border-neutral-200 focus-within:border-brand-burn transition">
-                <Lock className="w-5 h-5 text-neutral-400" />
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Must be more than 8 characters"
-                  className="flex-1 ml-3 outline-none bg-transparent text-xs text-secondary-coal placeholder:text-xs"
-                />
-              </div>
-            </div>
-
-           
+          {/* Footer Link */}
+          <p className="mt-6 text-center text-xs text-neutral-500">
+            Don&apos;t have an account?{" "}
             <button
-              type="submit"
-              className="w-full mt-2 mb-2 max-w-98 rounded-sm p-2 bg-brand-burn text-white text-xs tracking-tighter hover:brightness-110 transition"
+              type="button"
+              onClick={() => router.replace("/client/auth/sign-up")}
+              className="text-brand-burn font-semibold hover:underline"
             >
-               {isLoading ? (
-              <div className="flex justify-center items-center">
-            <svg
-                    className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-              </div>
-            ) : "Login"}
+              Sign Up
             </button>
-
-            <p className="text-center text-xs text-neutral-500">
-              Don&apos;t have an account?{" "}
-              <span onClick={() => {
-                router.replace("/client/auth/sign-up")
-              }} className="text-brand-burn font-semibold cursor-pointer">
-                Sign Up
-              </span>
-            </p>
-
-          </form>
+          </p>
         </section>
 
-        {/* RIGHT PANEL COMES IN PART 2 */}
-      
-      {/* RIGHT PANEL */}
+        {/* RIGHT HERO BANNER PANEL */}
+        <section className="hidden lg:col-span-6 lg:flex flex-col justify-between relative overflow-hidden bg-brand-burn text-white p-8 md:p-10 border-l border-white/10">
+          {/* Subtle Radial Glows */}
+          <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl pointer-events-none" />
 
-<section className="hidden lg:flex relative overflow-hidden bg-brand-burn text-white p-12 ">
+          {/* Grid Overlay */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+            }}
+          />
 
-  {/* Grid Pattern */}
-  <div
-    className="absolute inset-0 opacity-10"
-    style={{
-      backgroundImage:
-        "linear-gradient(to right, white 1px, transparent 1px),linear-gradient(to bottom,white 1px,transparent 1px)",
-      backgroundSize: "40px 40px",
-    }}
-  />
+          <div className="relative z-10 space-y-3">
+            <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-md bg-white/10 border border-white/20 text-orange-100 backdrop-blur-md">
+              {brand.name}
+            </span>
 
-  <div className="relative w-full max-w-xl">
+            <h2 className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight text-white">
+              Your all-in-one platform for seamless dining workflows.
+            </h2>
 
-    <p className="tracking-tighter text-md font-semibold text-orange-100 mb-4">
-     {brand.name}
-    </p>
-
-    <h2 className="text-2xl font-bold leading-tight tracking-tighter">
-      Your
-      <br />
-      All in One
-      <br />
-      Platform for seamless workflow
-    </h2>
-
-    <p className="mt-5 text-orange-100 max-w-md text-xs">
-       Enter your credentials to get access to all our apps
-    </p>
-
-    {/* Dashboard */}
-      <div className="relative mt-6 h-auto max-h-[20dvh]">
-
-      <div className="rounded-[28px] bg-white shadow-2xl p-6 text-neutral-900">
-
-        {/* Header */}
-
-        <div className="flex items-center justify-between">
-
-          <div>
-            <h3 className="font-semibold text-sm tracking-tighter">
-              Client Dashboard
-            </h3>
-
-            <p className="text-xs tracking-tighter text-neutral-400">
-              Today&apos;s Overview
+            <p className="text-xs text-white/80 leading-relaxed max-w-sm">
+              Log in to manage orders, browse nearby restaurants, check table availability, and keep track of recent activity.
             </p>
           </div>
 
-          <div className="px-4 py-2 rounded-full bg-brand-burn/10 text-brand-burn text-xs  font-medium">
-            Live
+          {/* Dashboard Preview Card */}
+          <div className="relative z-10 mt-6 pt-4 border-t border-white/10">
+            <div className="rounded-2xl bg-white shadow-2xl p-5 text-neutral-900 border border-white/20 backdrop-blur-md">
+              <div className="flex items-center justify-between border-b border-neutral-100 pb-3">
+                <div>
+                  <h3 className="font-bold text-xs tracking-tight text-neutral-900">
+                    Client Dashboard
+                  </h3>
+                  <p className="text-[10px] text-neutral-400">Today&apos;s Overview</p>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 text-[10px] font-semibold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                  Live
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <div className="rounded-xl bg-orange-50/80 p-3.5 border border-orange-100">
+                  <p className="text-[10px] font-medium text-neutral-500">Active Orders</p>
+                  <h4 className="text-lg font-extrabold text-neutral-900 mt-0.5">2</h4>
+                </div>
+
+                <div className="rounded-xl bg-neutral-50 p-3.5 border border-neutral-100">
+                  <p className="text-[10px] font-medium text-neutral-500">Total Spent</p>
+                  <h4 className="text-lg font-extrabold text-neutral-900 mt-0.5">$68</h4>
+                  <p className="text-brand-burn text-[9px] font-semibold mt-0.5">Updated Today</p>
+                </div>
+              </div>
+            </div>
           </div>
-
-        </div>
-       <div className="w-full relative">
-         <svg
-            viewBox="0 0 300 100"
-            className="w-full h-10 absolute"
-          >
-            <polyline
-              fill="none"
-              stroke="#F97316"
-              strokeWidth="5"
-              points="
-              0,70
-              40,55
-              80,60
-              120,35
-              160,45
-              200,22
-              240,38
-              300,18"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-
-       </div>
-        {/* Cards */}
-
-        <div className="grid grid-cols-2 gap-4 mt-8">
-
-          <div className="rounded-2xl bg-orange-50 p-5">
-            <p className="text-sm text-neutral-500">
-              Orders
-            </p>
-
-            <h4 className="text-xl font-bold mt-2">
-              2
-            </h4>
-          </div>
-
-          <div className="rounded-2xl bg-neutral-100 p-5">
-            <p className="text-sm text-neutral-500">
-              Total
-            </p>
-
-            <h4 className="text-xl font-bold mt-2">
-              68k
-            </h4>
-
-            <p className="text-brand-burn text-xs mt-2">
-              Active Today
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-    </div>  {/* Dashboardend */}
+        </section>
+      </motion.main>
     </div>
-
-</section>
-      </div>
-    </motion.main>
-  )
+  );
 }
-export default LoginClient
 
-
+export default LoginClient;

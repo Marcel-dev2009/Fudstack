@@ -1,6 +1,8 @@
+import Dashboard from "./dashboard"
+
 function ClientDashboardPage() {
   return (
-    <div>ClientDashboardPage</div>
+    <Dashboard/>
   )
 }
 export default ClientDashboardPage

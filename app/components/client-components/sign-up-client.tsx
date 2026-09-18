@@ -1,262 +1,277 @@
-"use client"
-import { brand } from "@/brand";
+"use client";
+
+import React, { ChangeEvent, useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { ChangeEvent, useState } from "react";
-import Image from "next/image"
 import {
   User2,
   User,
   Mail,
   Lock,
+  Loader2,
+  ArrowRight,
+  Eye,
+  EyeOff,
 } from "lucide-react";
-import {useRouter} from "next/navigation"
-import dashboard from "@/public/clientdash.png"
+
+import { brand } from "@/brand";
+import dashboard from "@/public/clientdash.png";
 import { signUp } from "@/lib/actions/signupClient";
 import { updateUserRoleForClient } from "@/lib/server-operation";
-import {motion} from "framer-motion";
+import { getUserSession } from "@/lib/actions/getSession";
+
 function SignUpClient() {
-  const [name , setName] = useState("")
-  const [email , setEmail] = useState("")
-  const [password , setPassword] = useState("")
-  const [Isloading , setIsLoading] = useState(false)
-  const [agreed , setAgreed] = useState(false);
-  const handleSubmit = async (e:React.SubmitEvent) => {
-   e.preventDefault(); 
-   
-   if(!name || !email || !password){
-    toast.warning("Fill out the required fields")
-   }
-   try{
-  setIsLoading(true)
-   if(agreed === false) {
-       toast.warning("Agree to the terms to continue");
-       return;
-      };
-  const result = await signUp(email , password , name)
-  if(!result.user){
-    toast.error("failed to create account");
-    return;
-  }
-     toast.success("client account created");
-     updateUserRoleForClient(result.user.id);
-     router.replace("/client/dashboard");
-   }catch(err){
-   toast.error(`
-    Authentication error: ${
-    err instanceof Error ? err.message : "Unkown message"  
+  const router = useRouter();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [agreed, setAgreed] = useState(false);
+
+  const handleSubmit = async (e: React.SubmitEvent) => {
+    e.preventDefault();
+
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      toast.warning("Please fill out all required fields.");
+      return;
     }
-    `)
-   }finally{
-    setIsLoading(false)
-   }
-  }
-  const handleCheck = (event:ChangeEvent<HTMLInputElement>) => {
-  const targetStatus = event.target.checked;
-  setAgreed(targetStatus)
-  }
-   const router = useRouter()
+
+    if (!agreed) {
+      toast.warning("Please accept the Terms & Conditions to proceed.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const result = await signUp({ email, password, name });
+      if (!result.success) {
+        toast.error("Failed to create account. Please try again.");
+        return;
+      }
+      const session = await getUserSession();
+      if (!session) return;
+
+      toast.success("Account created successfully!");
+      await updateUserRoleForClient(session.user.id);
+      router.replace("/client/dashboard");
+    } catch (err) {
+      toast.error(
+        `Authentication error: ${
+          err instanceof Error ? err.message : "An unknown error occurred"
+        }`
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCheck = (event: ChangeEvent<HTMLInputElement>) => {
+    setAgreed(event.target.checked);
+  };
+
   return (
-    <motion.main 
-    initial={{opacity:0 , y:20 , scale:0.5}}
-    animate={{opacity:1 , y:0 , scale:1}}
-    transition={{duration:.8 , ease:"easeInOut", type:"spring"}}
-      className="fixed inset-0 flex justify-center items-center bg-neutral-100 p-6 lg:p-10">
-      <div className="w-full h-auto max-h-[90dvh]: max-w-175 bg-white rounded-sm shadow-2xl overflow-hidden border border-neutral-200 grid lg:grid-cols-2">
-
-        {/* LEFT */}
-
-        <section className="px-2 py-4"> {/* px-4 py-8 lg:px-5 lg:py-10 flex flex-col justify-center */}
-
-          <div className="w-8 h-8 rounded-sm bg-brand-burn/10 flex items-center justify-center mb-8">
-            <User2 className="text-brand-burn w-4 h-4" />
-          </div>
-
-          <h1 className="text-md lg:text-lg tracking-tight text-neutral-900">
-            Create Client Account
-          </h1>
-
-          <p className="text-neutral-500 mt-3 text-xs leading-relaxed max-w-md">
-            Search restaurants, Place orders, reservations and customer support experiences
-            from one beautiful dashboard.
-          </p>
-
-          <form onSubmit={handleSubmit}>
-
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-               Name
-              </label>
-
-              <div className="flex px-4 py-2 items-center border rounded-sm border-neutral-200 focus-within:border-brand-burn transition">
-                <User className="w-3 h-3 text-neutral-400" />
-                <input
-                  type="text"
-                  value={name}
-                  autoComplete="your name"
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="flex-1 ml-3 outline-none  text-xs text-secondary-coal bg-transparent placeholder:text-xs"
-                />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-900/40 p-4 sm:p-6 backdrop-blur-sm">
+      <motion.main
+        initial={{ opacity: 0, scale: 0.96, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl shadow-neutral-900/10 border border-neutral-200/80 grid lg:grid-cols-12 max-h-[92vh]"
+      >
+        {/* LEFT FORM PANEL */}
+        <section className="lg:col-span-6 p-6 sm:p-8 md:p-10 flex flex-col justify-between overflow-y-auto">
+          <div>
+            {/* Logo / Brand Mark */}
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-8 h-8 rounded-xl bg-brand-burn/10 flex items-center justify-center border border-brand-burn/20">
+                <User2 className="text-brand-burn w-4 h-4" />
               </div>
+              <span className="text-sm font-bold text-neutral-900 tracking-tight">
+                {brand.name}
+              </span>
             </div>
 
-            {/* Email */}
-
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                Email Address
-              </label>
-
-              <div className="flex items-center px-4 py-2 border rounded-sm  border-neutral-200 focus-within:border-brand-burn transition"> {/* px-4 h-14 */}
-                <Mail className="w-5 h-5 text-neutral-400" />
-                <input
-                  type="email"
-                  autoComplete="your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jdoe@email.com"
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs  text-xs text-secondary-coal"
-                />
-              </div>
-            </div>
-
-            {/* Phone */}
-
-            {/* Password */}
-
-            <div className="p-2">
-              <label className="text-xs tracking-tighter text-neutral-700 mb-2 block">
-                Password
-              </label>
-
-              <div className="flex items-center px-4 py-2 border rounded-sm border-neutral-200 focus-within:border-brand-burn transition">
-                <Lock className="w-5 h-5 text-neutral-400" />
-                <input
-                  type="password"
-                  value={password}
-                  autoComplete="your password"
-                  placeholder="Must be 8 characters and above"
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="flex-1 ml-3 outline-none bg-transparent placeholder:text-xs text-xs text-secondary-coal"
-                />
-              </div>
-            </div>
-
-            {/* Checkbox */}
-
-            <div className="flex items-start gap-0.5 pt-2">
-              <input
-                type="checkbox"
-                className="mt-1 accent-orange-500"
-                onChange={handleCheck}
-                checked={agreed}
-              />
-
-              <p className="text-xs text-neutral-500">
-                I agree to the{" "}
-                <span className="text-brand-burn tracking-tighter">
-                  Terms & Conditions
-                </span>{" "}
-                and{" "}
-                <span className="text-brand-burn tracking-tighter">
-                  Privacy Policy
-                </span>
+            {/* Header Text */}
+            <div className="space-y-1 mb-6">
+              <h1 className="text-xl font-bold tracking-tight text-neutral-900">
+                Create Client Account
+              </h1>
+              <p className="text-xs text-neutral-500 leading-relaxed">
+                Discover restaurants, place instant orders, manage reservations, and track deliveries.
               </p>
             </div>
 
-            <button
-              type="submit"
-              className="w-full mt-2 mb-2 max-w-98 rounded-sm p-2 bg-brand-burn text-white text-xs tracking-tighter hover:brightness-110 transition-all duration-75"
-            >
-            {Isloading ? (
-              <div className="flex justify-center items-center">
-              <svg
-                    className="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
+            {/* Signup Form */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Name */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold tracking-wider text-neutral-700 uppercase">
+                  Full Name
+                </label>
+                <div className="flex items-center px-3 py-2 bg-neutral-50/50 border border-neutral-200 rounded-xl focus-within:bg-white focus-within:border-brand-burn focus-within:ring-2 focus-within:ring-brand-burn/10 transition-all">
+                  <User className="w-4 h-4 text-neutral-400 shrink-0" />
+                  <input
+                    type="text"
+                    value={name}
+                    autoComplete="name"
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="John Doe"
+                    className="w-full ml-2.5 outline-none bg-transparent text-xs font-medium text-neutral-800 placeholder:text-neutral-400"
+                  />
+                </div>
               </div>
-             ) :   "Create Client Account"}
+
+              {/* Email */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold tracking-wider text-neutral-700 uppercase">
+                  Email Address
+                </label>
+                <div className="flex items-center px-3 py-2 bg-neutral-50/50 border border-neutral-200 rounded-xl focus-within:bg-white focus-within:border-brand-burn focus-within:ring-2 focus-within:ring-brand-burn/10 transition-all">
+                  <Mail className="w-4 h-4 text-neutral-400 shrink-0" />
+                  <input
+                    type="email"
+                    autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full ml-2.5 outline-none bg-transparent text-xs font-medium text-neutral-800 placeholder:text-neutral-400"
+                  />
+                </div>
+              </div>
+
+              {/* Password with Visibility Toggle */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-semibold tracking-wider text-neutral-700 uppercase">
+                  Password
+                </label>
+                <div className="flex items-center px-3 py-2 bg-neutral-50/50 border border-neutral-200 rounded-xl focus-within:bg-white focus-within:border-brand-burn focus-within:ring-2 focus-within:ring-brand-burn/10 transition-all">
+                  <Lock className="w-4 h-4 text-neutral-400 shrink-0" />
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    autoComplete="new-password"
+                    placeholder="At least 8 characters"
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full ml-2.5 pr-2 outline-none bg-transparent text-xs font-medium text-neutral-800 placeholder:text-neutral-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="text-neutral-400 hover:text-neutral-700 transition-colors shrink-0 p-0.5 rounded-md focus:outline-none"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-4 h-4" />
+                    ) : (
+                      <Eye className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="flex items-start gap-2 pt-1">
+                <input
+                  id="terms-checkbox"
+                  type="checkbox"
+                  className="mt-0.5 h-3.5 w-3.5 rounded border-neutral-300 text-brand-burn focus:ring-brand-burn/20 accent-brand-burn cursor-pointer"
+                  onChange={handleCheck}
+                  checked={agreed}
+                />
+                <label htmlFor="terms-checkbox" className="text-[11px] leading-snug text-neutral-500 select-none cursor-pointer">
+                  I agree to the{" "}
+                  <a href="#" className="font-semibold text-brand-burn hover:underline">
+                    Terms & Conditions
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="font-semibold text-brand-burn hover:underline">
+                    Privacy Policy
+                  </a>
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="w-full py-2.5 px-4 rounded-xl bg-brand-burn text-white text-xs font-semibold tracking-wide hover:brightness-110 active:scale-[0.99] disabled:opacity-60 transition-all shadow-md shadow-brand-burn/20 flex items-center justify-center gap-2"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-white" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Create Client Account</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Footer Link */}
+          <p className="mt-6 text-center text-xs text-neutral-500">
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={() => router.replace("/client/auth/sign-in")}
+              className="text-brand-burn font-semibold hover:underline"
+            >
+              Sign In
             </button>
-
-            <p className="text-center text-xs text-neutral-500">
-              Already have an account?{" "}
-              <span onClick={() => {
-                router.replace("/client/auth/sign-in")
-              }} className="text-brand-burn font-semibold cursor-pointer">
-                Sign In
-              </span>
-            </p>
-
-          </form>
+          </p>
         </section>
 
-        {/* RIGHT PANEL COMES IN PART 2 */}
-      
-      {/* RIGHT PANEL */}
+        {/* RIGHT HERO BANNER PANEL */}
+        <section className="hidden lg:col-span-6 lg:flex flex-col justify-between relative overflow-hidden bg-brand-burn text-white p-8 md:p-10 border-l border-white/10">
+          {/* Subtle Radial Glows */}
+          <div className="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+          <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-orange-400/20 blur-3xl pointer-events-none" />
 
-<section className="hidden lg:flex relative overflow-hidden bg-brand-burn text-white p-12">
+          {/* Grid Overlay */}
+          <div
+            className="absolute inset-0 opacity-10 pointer-events-none"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, white 1px, transparent 1px), linear-gradient(to bottom, white 1px, transparent 1px)",
+              backgroundSize: "32px 32px",
+            }}
+          />
 
-  {/* Background Blur */}
- {/*  <div className="absolute -top-24 -left-16 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-  <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-orange-300/20 blur-3xl"/> */}
+          <div className="relative z-10 space-y-3">
+            <span className="inline-block text-xs font-semibold px-2.5 py-1 rounded-md bg-white/10 border border-white/20 text-orange-100 backdrop-blur-md">
+              {brand.name} Experience
+            </span>
 
-  {/* Grid Pattern */}
-  <div
-    className="absolute inset-0 opacity-10"
-    style={{
-      backgroundImage:
-        "linear-gradient(to right, white 1px, transparent 1px),linear-gradient(to bottom,white 1px,transparent 1px)",
-      backgroundSize: "40px 40px",
-    }}
-  />
+            <h2 className="text-xl md:text-2xl font-extrabold leading-snug tracking-tight text-white">
+              Everything you need as a customer in one dashboard.
+            </h2>
 
-  <div className="relative w-full max-w-xl">
+            <p className="text-xs text-white/80 leading-relaxed max-w-sm">
+              Discover local favorites, reserve tables, track orders real-time, and get direct support from one unified workspace.
+            </p>
+          </div>
 
-    <p className="tracking-tighter text-md font-semibold text-orange-100 mb-4">
-     {brand.name}
-    </p>
-
-    <h2 className="text-2xl font-bold leading-tight tracking-tighter">
-      Everything you
-      <br />
-       need as a customer
-      <br />
-      in one dashboard.
-    </h2>
-
-    <p className="mt-5 text-orange-100 max-w-md text-xs">
-      Search restaurants, reservations, customer support experiences&apos;s
-      
-      ,
-      ordering , tracking orders from one
-      beautifully designed workspace.
-    </p>
-
-    {/* Dashboard */}
-    <div className="mt-4">
-      <Image src={dashboard} alt={brand.ariaLogo} aria-label={brand.ariaLogo}/>
+          {/* Dashboard Preview Card */}
+          <div className="relative z-10 mt-6 pt-4 border-t border-white/10">
+            <div className="rounded-xl overflow-hidden border border-white/20 bg-black/20 shadow-2xl backdrop-blur-sm group">
+              <Image
+                src={dashboard}
+                alt={brand.ariaLogo ?? "Dashboard Preview"}
+                aria-label={brand.ariaLogo}
+                className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          </div>
+        </section>
+      </motion.main>
     </div>
-  </div>
-
-</section>
-      </div>
-    </motion.main>
-  )
+  );
 }
-export default SignUpClient
+
+export default SignUpClient;

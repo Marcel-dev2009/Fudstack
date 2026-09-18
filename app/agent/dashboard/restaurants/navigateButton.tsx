@@ -1,14 +1,14 @@
 "use client";
 import { ChevronRight } from "lucide-react"
 import { useRouter } from "next/navigation"
-function NavigateButton({userId}:{userId:string}) {
+function NavigateButton() {
   const router = useRouter();        
   return (
    <div    className="flex justify-end">
 <button
 title="Visit your restaurant"
 onClick={() => {
-          router.push(`/restaurants/${userId}`);
+          router.push(`/restaurants`);
 }}
           className="
           flex h-9 w-9 items-center justify-center

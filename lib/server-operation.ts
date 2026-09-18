@@ -82,6 +82,7 @@ export async function createRestaurant( name:string, logoUrl:string, phone:strin
     }
   });
    updateTag(`organization-restaurant:${organization.id}`);
+   updateTag("all-restaurant-list");
 }
 
 

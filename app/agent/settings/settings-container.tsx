@@ -9,8 +9,7 @@ async function Settings() {
  if(!organization) return null;
  const restaurant = await getRestaurants();         
  if(!restaurant || restaurant.length === 0) return null;
-/*  const location = await getLocation(organization.id)
- if(!location) return null; */
+
   return (
   <SettingsClient organization={organization} restaurant={restaurant} organizationId={organization.id}/>
   )

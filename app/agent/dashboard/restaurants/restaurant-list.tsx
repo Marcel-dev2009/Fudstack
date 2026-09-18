@@ -2,9 +2,16 @@ import { CalendarDays,  LocateFixed, Phone, Users } from "lucide-react";
 // import {useRouter} from "next/navigation";
 import { getRestaurants } from "@/lib/server-operation";
 import NavigateButton from "./navigateButton";
+import { getOrganization } from "@/lib/actions/getOrganization";
+import { getUserSession } from "@/lib/actions/getSession";
 async function RestaurantList(){
 const restaurantData = await getRestaurants();
  if(!restaurantData) throw new Error("No restaurant found!"); 
+ const session = await getUserSession();
+ if(!session) return null;
+ const organization = await getOrganization(session.user.id);
+ if(!organization) return null;
+
  return (
    <div className="mx-10">
             {restaurantData.map((restaurant) => (
@@ -87,12 +94,12 @@ const restaurantData = await getRestaurants();
                         className="shrink-0 text-slate-400"
                       />
 
-                      <span>{restaurant.resNos}</span>
+                      <span>{organization.resNos}</span>
                     </div>
                   </div>
 
                   {/* Arrow */}
-                <NavigateButton userId={restaurant.id}/>
+                <NavigateButton/>
                 </div>
               </div>
             ))}
